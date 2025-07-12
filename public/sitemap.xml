@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://topcar.club/</loc>
+    <lastmod>2025-06-05</lastmod> {/* Update this date when you make significant changes to the homepage */}
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://topcar.club/autopark</loc>
+    <lastmod>2025-06-05</lastmod> {/* Update this date with actual last modification */}
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://topcar.club/services</loc>
+    <lastmod>2025-06-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://topcar.club/contacts</loc>
+    <lastmod>2025-06-05</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://topcar.club/terms</loc>
+    <lastmod>2025-06-05</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://topcar.club/download</loc>
+    <lastmod>2025-06-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://topcar.club/faq</loc>
+    <lastmod>2025-06-05</lastmod> {/* Update when FAQ content changes */}
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://topcar.club/blog</loc>
+    <lastmod>2025-06-05</lastmod> {/* Update with your latest blog post date or significant blog update */}
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  {/* If you have individual blog post pages, you'll need to add them here too.
+    For example:
+    <url>
+      <loc>https://topcar.club/blog/your-first-blog-post-slug</loc>
+      <lastmod>2025-06-04</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.7</priority>
+    </url>
+    <url>
+      <loc>https://topcar.club/blog/another-post-slug</loc>
+      <lastmod>2025-06-01</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  */}
+  {/* If you have individual, unique URL pages for each car in your autopark (e.g., /autopark/mercedes-g63),
+    you should add those here as well.
+    Example:
+    <url>
+      <loc>https://topcar.club/autopark/mercedes-g63</loc>
+      <lastmod>2025-06-05</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8</priority>
+    </url>
+  */}
+</urlset>
