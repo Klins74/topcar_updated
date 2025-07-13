@@ -1,69 +1,54 @@
-// src/components/LoginModal.tsx
 'use client'
 
-import { useState, ChangeEvent } from 'react'
-
-// --- Вспомогательная функция, добавленная прямо сюда ---
-const formatPhoneNumber = (value: string): string => {
-    if (!value) return value;
-    const phoneNumber = value.replace(/[^\d]/g, '');
-    const phoneNumberLength = phoneNumber.length;
-    if (phoneNumberLength < 1) return '+';
-
-    let formattedNumber = '+';
-    if (phoneNumber.startsWith('7') || phoneNumber.startsWith('8')) {
-      formattedNumber += `7 (${phoneNumber.substring(1, 4)}`;
-    } else {
-      formattedNumber += `7 (${phoneNumber.substring(0, 3)}`;
-    }
-  
-    if (phoneNumberLength > 4) {
-      formattedNumber += `) ${phoneNumber.substring(4, 7)}`;
-    }
-    if (phoneNumberLength > 7) {
-      formattedNumber += `-${phoneNumber.substring(7, 9)}`;
-    }
-    if (phoneNumberLength > 9) {
-      formattedNumber += `-${phoneNumber.substring(9, 11)}`;
-    }
-  
-    return formattedNumber;
-};
-
+import { useState, ChangeEvent } from 'react';
+import { formatPhoneNumber } from '@/lib/formatters'; // <-- 1. Импортируем из общего файла
+import InputField from '@/components/ui/InputField';  // <-- 2. Импортируем наш новый компонент
 
 type Props = {
-  onClose: () => void
-}
+  onClose: () => void;
+};
 
 export default function LoginModal({ onClose }: Props) {
-  const [isSignup, setIsSignup] = useState(false)
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [isSignup, setIsSignup] = useState(false);
+  
+  // 3. Используем единый объект для всех данных формы
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+  });
 
-  const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPhoneNumber(e.target.value);
-    setPhone(formatted);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // 4. Универсальный обработчик для всех полей
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    
+    if (name === 'phone') {
+      // Для телефона используем форматирование
+      setFormData(prev => ({ ...prev, [name]: formatPhoneNumber(value) }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
-  const handleSubmit = async () => {
-    setLoading(true)
-    setError('')
-    
-    const cleanedPhone = phone.replace(/[^\d]/g, '');
-    
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Предотвращаем стандартную отправку формы
+    setLoading(true);
+    setError('');
+
+    const cleanedPhone = formData.phone.replace(/[^\d]/g, '');
     const endpoint = isSignup ? '/api/auth/register' : '/api/auth/login';
-    const payload = isSignup ? { name, email, phone: cleanedPhone, password } : { email, password };
+    const payload = isSignup 
+      ? { name: formData.name, email: formData.email, phone: cleanedPhone, password: formData.password } 
+      : { email: formData.email, password: formData.password };
 
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
@@ -72,7 +57,7 @@ export default function LoginModal({ onClose }: Props) {
       if (!response.ok) {
         throw new Error(data.message || 'Произошла неизвестная ошибка');
       }
-      
+
       localStorage.setItem('topcar-user', JSON.stringify(data.user));
       window.location.reload();
 
@@ -81,87 +66,87 @@ export default function LoginModal({ onClose }: Props) {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
       <div className="bg-black border border-white/10 rounded-2xl p-8 w-full max-w-md shadow-xl backdrop-blur-sm">
-        <h2 className="text-2xl font-bold mb-6 tracking-tight">
+        <h2 className="text-2xl font-bold mb-6 tracking-tight text-white">
           {isSignup ? 'Регистрация в TopCar' : 'Вход в TopCar'}
         </h2>
 
-        <div className="space-y-4">
+        {/* 5. Используем наш новый InputField, код стал намного чище! */}
+        <form onSubmit={handleSubmit} className="space-y-4">
           {isSignup && (
-            <input
+            <InputField
+              label="Имя"
+              name="name"
               type="text"
-              placeholder="Имя"
-              className="w-full p-3 rounded-lg bg-white/5 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-white/30 transition"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              placeholder="Как к вам обращаться"
+              value={formData.name}
+              onChange={handleChange}
             />
           )}
-          <input
+          <InputField
+            label="Email"
+            name="email"
             type="email"
-            placeholder="Email"
-            className="w-full p-3 rounded-lg bg-white/5 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-white/30 transition"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="example@mail.com"
+            value={formData.email}
+            onChange={handleChange}
           />
           {isSignup && (
-            <input
+            <InputField
+              label="Телефон"
+              name="phone"
               type="tel"
-              placeholder="+7 (XXX) XXX-XX-XX"
-              className="w-full p-3 rounded-lg bg-white/5 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-white/30 transition"
-              value={phone}
-              onChange={handlePhoneChange}
-              maxLength={18}
+              placeholder="+7 (___) ___-__-__"
+              value={formData.phone}
+              onChange={handleChange}
             />
           )}
-          <input
+          <InputField
+            label="Пароль"
+            name="password"
             type="password"
-            placeholder="Пароль"
-            className="w-full p-3 rounded-lg bg-white/5 text-white placeholder-white/40 outline-none focus:ring-2 focus:ring-white/30 transition"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            value={formData.password}
+            onChange={handleChange}
           />
+
+          {error && <p className="text-red-400 text-sm pt-2">{error}</p>}
+
+          <button
+            type="submit" // Важно указать type="submit" для формы
+            disabled={loading}
+            className="w-full mt-6 bg-white text-black py-3 rounded-full font-semibold tracking-wide hover:bg-white/90 transition disabled:opacity-50"
+          >
+            {loading ? (isSignup ? 'Регистрация...' : 'Вход...') : (isSignup ? 'Зарегистрироваться' : 'Продолжить')}
+          </button>
+        </form>
+
+        <div className="mt-4 text-center">
+             <p className="text-sm text-white/60">
+                {isSignup ? 'Уже есть аккаунт?' : 'Нет аккаунта?'}{' '}
+                <button
+                className="underline hover:text-white transition"
+                onClick={() => {
+                    setIsSignup(!isSignup);
+                    setError('');
+                }}
+                >
+                {isSignup ? 'Войти' : 'Зарегистрироваться'}
+                </button>
+            </p>
+            <button
+                onClick={onClose}
+                className="mt-3 text-sm text-white/60 hover:underline"
+            >
+                Отмена
+            </button>
         </div>
 
-        {error && <p className="text-red-400 text-sm mt-4">{error}</p>}
-
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="w-full mt-6 bg-white text-black py-3 rounded-full font-semibold tracking-wide hover:bg-white/90 transition"
-        >
-          {loading
-            ? isSignup
-              ? 'Регистрация...'
-              : 'Вход...'
-            : isSignup
-            ? 'Зарегистрироваться'
-            : 'Продолжить'}
-        </button>
-
-        <p className="mt-4 text-sm text-white/60 text-center">
-          {isSignup ? 'Уже есть аккаунт?' : 'Нет аккаунта?'}{' '}
-          <button
-            className="underline hover:text-white transition"
-            onClick={() => {
-              setIsSignup(!isSignup);
-              setError('');
-            }}
-          >
-            {isSignup ? 'Войти' : 'Зарегистрироваться'}
-          </button>
-        </p>
-
-        <button
-          onClick={onClose}
-          className="mt-3 text-sm text-white/60 hover:underline block text-center w-full"
-        >
-          Отмена
-        </button>
       </div>
     </div>
-    )
-  }
+  );
+}

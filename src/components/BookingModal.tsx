@@ -51,6 +51,7 @@ type Props = {
   isOpen: boolean
   onClose: () => void
   bookingDetails?: SelectedTariff;
+  promoCode?: string;
 }
 
 const InputField = ({
