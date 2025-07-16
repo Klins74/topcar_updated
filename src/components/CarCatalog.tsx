@@ -1,4 +1,3 @@
-// src/components/CarCatalog.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -8,6 +7,7 @@ import CarModal from './CarModal'
 import BookingModal from './BookingModal'
 import FadeInWhenVisible from './FadeInWhenVisible'
 import { Car } from '@/types'
+// --- ИСПРАВЛЕНИЕ: Исправлен путь импорта и функция ---
 import { getSupabase } from '@/lib/supabase'
 import FormattedPrice from './FormattedPrice'
 import SkeletonCard from './SkeletonCard'
@@ -36,6 +36,7 @@ export default function CarCatalog() {
   useEffect(() => {
     const fetchCars = async () => {
       setIsLoading(true);
+      // --- ИСПРАВЛЕНИЕ: Возвращена оригинальная функция getSupabase() ---
       const supabase = getSupabase();
       const { data, error } = await supabase.from('cars').select('*').order('id');
       
@@ -52,12 +53,14 @@ export default function CarCatalog() {
   const allBrands = [...new Set(allCars.map(c => c.brand))].sort();
   const allClasses = ['Economy', 'Business', 'Premium', 'Luxury'] as const;
   
-  const filtered = allCars.filter(
-    c =>
-      (c.pricing && c.pricing.withoutDriver?.['24h'] || 9999999) <= maxPrice &&
+  const filtered = allCars.filter(c => {
+    const dailyPrice = c.pricing?.withoutDriver?.['24h'] || c.price_per_day || 0;
+    return (
+      dailyPrice <= maxPrice &&
       (!selectedBrand || c.brand === selectedBrand) &&
       (!selectedClass || c.class === selectedClass)
-  );
+    );
+  });
   
   const resetFilters = () => {
     setMaxPrice(MAX_PRICE);
@@ -95,13 +98,13 @@ export default function CarCatalog() {
         </div>
 
         <FadeInWhenVisible 
-            className={`
-            ${showFiltersMobile ? 'block animate-fadeInUp' : 'hidden'} 
-            md:block mb-10 sm:mb-12 md:sticky md:top-20 z-30`} 
+          className={`
+          ${showFiltersMobile ? 'block animate-fadeInUp' : 'hidden'} 
+          md:block mb-10 sm:mb-12 md:sticky md:top-20 z-30`} 
         >
           <div 
             className="bg-neutral-900 border border-neutral-700/80 rounded-2xl shadow-xl 
-                      p-4 sm:p-6 backdrop-blur-md"
+                     p-4 sm:p-6 backdrop-blur-md"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5 items-end">
               <div className="lg:col-span-2">
@@ -118,26 +121,26 @@ export default function CarCatalog() {
                   value={maxPrice}
                   onChange={e => setMaxPrice(Number(e.target.value))}
                   className="w-full h-3 bg-transparent appearance-none cursor-pointer group
-                            focus:outline-none 
-                            [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full 
-                            [&::-webkit-slider-runnable-track]:bg-neutral-700
-                            [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full 
-                            [&::-moz-range-track]:bg-neutral-700
-                            [&::-webkit-slider-thumb]:appearance-none 
-                            [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 
-                            [&::-webkit-slider-thumb]:bg-[#d4af37] 
-                            [&::-webkit-slider-thumb]:rounded-full 
-                            [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-neutral-900
-                            [&::-webkit-slider-thumb]:shadow-md
-                            [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:duration-150 [&::-webkit-slider-thumb]:ease-in-out
-                            [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:active:scale-125
-                            [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 
-                            [&::-moz-range-thumb]:bg-[#d4af37] 
-                            [&::-moz-range-thumb]:rounded-full 
-                            [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-neutral-900
-                            [&::-moz-range-thumb]:shadow-md
-                            [&::-moz-range-thumb]:transition-all [&::-moz-range-thumb]:duration-150 [&::-moz-range-thumb]:ease-in-out
-                            [&::-moz-range-thumb]:hover:scale-110 [&::-moz-range-thumb]:active:scale-125"
+                             focus:outline-none 
+                             [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full 
+                             [&::-webkit-slider-runnable-track]:bg-neutral-700
+                             [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full 
+                             [&::-moz-range-track]:bg-neutral-700
+                             [&::-webkit-slider-thumb]:appearance-none 
+                             [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 
+                             [&::-webkit-slider-thumb]:bg-[#d4af37] 
+                             [&::-webkit-slider-thumb]:rounded-full 
+                             [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-neutral-900
+                             [&::-webkit-slider-thumb]:shadow-md
+                             [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:duration-150 [&::-webkit-slider-thumb]:ease-in-out
+                             [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:active:scale-125
+                             [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 
+                             [&::-moz-range-thumb]:bg-[#d4af37] 
+                             [&::-moz-range-thumb]:rounded-full 
+                             [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-neutral-900
+                             [&::-moz-range-thumb]:shadow-md
+                             [&::-moz-range-thumb]:transition-all [&::-moz-range-thumb]:duration-150 [&::-moz-range-thumb]:ease-in-out
+                             [&::-moz-range-thumb]:hover:scale-110 [&::-moz-range-thumb]:active:scale-125"
                   style={{ background: `linear-gradient(to right, #d4af37 0%, #d4af37 ${pricePercentage}%, #404040 ${pricePercentage}%, #404040 100%)` }}
                 />
                 <div className="flex justify-between text-xs text-neutral-500 mt-1">
@@ -151,7 +154,7 @@ export default function CarCatalog() {
                   <select
                     id="classFilter"
                     className="w-full pl-3 pr-10 py-2.5 text-sm text-white bg-neutral-800 border border-neutral-600 rounded-lg 
-                                  focus:outline-none focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] appearance-none"
+                                 focus:outline-none focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] appearance-none"
                     value={selectedClass}
                     onChange={e => setSelectedClass(e.target.value as typeof selectedClass)}
                   >
@@ -171,7 +174,7 @@ export default function CarCatalog() {
                     <select
                         id="brandFilter"
                         className="w-full pl-3 pr-10 py-2.5 text-sm text-white bg-neutral-800 border border-neutral-600 rounded-lg 
-                                  focus:outline-none focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] appearance-none"
+                                   focus:outline-none focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] appearance-none"
                         value={selectedBrand}
                         onChange={e => setSelectedBrand(e.target.value)}
                     >
@@ -224,7 +227,6 @@ export default function CarCatalog() {
       </div>
 
       {selectedCar && (
-        // --- ИСПРАВЛЕНИЕ №2: Убираем 'isOpen' ---
         <CarModal
           onClose={() => setSelectedCar(null)}
           car={selectedCar}
@@ -244,7 +246,8 @@ export default function CarCatalog() {
 }
 
 function CarCard({ car, onDetails }: { car: Car; onDetails: () => void }) {
-  const basePrice = car.pricing?.withoutDriver?.['24h'];
+  const basePrice = car.pricing?.withoutDriver?.['24h'] || car.price_per_day;
+
   return (
     <div
       className="relative group aspect-[16/10] w-full rounded-xl overflow-hidden shadow-xl cursor-pointer bg-black transform hover:-translate-y-1.5 transition-all duration-300 ease-in-out flex-grow"
@@ -254,7 +257,7 @@ function CarCard({ car, onDetails }: { car: Car; onDetails: () => void }) {
       onKeyPress={(e) => e.key === 'Enter' && onDetails()}
     >
       <Image
-        src={car.image.trim()}
+        src={car.image_url || '/cars/placeholder-car.png'}
         alt={car.name}
         fill
         className="transition-transform duration-500 ease-in-out group-hover:scale-110 object-cover"
@@ -265,7 +268,7 @@ function CarCard({ car, onDetails }: { car: Car; onDetails: () => void }) {
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
       
       <div className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-end text-white z-10 
-                      opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">
+                       opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">
         <h3 className="text-lg font-bold mb-2">{car.name}</h3>
         <p className="text-xs sm:text-sm text-neutral-300 line-clamp-3 sm:line-clamp-4">
           {car.description || 'Превосходный автомобиль для ваших поездок.'}
@@ -273,7 +276,7 @@ function CarCard({ car, onDetails }: { car: Car; onDetails: () => void }) {
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 text-white z-20 
-                      group-hover:opacity-0 transition-opacity duration-300">
+                       group-hover:opacity-0 transition-opacity duration-300">
         <h3 className="text-base sm:text-lg lg:text-xl font-bold tracking-tight leading-tight mb-0.5 truncate" title={car.name}>
           {car.name}
         </h3>

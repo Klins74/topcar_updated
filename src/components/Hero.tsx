@@ -1,22 +1,27 @@
-// src/components/Hero.tsx
 'use client';
 
-import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
+// УДАЛЕНЫ: Link, UserCircleIcon, ChatBubbleLeftRightIcon
+import {
+  ArrowDownIcon,
+  ArrowRightIcon,
+  SparklesIcon,
+} from '@heroicons/react/24/outline';
+// УДАЛЕНЫ: useState, useEffect, useCallback
 
-// Варианты анимации для контейнера, чтобы дочерние элементы появлялись по очереди
+// Варианты анимации для контейнера
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2, // Задержка между появлением дочерних элементов
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
     },
   },
 };
 
-// Варианты анимации для каждого отдельного элемента (заголовок, текст, кнопки)
+// Варианты анимации для дочерних элементов
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
   visible: {
@@ -24,35 +29,37 @@ const itemVariants = {
     opacity: 1,
     transition: {
       duration: 0.6,
-      ease: "easeOut",
+      ease: "easeInOut",
     },
   },
 };
 
 export default function Hero() {
-  return (
-    <section className="relative h-screen w-full flex items-center justify-center text-center overflow-hidden">
-      {/* 1. ВИДЕОФОН */}
-      <div className="absolute top-0 left-0 w-full h-full z-[-1]">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline // Важно для автопроигрывания на iOS
-          className="w-full h-full object-cover"
-          poster="/images/hero-poster.jpg" // Постер, который виден до загрузки видео
-        >
-          {/* Рекомендую использовать формат webm для лучшего сжатия */}
-          <source src="/videos/hero-background.webm" type="video/webm" />
-          <source src="/videos/hero-background.mp4" type="video/mp4" />
-        </video>
-        {/* 2. Затемняющий оверлей для читаемости текста */}
-        <div className="absolute inset-0 bg-black/50"></div>
-      </div>
+  // УДАЛЕНА вся логика с loggedInUser, так как она не использовалась
 
-      {/* 3. КОНТЕНТ С АНИМАЦИЕЙ */}
+  const scrollToCatalog = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    document.getElementById('car-catalog')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <section className="relative h-screen flex flex-col items-center justify-center text-center overflow-hidden">
+      {/* Видео и фон */}
+      <video
+        src="/videos/hero-rolls.mp4"
+        poster="/images/hero-poster.jpg"
+        className="absolute inset-0 w-full h-full object-cover filter brightness-75"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/80" />
+
+      {/* Анимированный контент */}
       <motion.div
-        className="container mx-auto px-4 z-10"
+        className="relative z-10 px-4 max-w-5xl"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -61,44 +68,46 @@ export default function Hero() {
             className="inline-flex items-center gap-2 px-4 py-1 mb-4 text-sm bg-border text-brand-accent rounded-full"
             variants={itemVariants}
         >
-            <Sparkles size={16}/>
+            <SparklesIcon className="h-4 w-4"/>
             <span>Премиум-сервис в Алматы</span>
         </motion.div>
 
-        <motion.h1
-          className="font-bold text-foreground text-shadow-strong"
+        <motion.h1 
+          className="text-4xl sm:text-6xl lg:text-8xl font-extrabold tracking-tight text-white"
           variants={itemVariants}
         >
-          Ваш <span className="text-brand-accent">безупречный стиль</span><br/>начинается здесь
+          Владей Моментом. <br className="hidden sm:block" /> Арендуй <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f0dca0] to-[#d4af37]">Роскошь</span>.
         </motion.h1>
 
-        <motion.p
-          className="max-w-2xl mx-auto mt-6 text-lg md:text-xl text-foreground/80"
+        <motion.p 
+          className="mt-6 md:mt-8 text-lg sm:text-2xl text-neutral-200 max-w-2xl mx-auto"
           variants={itemVariants}
         >
-          Откройте для себя эксклюзивный парк автомобилей и непревзойденный уровень сервиса. TopCar — это больше, чем просто аренда.
+          Эксклюзивный автопарк премиум-класса в Алматы. Ваш безупречный стиль начинается здесь.
         </motion.p>
-
-        {/* 4. КНОПКИ С ПРИЗЫВОМ К ДЕЙСТВИЮ */}
-        <motion.div
-          className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4"
+        
+        <motion.div 
+          className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6"
           variants={itemVariants}
         >
-          <Link
-            href="/autopark"
-            className="flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 bg-brand-accent text-background font-bold rounded-lg hover:bg-brand-accent-hover transition-transform hover:scale-105"
+          <a
+            href="#car-catalog"
+            onClick={scrollToCatalog}
+            className="group w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-[#d4af37] text-black rounded-lg text-lg font-bold hover:bg-[#c0982c] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
           >
             <span>Исследовать Автопарк</span>
-            <ArrowRight size={20} />
-          </Link>
-          <Link
-            href="/services"
-            className="w-full sm:w-auto px-8 py-4 bg-border/50 text-foreground font-medium rounded-lg hover:bg-border transition-colors"
-          >
-            Наши Услуги
-          </Link>
+            <ArrowRightIcon className="ml-2 h-6 w-6 transition-transform duration-300 group-hover:translate-x-1.5" />
+          </a>
         </motion.div>
       </motion.div>
+
+      <div 
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 animate-bounce cursor-pointer hidden sm:block"
+        onClick={scrollToCatalog}
+        aria-label="Прокрутить вниз"
+      >
+        <ArrowDownIcon className="h-8 w-8 text-white/70 hover:text-white" />
+      </div>
     </section>
   );
 }

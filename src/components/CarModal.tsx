@@ -1,11 +1,9 @@
-// src/components/CarModal.tsx
 'use client';
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Car } from '@/types';
-// --- ИСПРАВЛЕНИЕ: Убрана неиспользуемая иконка 'CheckCircle' ---
 import { X, Clock, Users, Zap, Fuel, Dna, Info, MessageSquare } from 'lucide-react';
 import FormattedPrice from './FormattedPrice';
 import { useAuth } from '@/context/AuthContext';
@@ -27,6 +25,9 @@ export default function CarModal({ car, onClose, onBook }: Props) {
     const { user } = useAuth();
     const [showLoginModal, setShowLoginModal] = useState(false);
     
+    // --- ИСПРАВЛЕНИЕ: Улучшена логика получения цены ---
+    const dailyPrice = car.pricing?.withoutDriver?.['24h'] || car.price_per_day || 0;
+
     const handleBooking = () => {
         if (!user) {
             setShowLoginModal(true);
@@ -35,18 +36,18 @@ export default function CarModal({ car, onClose, onBook }: Props) {
         const exampleTariff = {
             serviceType: 'withoutDriver',
             duration: '24h',
-            price: car.pricing?.withoutDriver?.['24h'] || 0,
+            price: dailyPrice, // Используем вычисленную цену
         };
         onBook(car, exampleTariff);
     };
 
     const features = [
-        { icon: Zap, label: 'Мощность', value: `${car.power} л.с.` },
-        { icon: Clock, label: 'Разгон до 100', value: `${car.acceleration} сек` },
-        { icon: Fuel, label: 'Тип топлива', value: car.fuel_type },
-        { icon: Dna, label: 'Привод', value: car.drive_type },
-        { icon: Users, label: 'Кол-во мест', value: car.seats },
-        { icon: Info, label: 'Год выпуска', value: car.year },
+      { icon: Zap, label: 'Мощность', value: car.power ? `${car.power} л.с.` : 'н/д' },
+      { icon: Clock, label: 'Разгон до 100', value: car.acceleration ? `${car.acceleration} сек` : 'н/д' },
+      { icon: Fuel, label: 'Тип топлива', value: car.fuel_type || 'н/д' },
+      { icon: Dna, label: 'Привод', value: car.drive_type || 'н/д' },
+      { icon: Users, label: 'Кол-во мест', value: car.seats || 'н/д' },
+      { icon: Info, label: 'Год выпуска', value: car.year || 'н/д' },
     ];
     
     return (
@@ -97,10 +98,11 @@ export default function CarModal({ car, onClose, onBook }: Props) {
                                 <div>
                                     <p className="text-sm text-muted-foreground">Стоимость аренды (24ч)</p>
                                     <p className="text-3xl font-bold text-brand-accent">
-                                        <FormattedPrice value={car.price_per_day} /> ₸
+                                        {/* Используем вычисленную цену */}
+                                        <FormattedPrice value={dailyPrice} /> ₸
                                     </p>
                                 </div>
-                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <button 
                                         onClick={handleBooking} 
                                         className="w-full bg-brand-accent text-background font-semibold py-3.5 rounded-lg hover:bg-brand-accent-hover transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
@@ -108,9 +110,9 @@ export default function CarModal({ car, onClose, onBook }: Props) {
                                         Оставить заявку
                                     </button>
                                     <a 
-                                      href="https://wa.me/77776660295"
-                                      target="_blank" rel="noopener noreferrer"
-                                      className="w-full bg-border text-foreground font-semibold py-3.5 rounded-lg hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2"
+                                        href="https://wa.me/77776660295"
+                                        target="_blank" rel="noopener noreferrer"
+                                        className="w-full bg-border text-foreground font-semibold py-3.5 rounded-lg hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2"
                                     >
                                         <MessageSquare size={18}/>
                                         Обсудить в WhatsApp
