@@ -1,6 +1,7 @@
 // src/app/admin/cars/page.tsx
 'use client'
 
+export const dynamic = 'force-dynamic'
 import { useEffect, useState, ChangeEvent, FormEvent, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
