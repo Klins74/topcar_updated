@@ -1,6 +1,8 @@
 // src/app/autopark/page.tsx
 'use client';
 // 'useEffect' и 'useState' УДАЛЕНЫ
+
+export const dynamic = 'force-dynamic'
 import AnimatedPageWrapper from "@/components/AnimatedPageWrapper";
 import CarCatalog from "@/components/CarCatalog";
 import Header from "@/components/Header";
