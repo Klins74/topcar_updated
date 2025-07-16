@@ -8,7 +8,7 @@ import '@/styles/globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper'
-import { AuthProvider } from '@/components/AuthProvider' // Важно: импортируем AuthProvider
+import { AuthProvider } from '@/components/AuthProvider' // ВАЖНО: импортируем AuthProvider
 
 // Настраиваем шрифт Manrope
 const manrope = Manrope({
@@ -74,7 +74,7 @@ export default function RootLayout({
     <html lang="ru" className={`${manrope.variable} font-sans`}>
       <head />
       <body className="antialiased bg-background text-foreground">
-        {/* Все компоненты, которым нужен AuthContext, должны быть внутри AuthProvider */}
+        {/* Все компоненты, которым нужен AuthContext, ДОЛЖНЫ БЫТЬ внутри AuthProvider */}
         <AuthProvider>
           <Header /> {/* Header теперь корректно находится внутри AuthProvider */}
           <AnimatedPageWrapper>
