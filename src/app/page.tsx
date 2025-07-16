@@ -9,18 +9,16 @@ import RentalCalculator from '@/components/RentalCalculator'
 import FAQ from '@/components/FAQ'
 import Subscription from '@/components/Subscription'
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper'
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'
 import {
   ArrowDownIcon,
   ArrowRightIcon,
   UserCircleIcon,
   ChatBubbleLeftRightIcon,
-  SparklesIcon, // ← ЭТОГО явно не хватает!
+  SparklesIcon,
 } from '@heroicons/react/24/outline'
 
-
-
-// ... (функция subscribeToPush остается без изменений)
+// Подписка на Push
 async function subscribeToPush() {
   try {
     const registration = await navigator.serviceWorker.ready
@@ -28,12 +26,11 @@ async function subscribeToPush() {
       userVisibleOnly: true,
       applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
     })
-    console.log('Push subscription successful');
+    console.log('Push subscription successful')
   } catch (err) {
     console.error('🔔 Push subscription failed', err)
   }
 }
-
 
 // Варианты анимации для контейнера
 const containerVariants = {
@@ -45,7 +42,7 @@ const containerVariants = {
       delayChildren: 0.3,
     },
   },
-};
+}
 
 // Варианты анимации для дочерних элементов
 const itemVariants = {
@@ -55,44 +52,51 @@ const itemVariants = {
     opacity: 1,
     transition: {
       duration: 0.6,
-      ease: [0.42, 0, 0.58, 1], // Это изменение уже было сделано для framer-motion ошибки
+      ease: [0.42, 0, 0.58, 1] as [number, number, number, number], // ✅ Fix framer-motion TS error
     },
   },
-};
+}
 
 export default function HomePage() {
-  const [loggedInUser, setLoggedInUser] = useState<{ phone: string; name?: string; email?: string } | null>(null);
+  const [loggedInUser, setLoggedInUser] = useState<{
+    phone: string
+    name?: string
+    email?: string
+  } | null>(null)
 
   const updateUserFromStorage = useCallback(() => {
-    const storedUser = localStorage.getItem('topcar-user');
+    const storedUser = localStorage.getItem('topcar-user')
     if (storedUser) {
       try {
-        setLoggedInUser(JSON.parse(storedUser));
+        setLoggedInUser(JSON.parse(storedUser))
       } catch (error) {
-        console.error("Error parsing user from localStorage:", error);
-        localStorage.removeItem('topcar-user');
-        setLoggedInUser(null);
+        console.error('Error parsing user from localStorage:', error)
+        localStorage.removeItem('topcar-user')
+        setLoggedInUser(null)
       }
     } else {
-        setLoggedInUser(null);
+      setLoggedInUser(null)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    updateUserFromStorage();
+    updateUserFromStorage()
     if ('serviceWorker' in navigator && 'PushManager' in window) {
-      Notification.requestPermission().then(permission => {
+      Notification.requestPermission().then((permission) => {
         if (permission === 'granted') {
           subscribeToPush()
         }
       })
     }
-  }, [updateUserFromStorage]);
+  }, [updateUserFromStorage])
 
   const scrollToCatalog = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    document.getElementById('car-catalog')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+    e.preventDefault()
+    document.getElementById('car-catalog')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
 
   return (
     <AnimatedPageWrapper>
@@ -125,12 +129,16 @@ export default function HomePage() {
           </motion.div>
 
           <h1 className="text-4xl sm:text-6xl lg:text-8xl font-extrabold tracking-tight text-white animate-fadeInUp">
-            Владей Моментом. <br className="hidden sm:block" /> Арендуй <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f0dca0] to-[#d4af37]">Роскошь</span>.
+            Владей Моментом. <br className="hidden sm:block" /> Арендуй{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f0dca0] to-[#d4af37]">
+              Роскошь
+            </span>
+            .
           </h1>
           <p className="mt-6 md:mt-8 text-lg sm:text-2xl text-neutral-200 max-w-2xl mx-auto animate-fadeInUp animation-delay-300">
             Эксклюзивный автопарк премиум-класса в Алматы. Ваш безупречный стиль начинается здесь.
           </p>
-          
+
           <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-fadeInUp animation-delay-600">
             <a
               href="#car-catalog"
@@ -162,8 +170,8 @@ export default function HomePage() {
             )}
           </div>
         </motion.div>
-        {/* Удалена пустая строка здесь, чтобы избежать потенциальной ошибки синтаксиса */}
-        <div // Это блок для стрелки прокрутки вниз
+
+        <div
           className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 animate-bounce cursor-pointer hidden sm:block"
           onClick={scrollToCatalog}
           aria-label="Прокрутить вниз"
