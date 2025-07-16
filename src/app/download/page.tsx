@@ -1,6 +1,7 @@
 'use client'
 
 // `useState` и `LoginModal` больше не нужны
+export const dynamic = 'force-dynamic'
 import Link from 'next/link'
 import Image from 'next/image'
 import Header from '@/components/Header'
