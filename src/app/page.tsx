@@ -10,7 +10,7 @@ import FAQ from '@/components/FAQ'
 import Subscription from '@/components/Subscription'
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper'
 import { ArrowDownIcon, ArrowRightIcon, UserCircleIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
-import { motion } from 'framer-motion'; // Убедитесь, что motion импортирован
+import { motion } from 'framer-motion';
 
 
 // ... (функция subscribeToPush остается без изменений)
@@ -48,7 +48,7 @@ const itemVariants = {
     opacity: 1,
     transition: {
       duration: 0.6,
-      ease: [0.42, 0, 0.58, 1], // ИЗМЕНЕНИЕ: Заменено "easeInOut" на массив Безье
+      ease: [0.42, 0, 0.58, 1], // Это изменение уже было сделано для framer-motion ошибки
     },
   },
 };
@@ -103,18 +103,18 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/80" />
 
-        <motion.div // Этот блок использует containerVariants
+        <motion.div
           className="relative z-10 px-4 max-w-5xl"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          <motion.div // ЭТОТ БЛОК ИСПОЛЬЗУЕТ itemVariants, что было причиной ошибки
-              className="inline-flex items-center gap-2 px-4 py-1 mb-4 text-sm bg-border text-brand-accent rounded-full"
-              variants={itemVariants}
+          <motion.div
+            className="inline-flex items-center gap-2 px-4 py-1 mb-4 text-sm bg-border text-brand-accent rounded-full"
+            variants={itemVariants}
           >
-              <SparklesIcon className="h-4 w-4"/>
-              <span>Премиум-сервис в Алматы</span>
+            <SparklesIcon className="h-4 w-4" />
+            <span>Премиум-сервис в Алматы</span>
           </motion.div>
 
           <h1 className="text-4xl sm:text-6xl lg:text-8xl font-extrabold tracking-tight text-white animate-fadeInUp">
@@ -154,9 +154,9 @@ export default function HomePage() {
               </a>
             )}
           </div>
-        </div>
-
-        <div 
+        </motion.div>
+        {/* Удалена пустая строка здесь, чтобы избежать потенциальной ошибки синтаксиса */}
+        <div // Это блок для стрелки прокрутки вниз
           className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 animate-bounce cursor-pointer hidden sm:block"
           onClick={scrollToCatalog}
           aria-label="Прокрутить вниз"
