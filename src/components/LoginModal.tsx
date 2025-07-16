@@ -1,4 +1,3 @@
-// src/components/LoginModal.tsx
 'use client'
 
 import { useState, ChangeEvent } from 'react';
@@ -57,7 +56,6 @@ export default function LoginModal({ onClose }: Props) {
         if (error) throw error;
         alert('Регистрация прошла успешно! Пожалуйста, подтвердите ваш email.');
         onClose();
-
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email: formData.email,
@@ -67,7 +65,7 @@ export default function LoginModal({ onClose }: Props) {
         if (error) throw error;
         onClose();
       }
-    } catch (err: unknown) { // ИСПРАВЛЕНО
+    } catch (err: unknown) {
       setError((err as Error).message || 'Произошла ошибка. Попробуйте еще раз.');
     } finally {
       setLoading(false);
@@ -84,6 +82,7 @@ export default function LoginModal({ onClose }: Props) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {isSignup && (
             <InputField
+              id="name"
               label="Имя"
               name="name"
               type="text"
@@ -94,6 +93,7 @@ export default function LoginModal({ onClose }: Props) {
             />
           )}
           <InputField
+            id="email"
             label="Email"
             name="email"
             type="email"
@@ -104,6 +104,7 @@ export default function LoginModal({ onClose }: Props) {
           />
           {isSignup && (
             <InputField
+              id="phone"
               label="Телефон"
               name="phone"
               type="tel"
@@ -114,6 +115,7 @@ export default function LoginModal({ onClose }: Props) {
             />
           )}
           <InputField
+            id="password"
             label="Пароль"
             name="password"
             type="password"
@@ -136,28 +138,27 @@ export default function LoginModal({ onClose }: Props) {
         </form>
 
         <div className="mt-4 text-center">
-            <p className="text-sm text-white/60">
-                {isSignup ? 'Уже есть аккаунт?' : 'Нет аккаунта?'}{' '}
-                <button
-                    className="underline hover:text-white transition"
-                    disabled={loading}
-                    onClick={() => {
-                        setIsSignup(!isSignup);
-                        setError('');
-                    }}
-                >
-                    {isSignup ? 'Войти' : 'Зарегистрироваться'}
-                </button>
-            </p>
+          <p className="text-sm text-white/60">
+            {isSignup ? 'Уже есть аккаунт?' : 'Нет аккаунта?'}{' '}
             <button
-                onClick={onClose}
-                disabled={loading}
-                className="mt-3 text-sm text-white/60 hover:underline disabled:opacity-50"
+              className="underline hover:text-white transition"
+              disabled={loading}
+              onClick={() => {
+                setIsSignup(!isSignup);
+                setError('');
+              }}
             >
-                Отмена
+              {isSignup ? 'Войти' : 'Зарегистрироваться'}
             </button>
+          </p>
+          <button
+            onClick={onClose}
+            disabled={loading}
+            className="mt-3 text-sm text-white/60 hover:underline disabled:opacity-50"
+          >
+            Отмена
+          </button>
         </div>
-
       </div>
     </div>
   );

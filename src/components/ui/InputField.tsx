@@ -1,17 +1,16 @@
-// src/components/ui/InputField.tsx
-
 import React, { ChangeEvent } from 'react';
 
-// Тип для иконок из библиотеки heroicons
-export type HeroIconType = React.ForwardRefExoticComponent<Omit<React.SVGProps<SVGSVGElement>, "ref"> & {
-  title?: string | undefined;
-  titleId?: string | undefined;
-} & React.RefAttributes<SVGSVGElement>>;
+// Тип для иконок из heroicons
+export type HeroIconType = React.ForwardRefExoticComponent<
+  Omit<React.SVGProps<SVGSVGElement>, 'ref'> & {
+    title?: string;
+    titleId?: string;
+  } & React.RefAttributes<SVGSVGElement>
+>;
 
-// Свойства (props) для нашего компонента
 interface InputFieldProps {
   id: string;
-  name: string; // Добавляем name для удобства работы с формами
+  name: string;
   label: string;
   type?: string;
   placeholder: string;
@@ -24,7 +23,20 @@ interface InputFieldProps {
   maxLength?: number;
 }
 
-const InputField = ({ id, name, label, type = 'text', placeholder, value, onChange, icon: Icon, required = true, min, disabled = false, maxLength }: InputFieldProps) => (
+const InputField = ({
+  id,
+  name,
+  label,
+  type = 'text',
+  placeholder,
+  value,
+  onChange,
+  icon: Icon,
+  required = true,
+  min,
+  disabled = false,
+  maxLength,
+}: InputFieldProps) => (
   <div>
     <label htmlFor={id} className="block text-sm font-medium text-neutral-300 mb-1.5">
       {label} {required && <span className="text-[#d4af37]">*</span>}
@@ -38,7 +50,7 @@ const InputField = ({ id, name, label, type = 'text', placeholder, value, onChan
       <input
         type={type}
         id={id}
-        name={name} // Используем name
+        name={name}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
