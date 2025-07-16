@@ -1,6 +1,7 @@
 // src/app/page.tsx (или src/components/PWABonus.tsx, если это не опечатка)
 'use client'
 
+export const dynamic = 'force-dynamic'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
