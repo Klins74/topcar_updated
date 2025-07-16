@@ -1,5 +1,6 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
 // `useState` and `LoginModal` are no longer needed here
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
