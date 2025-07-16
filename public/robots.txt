@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Запретить индексацию административных разделов, если они есть и не должны быть в поиске
+Disallow: /admin/
+Disallow: /api/
+
+# Указать путь к карте сайта
+Sitemap: https://topcar.club/sitemap.xml
+

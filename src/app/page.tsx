@@ -1,103 +1,149 @@
-import Image from "next/image";
+// src/app/page.tsx
+'use client'
 
-export default function Home() {
+import { useEffect, useState, useCallback } from 'react'
+import Link from 'next/link'
+// УДАЛЕНО: Header, Footer, LoginModal
+import CarCatalog from '@/components/CarCatalog'
+import ServicesSection from '@/components/ServicesSection'
+import RentalCalculator from '@/components/RentalCalculator'
+import FAQ from '@/components/FAQ'
+import Subscription from '@/components/Subscription'
+import AnimatedPageWrapper from '@/components/AnimatedPageWrapper'
+import { ArrowDownIcon, ArrowRightIcon, UserCircleIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
+
+// ... (функция subscribeToPush остается без изменений)
+async function subscribeToPush() {
+  try {
+    const registration = await navigator.serviceWorker.ready
+    await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    })
+    console.log('Push subscription successful');
+  } catch (err) {
+    console.error('🔔 Push subscription failed', err)
+  }
+}
+
+
+export default function HomePage() {
+  // УДАЛЕНО: Состояние showLoginModal
+  const [loggedInUser, setLoggedInUser] = useState<{ phone: string; name?: string; email?: string } | null>(null);
+
+  // updateUserFromStorage и useEffect остаются такими же
+  const updateUserFromStorage = useCallback(() => {
+    const storedUser = localStorage.getItem('topcar-user');
+    if (storedUser) {
+      try {
+        setLoggedInUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Error parsing user from localStorage:", error);
+        localStorage.removeItem('topcar-user');
+        setLoggedInUser(null);
+      }
+    } else {
+        setLoggedInUser(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    updateUserFromStorage();
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          subscribeToPush()
+        }
+      })
+    }
+  }, [updateUserFromStorage]);
+
+  // УДАЛЕНО: обработчик handleLoginModalClose
+
+  const scrollToCatalog = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    document.getElementById('car-catalog')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <AnimatedPageWrapper>
+      {/* Теперь <main> является корневым элементом. 
+        Header и Footer будут добавлены автоматически из layout.tsx 
+      */}
+      
+      {/* --- Hero Section --- */}
+      <section className="relative h-screen flex flex-col items-center justify-center text-center overflow-hidden">
+        {/* Видео и фон остаются без изменений */}
+        <video
+          src="/videos/hero-rolls.mp4"
+          poster="/images/hero-poster.jpg"
+          className="absolute inset-0 w-full h-full object-cover filter brightness-75"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
         />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/80" />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        <div className="relative z-10 px-4 max-w-5xl">
+          <h1 className="text-4xl sm:text-6xl lg:text-8xl font-extrabold tracking-tight text-white animate-fadeInUp">
+            Владей Моментом. <br className="hidden sm:block" /> Арендуй <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f0dca0] to-[#d4af37]">Роскошь</span>.
+          </h1>
+          <p className="mt-6 md:mt-8 text-lg sm:text-2xl text-neutral-200 max-w-2xl mx-auto animate-fadeInUp animation-delay-300">
+            Эксклюзивный автопарк премиум-класса в Алматы. Ваш безупречный стиль начинается здесь.
+          </p>
+          
+          {/* Блок с кнопками остается без изменений */}
+          <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-fadeInUp animation-delay-600">
+            <a
+              href="#car-catalog"
+              onClick={scrollToCatalog}
+              className="group w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-[#d4af37] text-black rounded-lg text-lg font-bold hover:bg-[#c0982c] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
+            >
+              <span>Исследовать Автопарк</span>
+              <ArrowRightIcon className="ml-2 h-6 w-6 transition-transform duration-300 group-hover:translate-x-1.5" />
+            </a>
+
+            {loggedInUser ? (
+              <Link
+                href="/dashboard"
+                className="group w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 border-2 border-white text-white rounded-lg text-lg font-semibold hover:bg-white hover:text-black transition-all duration-300"
+              >
+                <UserCircleIcon className="mr-2 h-6 w-6" />
+                <span>Личный кабинет</span>
+              </Link>
+            ) : (
+              <a
+                href="https://wa.me/77776660295"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 border-2 border-white text-white rounded-lg text-lg font-semibold hover:bg-white hover:text-black transition-all duration-300"
+              >
+                <ChatBubbleLeftRightIcon className="mr-2 h-6 w-6" />
+                <span>Связаться</span>
+              </a>
+            )}
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+        <div 
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 animate-bounce cursor-pointer hidden sm:block"
+          onClick={scrollToCatalog}
+          aria-label="Прокрутить вниз"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+          <ArrowDownIcon className="h-8 w-8 text-white/70 hover:text-white" />
+        </div>
+      </section>
+
+      {/* --- Остальные секции --- */}
+      <CarCatalog />
+      <ServicesSection />
+      <RentalCalculator />
+      <FAQ />
+      <Subscription />
+
+      {/* УДАЛЕНО: <Footer /> отсюда */}
+    </AnimatedPageWrapper>
+  )
 }
