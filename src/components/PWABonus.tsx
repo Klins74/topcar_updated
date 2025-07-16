@@ -1,7 +1,7 @@
 // src/components/PWABonus.tsx
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react' // Удален import useEffect, так как он не используется
 import Header from '@/components/Header'
 import LoginModal from '@/components/LoginModal'
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper'
@@ -17,6 +17,7 @@ export default function PWABonusPage() {
   return (
     <AnimatedPageWrapper>
       <main className="min-h-screen bg-neutral-950 text-white font-sans">
+        {/* Header и Footer здесь, если PWABonusPage является самостоятельной страницей */}
         <Header onLoginClick={handleLoginButtonClick} />
 
         {showLoginModal && (
@@ -27,7 +28,8 @@ export default function PWABonusPage() {
               if (storedUser) {
                 try {
                   JSON.parse(storedUser); // можно использовать данные, если нужно
-                } catch (err) {
+                } catch (error: unknown) { // Изменено 'err' на 'error' и явно используется
+                  console.error("Ошибка при разборе пользователя из localStorage:", error); // Использование переменной 'error'
                   localStorage.removeItem('topcar-user');
                 }
               }
