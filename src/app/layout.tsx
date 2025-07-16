@@ -1,12 +1,12 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import '../styles/globals.css' // Corrected path from previous step
+import '../styles/globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper'
-import PWABonus from '@/components/PWABonus'
-import { AuthProvider } from '@/components/AuthProvider' // Import AuthProvider
+// import PWABonus from '@/components/PWABonus' // Удален, так как это компонент, подобный странице, и должен быть собственным маршрутом.
+import { AuthProvider } from '@/components/AuthProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -40,16 +40,17 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={`${inter.className} bg-black text-white antialiased`}>
-        <PWABonus />
-        <Header />
-        <AuthProvider> {/* Wrap children with AuthProvider */}
+        {/* Компонент PWABonus удален из макета, так как он выглядит как полноценная страница.
+            Если вам нужна страница для PWA-бонуса, создайте ее по пути src/app/pwabonus/page.tsx */}
+        <AuthProvider> {/* AuthProvider теперь оборачивает Header, основное содержимое и Footer */}
+          <Header />
           <AnimatedPageWrapper>
             <main>
               {children}
             </main>
           </AnimatedPageWrapper>
+          <Footer />
         </AuthProvider>
-        <Footer />
       </body>
     </html>
   )
