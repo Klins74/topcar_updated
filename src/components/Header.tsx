@@ -10,8 +10,8 @@ import clsx from 'clsx';
 import { useAuth } from '@/context/AuthContext';
 import NavLink from '@/components/ui/NavLink';
 import NavButton from '@/components/ui/NavButton';
-import MobileNavLink from '@/components/ui/MobileNavLink';
-import MobileActionButton from '@/components/ui/MobileActionButton';
+import MobileNavLink from '@/components/MobileNavLink'
+import MobileActionButton from '@/components/MobileActionButton'
 
 import LoginModal from './LoginModal';
 import CalculatorModal from './CalculatorModal';
