@@ -17,7 +17,6 @@ export default function PWABonusPage() {
   return (
     <AnimatedPageWrapper>
       <main className="min-h-screen bg-neutral-950 text-white font-sans">
-        {/* Header и Footer здесь, если PWABonusPage является самостоятельной страницей */}
         <Header onLoginClick={handleLoginButtonClick} />
 
         {showLoginModal && (
@@ -27,8 +26,8 @@ export default function PWABonusPage() {
               const storedUser = localStorage.getItem('topcar-user');
               if (storedUser) {
                 try {
-                  JSON.parse(storedUser); // можно использовать данные, если нужно
-                } catch (error: unknown) { // Изменено 'err' на 'error' и явно используется
+                  JSON.parse(storedUser);
+                } catch (error: unknown) { // Исправлено использование переменной 'error'
                   console.error("Ошибка при разборе пользователя из localStorage:", error); // Использование переменной 'error'
                   localStorage.removeItem('topcar-user');
                 }

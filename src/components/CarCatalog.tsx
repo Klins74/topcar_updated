@@ -1,16 +1,16 @@
+// src/components/CarCatalog.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { ChevronDownIcon, FunnelIcon, NoSymbolIcon } from '@heroicons/react/24/outline'
+import { ChevronDownIcon, FunnelIcon, XMarkIcon, NoSymbolIcon } from '@heroicons/react/24/outline'
 import CarModal from './CarModal'
 import BookingModal from './BookingModal'
 import FadeInWhenVisible from './FadeInWhenVisible'
 import { Car } from '@/types'
-// --- ИСПРАВЛЕНИЕ: Исправлен путь импорта и функция ---
 import { getSupabase } from '@/lib/supabase'
 import FormattedPrice from './FormattedPrice'
-import SkeletonCard from './SkeletonCard'
+import SkeletonCard from './SkeletonCard' // <-- Импортируем наш скелет
 
 const MIN_PRICE = 30000;
 const MAX_PRICE = 500000;
@@ -36,7 +36,6 @@ export default function CarCatalog() {
   useEffect(() => {
     const fetchCars = async () => {
       setIsLoading(true);
-      // --- ИСПРАВЛЕНИЕ: Возвращена оригинальная функция getSupabase() ---
       const supabase = getSupabase();
       const { data, error } = await supabase.from('cars').select('*').order('id');
       
@@ -53,14 +52,12 @@ export default function CarCatalog() {
   const allBrands = [...new Set(allCars.map(c => c.brand))].sort();
   const allClasses = ['Economy', 'Business', 'Premium', 'Luxury'] as const;
   
-  const filtered = allCars.filter(c => {
-    const dailyPrice = c.pricing?.withoutDriver?.['24h'] || c.price_per_day || 0;
-    return (
-      dailyPrice <= maxPrice &&
+  const filtered = allCars.filter(
+    c =>
+      (c.pricing?.withoutDriver?.['24h'] || 9999999) <= maxPrice && // Добавлена проверка на c.pricing
       (!selectedBrand || c.brand === selectedBrand) &&
       (!selectedClass || c.class === selectedClass)
-    );
-  });
+  );
   
   const resetFilters = () => {
     setMaxPrice(MAX_PRICE);
@@ -98,13 +95,13 @@ export default function CarCatalog() {
         </div>
 
         <FadeInWhenVisible 
-          className={`
-          ${showFiltersMobile ? 'block animate-fadeInUp' : 'hidden'} 
-          md:block mb-10 sm:mb-12 md:sticky md:top-20 z-30`} 
+            className={`
+            ${showFiltersMobile ? 'block animate-fadeInUp' : 'hidden'} 
+            md:block mb-10 sm:mb-12 md:sticky md:top-20 z-30`} 
         >
           <div 
             className="bg-neutral-900 border border-neutral-700/80 rounded-2xl shadow-xl 
-                     p-4 sm:p-6 backdrop-blur-md"
+                       p-4 sm:p-6 backdrop-blur-md"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5 items-end">
               <div className="lg:col-span-2">
@@ -154,7 +151,7 @@ export default function CarCatalog() {
                   <select
                     id="classFilter"
                     className="w-full pl-3 pr-10 py-2.5 text-sm text-white bg-neutral-800 border border-neutral-600 rounded-lg 
-                                 focus:outline-none focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] appearance-none"
+                               focus:outline-none focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] appearance-none"
                     value={selectedClass}
                     onChange={e => setSelectedClass(e.target.value as typeof selectedClass)}
                   >
@@ -170,11 +167,11 @@ export default function CarCatalog() {
               </div>
               <div>
                 <label htmlFor="brandFilter" className="block text-xs sm:text-sm font-medium text-neutral-300 mb-1.5">Марка</label>
-                  <div className="relative">
+                 <div className="relative">
                     <select
                         id="brandFilter"
                         className="w-full pl-3 pr-10 py-2.5 text-sm text-white bg-neutral-800 border border-neutral-600 rounded-lg 
-                                   focus:outline-none focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] appearance-none"
+                                 focus:outline-none focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] appearance-none"
                         value={selectedBrand}
                         onChange={e => setSelectedBrand(e.target.value)}
                     >
@@ -186,12 +183,13 @@ export default function CarCatalog() {
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400">
                         <ChevronDownIcon className="h-5 w-5" />
                     </div>
-                  </div>
+                </div>
               </div>
             </div>
           </div>
         </FadeInWhenVisible>
 
+        {/* --- ИЗМЕНЕНИЯ ЗДЕСЬ: Логика загрузки и пустого состояния --- */}
         {isLoading ? (
             <div className="grid gap-x-6 gap-y-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, index) => (
@@ -228,6 +226,7 @@ export default function CarCatalog() {
 
       {selectedCar && (
         <CarModal
+          isOpen={!!selectedCar}
           onClose={() => setSelectedCar(null)}
           car={selectedCar}
           onBook={handleOpenBookingProcess}
@@ -246,8 +245,7 @@ export default function CarCatalog() {
 }
 
 function CarCard({ car, onDetails }: { car: Car; onDetails: () => void }) {
-  const basePrice = car.pricing?.withoutDriver?.['24h'] || car.price_per_day;
-
+  const basePrice = car.pricing?.withoutDriver?.['24h'];
   return (
     <div
       className="relative group aspect-[16/10] w-full rounded-xl overflow-hidden shadow-xl cursor-pointer bg-black transform hover:-translate-y-1.5 transition-all duration-300 ease-in-out flex-grow"
@@ -257,18 +255,20 @@ function CarCard({ car, onDetails }: { car: Car; onDetails: () => void }) {
       onKeyPress={(e) => e.key === 'Enter' && onDetails()}
     >
       <Image
-        src={car.image_url || '/cars/placeholder-car.png'}
+        src={car.image?.trim() || '/cars/placeholder-car.png'} // Добавлена опциональная цепочка и запасное изображение
         alt={car.name}
         fill
         className="transition-transform duration-500 ease-in-out group-hover:scale-110 object-cover"
         priority={car.id <= 3}
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        loading="lazy"
+        decoding="async"
         onError={(e) => { e.currentTarget.src = '/cars/placeholder-car.png'; }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
       
       <div className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-end text-white z-10 
-                       opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">
+                     opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">
         <h3 className="text-lg font-bold mb-2">{car.name}</h3>
         <p className="text-xs sm:text-sm text-neutral-300 line-clamp-3 sm:line-clamp-4">
           {car.description || 'Превосходный автомобиль для ваших поездок.'}
@@ -276,7 +276,7 @@ function CarCard({ car, onDetails }: { car: Car; onDetails: () => void }) {
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 text-white z-20 
-                       group-hover:opacity-0 transition-opacity duration-300">
+                     group-hover:opacity-0 transition-opacity duration-300">
         <h3 className="text-base sm:text-lg lg:text-xl font-bold tracking-tight leading-tight mb-0.5 truncate" title={car.name}>
           {car.name}
         </h3>
