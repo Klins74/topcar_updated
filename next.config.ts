@@ -1,7 +1,11 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  compress: true,
+  swcMinify: true,
+  images: {
+    formats: ['image/webp', 'image/avif'],
+    domains: ['topcar.club'],
+  },
+}
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
+module.exports = nextConfig
