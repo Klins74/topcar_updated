@@ -49,7 +49,6 @@ export default function CarModal({ isOpen, onClose, car, onBook }: CarModalProps
 
   const gallery = useMemo(() => {
     if (!car) return [];
-    // Добавлена проверка на car.image, так как car может быть null
     const images = [car.image, ...(car.galleryImages || [])].filter(Boolean).map(src => src.trim());
     return [...new Set(images)];
   }, [car]);
@@ -82,9 +81,10 @@ export default function CarModal({ isOpen, onClose, car, onBook }: CarModalProps
       if (!response.ok) throw new Error(data.message);
       setAppliedPromo({ code: data.code, discount: data.discount });
       setPromoMessage(data.message);
-    } catch (error: any) {
+    } catch (error: unknown) { // Изменено 'any' на 'unknown'
       setAppliedPromo(null);
-      setPromoMessage(error.message);
+      // Проверка, является ли 'error' экземпляром Error, чтобы безопасно получить .message
+      setPromoMessage(error instanceof Error ? error.message : 'Произошла неизвестная ошибка');
     } finally {
       setIsPromoLoading(false);
     }
@@ -103,7 +103,6 @@ export default function CarModal({ isOpen, onClose, car, onBook }: CarModalProps
   };
 
   const renderPriceSection = (title: string, pricingData: { [key: string]: number } | undefined, serviceType: string) => {
-    // Уже содержит проверку pricingData, что покрывает car.pricing?.
     if (!pricingData) return null;
     return (
       <div>
@@ -142,18 +141,14 @@ export default function CarModal({ isOpen, onClose, car, onBook }: CarModalProps
               <div className="space-y-5 flex-grow">
                 {renderPriceSection('Без водителя', car.pricing?.withoutDriver, 'Без водителя')}
                 {renderPriceSection('С водителем', car.pricing?.withDriver, 'С водителем')}
- <div className="space-y-5 flex-grow">
-                {renderPriceSection('Без водителя', car.pricing?.withoutDriver, 'Без водителя')}
-                {renderPriceSection('С водителем', car.pricing?.withDriver, 'С водителем')}
                 {car.pricing && car.pricing.transfer && ( // Явная проверка на car.pricing
                   <PriceOption 
                     label="Трансфер" 
                     value={car.pricing.transfer} 
                     isSelected={selectedTariff?.serviceType === 'Трансфер'} 
-                    onClick={() => handleTariffSelect({ serviceType: 'Трансфер', duration: 'Поездка', price: car.pricing!.transfer! })} // Добавлена ! для уверенности
+                    onClick={() => handleTariffSelect({ serviceType: 'Трансфер', duration: 'Поездка', price: car.pricing!.transfer! })}
                   />
                 )}
-              </div>
               </div>
               <div className="mt-6 pt-6 border-t border-neutral-700/50 space-y-4">
                   <div>

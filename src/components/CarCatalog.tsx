@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { ChevronDownIcon, FunnelIcon, XMarkIcon, NoSymbolIcon } from '@heroicons/react/24/outline'
+import { ChevronDownIcon, FunnelIcon, NoSymbolIcon } from '@heroicons/react/24/outline' // XMarkIcon удален
 import CarModal from './CarModal'
 import BookingModal from './BookingModal'
 import FadeInWhenVisible from './FadeInWhenVisible'
@@ -54,7 +54,7 @@ export default function CarCatalog() {
   
   const filtered = allCars.filter(
     c =>
-      (c.pricing?.withoutDriver?.['24h'] || 9999999) <= maxPrice && // Добавлена проверка на c.pricing
+      (c.pricing?.withoutDriver?.['24h'] || 9999999) <= maxPrice &&
       (!selectedBrand || c.brand === selectedBrand) &&
       (!selectedClass || c.class === selectedClass)
   );
@@ -255,7 +255,7 @@ function CarCard({ car, onDetails }: { car: Car; onDetails: () => void }) {
       onKeyPress={(e) => e.key === 'Enter' && onDetails()}
     >
       <Image
-        src={car.image?.trim() || '/cars/placeholder-car.png'} // Добавлена опциональная цепочка и запасное изображение
+        src={car.image?.trim() || '/cars/placeholder-car.png'}
         alt={car.name}
         fill
         className="transition-transform duration-500 ease-in-out group-hover:scale-110 object-cover"
