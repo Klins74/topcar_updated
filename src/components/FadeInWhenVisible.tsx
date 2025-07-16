@@ -1,3 +1,4 @@
+// src/components/FadeInWhenVisible.tsx
 'use client'
 
 import { motion, useAnimation, useInView } from 'framer-motion'
@@ -25,7 +26,7 @@ export default function FadeInWhenVisible({ children, delay = 0.15, className = 
       ref={ref}
       initial={{ opacity: 0, y: 40 }}
       animate={controls}
-      transition={{ duration: 0.6, delay }}
+      transition={{ duration: 0.6, delay, ease: "easeOut" }} // Added explicit ease: "easeOut"
       className={className}
     >
       {children}
