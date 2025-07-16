@@ -1,7 +1,8 @@
+export const dynamic = 'force-dynamic'
+
 // src/app/admin/bookings/page.tsx
 'use client'
 
-export const dynamic = 'force-dynamic'
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { getSupabase } from '@/lib/supabase'
