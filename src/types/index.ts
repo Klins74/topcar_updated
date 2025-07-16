@@ -9,7 +9,7 @@ export type Car = {
   brand: string
   class: 'Economy' | 'Business' | 'Premium' | 'Luxury'
   description?: string
-  pricing?: { // Сделали pricing опциональным
+  pricing?: {
     withoutDriver?: { [key: string]: number };
     withDriver?: { [key: string]: number };
     transfer?: number;
@@ -38,10 +38,13 @@ export interface Booking {
   car_image_url?: string
 }
 
-// Тип для промокода
+// Тип для промокода - ИЗМЕНЕНИЯ ЗДЕСЬ
 export interface PromoCode {
   id: number;
   code: string;
   discount_percent: number;
   is_active: boolean;
+  expires_at?: string;
+  usage_limit?: number; // Добавляем usage_limit
+  times_used?: number;  // Добавляем times_used
 }
