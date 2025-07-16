@@ -1,4 +1,5 @@
 // /app/security/page.tsx
+export const dynamic = 'force-dynamic'
 import AnimatedPageWrapper from "@/components/AnimatedPageWrapper";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
