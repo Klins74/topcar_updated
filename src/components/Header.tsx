@@ -6,11 +6,19 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, User, Download, Calculator, MessageSquare, LogOut, Loader2 } from 'lucide-react';
-import { clsx } from 'clsx';
+import clsx from 'clsx';
 import { useAuth } from '@/context/AuthContext';
+import NavLink from '@/components/ui/NavLink';
+import NavButton from '@/components/ui/NavButton';
+import MobileNavLink from '@/components/ui/MobileNavLink';
+import MobileActionButton from '@/components/ui/MobileActionButton';
 
 import LoginModal from './LoginModal';
 import CalculatorModal from './CalculatorModal';
+
+type HeaderProps = {
+  onLoginClick?: () => void;
+};
 
 const navItems = [
   { href: "/autopark", label: "Автопарк" },
@@ -19,7 +27,7 @@ const navItems = [
   { href: "/terms", label: "Условия аренды" },
 ];
 
-export default function Header() {
+export default function Header({ onLoginClick }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showCalcModal, setShowCalcModal] = useState(false);
@@ -48,17 +56,21 @@ export default function Header() {
   const toggleMenu = () => setIsMenuOpen(prev => !prev);
 
   const handleLogout = async () => {
-    if(isMenuOpen) setIsMenuOpen(false);
+    if (isMenuOpen) setIsMenuOpen(false);
     await signOut();
   };
 
-  const openLoginModal = () => {
-    if(isMenuOpen) setIsMenuOpen(false);
-    setShowLoginModal(true);
+  const handleLogin = () => {
+    if (isMenuOpen) setIsMenuOpen(false);
+    if (onLoginClick) {
+      onLoginClick(); // вызов внешней функции
+    } else {
+      setShowLoginModal(true); // если внешний не передан
+    }
   };
 
   const openCalcModal = () => {
-    if(isMenuOpen) setIsMenuOpen(false);
+    if (isMenuOpen) setIsMenuOpen(false);
     setShowCalcModal(true);
   };
 
@@ -104,7 +116,7 @@ export default function Header() {
                   </NavButton>
                 </>
               ) : (
-                <NavButton onClick={openLoginModal} title="Войти в личный кабинет">
+                <NavButton onClick={handleLogin} title="Войти в личный кабинет">
                   <User size={22} />
                 </NavButton>
               )}
@@ -169,7 +181,7 @@ export default function Header() {
                     </MobileActionButton>
                   </>
                 ) : (
-                  <MobileActionButton onClick={openLoginModal}>
+                  <MobileActionButton onClick={handleLogin}>
                     <User size={20} />
                     <span>Войти / Регистрация</span>
                   </MobileActionButton>
@@ -200,59 +212,13 @@ export default function Header() {
         )}
       </AnimatePresence>
 
-      {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
+      {/* Показываем LoginModal только если не пришел внешний onLoginClick */}
+      {showLoginModal && !onLoginClick && (
+        <LoginModal onClose={() => setShowLoginModal(false)} />
+      )}
       <CalculatorModal isOpen={showCalcModal} onClose={() => setShowCalcModal(false)} />
     </>
   );
 }
 
-function NavLink({ href, children, currentPath }: { href: string; children: React.ReactNode; currentPath: string }) {
-  const isActive = href === currentPath;
-  return (
-    <Link
-      href={href}
-      className={clsx(
-        "text-sm font-medium transition-colors relative",
-        isActive ? 'text-brand-accent' : 'text-foreground hover:text-brand-accent'
-      )}
-    >
-      {children}
-      {isActive && (
-        <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-0.5 w-4 bg-brand-accent rounded-full"></span>
-      )}
-    </Link>
-  );
-}
-
-function NavButton({ children, onClick, href, title }: { children: React.ReactNode; onClick?: () => void; href?: string; title: string }) {
-  const classes = "p-2 text-foreground rounded-full hover:bg-border hover:text-brand-accent transition-colors";
-  const commonProps = { title, 'aria-label': title };
-
-  if (href) {
-    return <Link href={href} className={classes} {...commonProps}>{children}</Link>;
-  }
-  return <button onClick={onClick} className={classes} {...commonProps}>{children}</button>;
-}
-
-function MobileNavLink({ href, children, currentPath }: { href: string; children: React.ReactNode; currentPath: string }) {
-    const isActive = href === currentPath;
-    return (
-      <Link href={href} className={clsx(
-        "flex items-center gap-4 p-4 rounded-lg text-base font-medium transition-colors",
-        isActive ? "bg-border text-brand-accent" : "text-foreground hover:bg-border"
-      )}>
-        {children}
-      </Link>
-    );
-}
-
-function MobileActionButton({ children, onClick }: { children: React.ReactNode; onClick: () => void; }) {
-    return (
-        <button 
-          onClick={onClick}
-          className="flex items-center gap-4 w-full p-4 rounded-lg text-base font-medium text-foreground hover:bg-border transition-colors"
-        >
-          {children}
-        </button>
-    );
-}
+// Остальные вспомогательные компоненты (NavLink, NavButton, MobileNavLink, MobileActionButton) — без изменений
