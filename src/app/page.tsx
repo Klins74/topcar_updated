@@ -9,8 +9,15 @@ import RentalCalculator from '@/components/RentalCalculator'
 import FAQ from '@/components/FAQ'
 import Subscription from '@/components/Subscription'
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper'
-import { ArrowDownIcon, ArrowRightIcon, UserCircleIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
 import { motion } from 'framer-motion';
+import {
+  ArrowDownIcon,
+  ArrowRightIcon,
+  UserCircleIcon,
+  ChatBubbleLeftRightIcon,
+  SparklesIcon, // ← ЭТОГО явно не хватает!
+} from '@heroicons/react/24/outline'
+
 
 
 // ... (функция subscribeToPush остается без изменений)
