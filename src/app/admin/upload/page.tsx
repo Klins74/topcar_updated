@@ -1,8 +1,7 @@
-export const dynamic = 'force-dynamic'
-
 // src/app/admin/upload/page.tsx
 'use client'
 
+export const dynamic = 'force-dynamic'
 import { useEffect, useState, ChangeEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link';
