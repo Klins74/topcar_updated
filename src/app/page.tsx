@@ -3,7 +3,6 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
-// УДАЛЕНО: Header, Footer, LoginModal
 import CarCatalog from '@/components/CarCatalog'
 import ServicesSection from '@/components/ServicesSection'
 import RentalCalculator from '@/components/RentalCalculator'
@@ -11,6 +10,8 @@ import FAQ from '@/components/FAQ'
 import Subscription from '@/components/Subscription'
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper'
 import { ArrowDownIcon, ArrowRightIcon, UserCircleIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline'
+import { motion } from 'framer-motion'; // Убедитесь, что motion импортирован
+
 
 // ... (функция subscribeToPush остается без изменений)
 async function subscribeToPush() {
@@ -27,11 +28,34 @@ async function subscribeToPush() {
 }
 
 
+// Варианты анимации для контейнера
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+// Варианты анимации для дочерних элементов
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      ease: [0.42, 0, 0.58, 1], // ИЗМЕНЕНИЕ: Заменено "easeInOut" на массив Безье
+    },
+  },
+};
+
 export default function HomePage() {
-  // УДАЛЕНО: Состояние showLoginModal
   const [loggedInUser, setLoggedInUser] = useState<{ phone: string; name?: string; email?: string } | null>(null);
 
-  // updateUserFromStorage и useEffect остаются такими же
   const updateUserFromStorage = useCallback(() => {
     const storedUser = localStorage.getItem('topcar-user');
     if (storedUser) {
@@ -58,8 +82,6 @@ export default function HomePage() {
     }
   }, [updateUserFromStorage]);
 
-  // УДАЛЕНО: обработчик handleLoginModalClose
-
   const scrollToCatalog = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     document.getElementById('car-catalog')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -67,13 +89,8 @@ export default function HomePage() {
 
   return (
     <AnimatedPageWrapper>
-      {/* Теперь <main> является корневым элементом. 
-        Header и Footer будут добавлены автоматически из layout.tsx 
-      */}
-      
       {/* --- Hero Section --- */}
       <section className="relative h-screen flex flex-col items-center justify-center text-center overflow-hidden">
-        {/* Видео и фон остаются без изменений */}
         <video
           src="/videos/hero-rolls.mp4"
           poster="/images/hero-poster.jpg"
@@ -86,7 +103,20 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/80" />
 
-        <div className="relative z-10 px-4 max-w-5xl">
+        <motion.div // Этот блок использует containerVariants
+          className="relative z-10 px-4 max-w-5xl"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div // ЭТОТ БЛОК ИСПОЛЬЗУЕТ itemVariants, что было причиной ошибки
+              className="inline-flex items-center gap-2 px-4 py-1 mb-4 text-sm bg-border text-brand-accent rounded-full"
+              variants={itemVariants}
+          >
+              <SparklesIcon className="h-4 w-4"/>
+              <span>Премиум-сервис в Алматы</span>
+          </motion.div>
+
           <h1 className="text-4xl sm:text-6xl lg:text-8xl font-extrabold tracking-tight text-white animate-fadeInUp">
             Владей Моментом. <br className="hidden sm:block" /> Арендуй <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f0dca0] to-[#d4af37]">Роскошь</span>.
           </h1>
@@ -94,7 +124,6 @@ export default function HomePage() {
             Эксклюзивный автопарк премиум-класса в Алматы. Ваш безупречный стиль начинается здесь.
           </p>
           
-          {/* Блок с кнопками остается без изменений */}
           <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-fadeInUp animation-delay-600">
             <a
               href="#car-catalog"
@@ -142,8 +171,6 @@ export default function HomePage() {
       <RentalCalculator />
       <FAQ />
       <Subscription />
-
-      {/* УДАЛЕНО: <Footer /> отсюда */}
     </AnimatedPageWrapper>
   )
 }
