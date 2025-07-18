@@ -40,7 +40,7 @@ export default function HomePage() {
     <AnimatedPageWrapper>
       <main className="min-h-screen bg-neutral-950 text-white font-sans">
         {/* 2. Передаем функцию для открытия окна в Header */}
-        <Header onLoginClick={handleLoginButtonClick} />
+       <Header />
 
         {/* 3. Модальное окно рендерится здесь, а не в Header */}
         {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}

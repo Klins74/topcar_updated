@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-// 1. Импортируем тип 'Variants' из framer-motion
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { Menu, X, User, Download, Calculator, MessageSquare, LogOut, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
@@ -13,10 +12,11 @@ import NavLink from '@/components/ui/NavLink';
 import NavButton from '@/components/ui/NavButton';
 import MobileNavLink from '@/components/MobileNavLink';
 import MobileActionButton from '@/components/MobileActionButton';
+import LoginModal from './LoginModal';
 import CalculatorModal from './CalculatorModal';
 import { useScrollLock } from '@/hooks/useScrollLock';
 
-// 2. Явно указываем тип 'Variants' для всех объектов анимации
+// --- Варианты анимаций (с правильными типами) ---
 const menuVariants: Variants = {
   hidden: { opacity: 0, y: -10 },
   visible: {
@@ -29,13 +29,13 @@ const menuVariants: Variants = {
       staggerChildren: 0.04,
     },
   },
-  exit: { 
-    opacity: 0, 
-    y: -10, 
-    transition: { 
-      duration: 0.15, 
-      ease: 'easeIn' 
-    } 
+  exit: {
+    opacity: 0,
+    y: -10,
+    transition: {
+      duration: 0.15,
+      ease: 'easeIn',
+    },
   },
 };
 
@@ -44,18 +44,12 @@ const menuItemVariants: Variants = {
   visible: { opacity: 1, x: 0 },
 };
 
-// 3. Убеждаемся, что эта переменная определена и используется
 const ctaButtonVariants: Variants = {
   hidden: { opacity: 0, y: 10 },
   visible: { opacity: 1, y: 0, transition: { delay: 0.3, duration: 0.3 } },
 };
 
-// --- Props ---
-type HeaderProps = {
-  onLoginClick: () => void;
-};
-
-// --- Навигация ---
+// --- Навигационные элементы ---
 const navItems = [
     { href: "/autopark", label: "Автопарк" },
     { href: "/services", label: "Услуги" },
@@ -63,8 +57,9 @@ const navItems = [
     { href: "/terms", label: "Условия аренды" },
 ];
 
-export default function Header({ onLoginClick }: HeaderProps) {
+export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [showCalcModal, setShowCalcModal] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -73,15 +68,20 @@ export default function Header({ onLoginClick }: HeaderProps) {
   const { user, isLoading, signOut } = useAuth();
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useScrollLock(isMenuOpen || showCalcModal);
+  useScrollLock(isMenuOpen || showLoginModal || showCalcModal);
 
   // --- Эффекты ---
   useEffect(() => {
     setIsMounted(true);
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
+
     const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') setIsMenuOpen(false);
+        if (e.key === 'Escape') {
+            setIsMenuOpen(false);
+            setShowLoginModal(false);
+            setShowCalcModal(false);
+        }
     };
     document.addEventListener('keydown', handleKeyDown);
     
@@ -92,7 +92,9 @@ export default function Header({ onLoginClick }: HeaderProps) {
   }, []);
 
   useEffect(() => {
-    if (isMenuOpen) setIsMenuOpen(false);
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
   }, [pathname]);
 
   useEffect(() => {
@@ -110,7 +112,7 @@ export default function Header({ onLoginClick }: HeaderProps) {
     setIsMenuOpen(false);
     action();
   }, []);
-  const handleLogin = useCallback(() => handleAction(onLoginClick), [handleAction, onLoginClick]);
+  const handleLogin = useCallback(() => handleAction(() => setShowLoginModal(true)), [handleAction]);
   const openCalcModal = useCallback(() => handleAction(() => setShowCalcModal(true)), [handleAction]);
   const handleLogout = useCallback(() => handleAction(signOut), [handleAction, signOut]);
 
@@ -142,7 +144,7 @@ export default function Header({ onLoginClick }: HeaderProps) {
                     <NavButton onClick={signOut} title="Выйти"><LogOut size={22} /></NavButton>
                   </>
                 ) : (
-                  <NavButton onClick={onLoginClick} title="Войти в личный кабинет"><User size={22} /></NavButton>
+                  <NavButton onClick={() => setShowLoginModal(true)} title="Войти в личный кабинет"><User size={22} /></NavButton>
                 )
               ) : <div className="p-2 w-[88px] h-[40px] flex justify-center items-center"><Loader2 size={22} className="animate-spin text-muted-foreground" /></div>}
               <NavButton href="/download" title="Скачать приложение"><Download size={22} /></NavButton>
@@ -167,7 +169,7 @@ export default function Header({ onLoginClick }: HeaderProps) {
                 <div className="container mx-auto flex flex-col p-4">
                   <div className="flex flex-col gap-1 pb-3">
                     <motion.h2 variants={menuItemVariants} id="menu-heading" className="px-3 pt-1 pb-2 text-sm font-semibold text-muted-foreground">Навигация</motion.h2>
-                    {navItems.map((item, index) => (
+                    {navItems.map((item) => (
                       <motion.div key={item.href} variants={menuItemVariants}>
                         <MobileNavLink href={item.href} currentPath={pathname} onClick={toggleMenu}>{item.label}</MobileNavLink>
                       </motion.div>
@@ -212,6 +214,7 @@ export default function Header({ onLoginClick }: HeaderProps) {
         </div>
       </header>
       
+      {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
       <CalculatorModal isOpen={showCalcModal} onClose={() => setShowCalcModal(false)} />
     </>
   );
