@@ -17,7 +17,7 @@ export default function PWABonusPage() {
   return (
     <AnimatedPageWrapper>
       <main className="min-h-screen bg-neutral-950 text-white font-sans">
-        <Header onLoginClick={handleLoginButtonClick} />
+       <Header />
 
         {showLoginModal && (
           <LoginModal
