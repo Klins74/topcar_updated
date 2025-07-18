@@ -4,14 +4,17 @@ import { Manrope } from 'next/font/google';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import '@/styles/globals.css';
 
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { AuthProvider } from '@/context/AuthContext'; // 1. ИМПОРТИРУЕМ ПРОВАЙДЕР
+import { AuthProvider } from '@/context/AuthContext';
+// Компоненты Header и Footer больше не нужно импортировать здесь, 
+// так как они будут рендериться внутри дочерних страниц (например, page.tsx)
+// import Header from '@/components/Header';
+// import Footer from '@/components/Footer';
 
+
+// 1. Упрощаем настройку шрифта, убирая 'variable'
 const manrope = Manrope({
   subsets: ['latin', 'cyrillic'],
   weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-manrope',
   display: 'swap',
 });
 
@@ -47,13 +50,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru" className={`${manrope.variable}`}>
-      <body className="font-sans antialiased bg-background text-foreground">
-        {/* 2. ОБОРАЧИВАЕМ ВСЕ КОМПОНЕНТЫ В ПРОВАЙДЕР */}
+    // 2. Применяем класс шрифта напрямую к <html>. Это лучший способ.
+    <html lang="ru" className={manrope.className}>
+      {/* 3. Убрали лишние классы из body, так как шрифт наследуется от html */}
+      <body className="bg-background text-foreground">
         <AuthProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
+          {/* Header и Footer теперь должны быть частью дочерних компонентов, 
+            а не этого корневого макета, чтобы избежать проблем с 
+            передачей пропсов от страниц (как onLoginClick).
+            Next.js рендерит {children}, и внутри этого {children} 
+            уже будет ваша страница (page.tsx) со своим Header и Footer.
+          */}
+          {children}
           
           {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />

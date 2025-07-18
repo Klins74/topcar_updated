@@ -1,19 +1,24 @@
-'use client'
-
-import { ReactNode } from 'react'
+import clsx from 'clsx';
+import { ReactNode } from 'react';
 
 type MobileActionButtonProps = {
-  onClick: () => void
-  children: ReactNode
-}
+  onClick?: () => void;
+  children: ReactNode;
+  disabled?: boolean;
+};
 
-export default function MobileActionButton({ onClick, children }: MobileActionButtonProps) {
+export default function MobileActionButton({ onClick, children, disabled = false }: MobileActionButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-3 py-3.5 px-4 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
+      disabled={disabled}
+      className={clsx(
+        'flex w-full items-center gap-3 rounded-md p-3 text-base font-semibold transition-colors',
+        'text-neutral-300 hover:bg-neutral-700/50',
+        'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent'
+      )}
     >
       {children}
     </button>
-  )
+  );
 }
