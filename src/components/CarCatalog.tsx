@@ -2,12 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { ChevronDownIcon, FunnelIcon, NoSymbolIcon } from '@heroicons/react/24/outline'
-import CarModal from './CarModal'
-import BookingModal from './BookingModal'
 import FadeInWhenVisible from './FadeInWhenVisible'
 import { Car } from '@/types'
-// --- ИСПРАВЛЕНИЕ: Исправлен путь импорта и функция ---
 import { getSupabase } from '@/lib/supabase'
 import FormattedPrice from './FormattedPrice'
 import SkeletonCard from './SkeletonCard'
@@ -15,18 +13,9 @@ import SkeletonCard from './SkeletonCard'
 const MIN_PRICE = 30000;
 const MAX_PRICE = 500000;
 
-type SelectedTariff = {
-  serviceType: string;
-  duration: string;
-  price: number;
-}
-
 export default function CarCatalog() {
   const [allCars, setAllCars] = useState<Car[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  
-  const [selectedCar, setSelectedCar] = useState<Car | null>(null)
-  const [bookingInfo, setBookingInfo] = useState<{ car: Car, details: SelectedTariff } | null>(null);
   
   const [maxPrice, setMaxPrice] = useState<number>(MAX_PRICE)
   const [selectedBrand, setSelectedBrand] = useState('')
@@ -36,7 +25,6 @@ export default function CarCatalog() {
   useEffect(() => {
     const fetchCars = async () => {
       setIsLoading(true);
-      // --- ИСПРАВЛЕНИЕ: Возвращена оригинальная функция getSupabase() ---
       const supabase = getSupabase();
       const { data, error } = await supabase.from('cars').select('*').order('id');
       
@@ -69,11 +57,6 @@ export default function CarCatalog() {
     setShowFiltersMobile(false);
   };
 
-  const handleOpenBookingProcess = (carToBook: Car, tariff: SelectedTariff) => {
-    setSelectedCar(null);
-    setBookingInfo({ car: carToBook, details: tariff });
-  };
-
   const pricePercentage = MAX_PRICE > MIN_PRICE ? ((maxPrice - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * 100 : 0;
 
   return (
@@ -98,13 +81,10 @@ export default function CarCatalog() {
         </div>
 
         <FadeInWhenVisible 
-          className={`
-          ${showFiltersMobile ? 'block animate-fadeInUp' : 'hidden'} 
-          md:block mb-10 sm:mb-12 md:sticky md:top-20 z-30`} 
+          className={`${showFiltersMobile ? 'block animate-fadeInUp' : 'hidden'} md:block mb-10 sm:mb-12`} 
         >
           <div 
-            className="bg-neutral-900 border border-neutral-700/80 rounded-2xl shadow-xl 
-                     p-4 sm:p-6 backdrop-blur-md"
+            className="max-w-5xl mx-auto bg-neutral-900 border border-neutral-700/80 rounded-2xl shadow-xl p-4 sm:p-6 backdrop-blur-md"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5 items-end">
               <div className="lg:col-span-2">
@@ -202,10 +182,7 @@ export default function CarCatalog() {
             <div className="grid gap-x-6 gap-y-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered.map(car => (
                 <FadeInWhenVisible key={car.id} className="flex">
-                    <CarCard
-                    car={car}
-                    onDetails={() => setSelectedCar(car)}
-                    />
+                    <CarCard car={car} />
                 </FadeInWhenVisible>
                 ))}
             </div>
@@ -225,36 +202,17 @@ export default function CarCatalog() {
             </FadeInWhenVisible>
         )}
       </div>
-
-      {selectedCar && (
-        <CarModal
-          onClose={() => setSelectedCar(null)}
-          car={selectedCar}
-          onBook={handleOpenBookingProcess}
-        />
-      )}
-      {bookingInfo && (
-        <BookingModal 
-          isOpen={!!bookingInfo}
-          onClose={() => setBookingInfo(null)}
-          carName={bookingInfo.car.name}
-          bookingDetails={bookingInfo.details}
-        />
-      )}
     </section>
   )
 }
 
-function CarCard({ car, onDetails }: { car: Car; onDetails: () => void }) {
+function CarCard({ car }: { car: Car; }) {
   const basePrice = car.pricing?.withoutDriver?.['24h'] || car.price_per_day;
 
   return (
-    <div
+    <Link
+      href={`/cars/${car.slug}`} // <-- ИЗМЕНЕНИЕ ЗДЕСЬ
       className="relative group aspect-[16/10] w-full rounded-xl overflow-hidden shadow-xl cursor-pointer bg-black transform hover:-translate-y-1.5 transition-all duration-300 ease-in-out flex-grow"
-      onClick={onDetails}
-      role="button"
-      tabIndex={0}
-      onKeyPress={(e) => e.key === 'Enter' && onDetails()}
     >
       <Image
         src={car.image_url || '/cars/placeholder-car.png'}
@@ -263,7 +221,7 @@ function CarCard({ car, onDetails }: { car: Car; onDetails: () => void }) {
         className="transition-transform duration-500 ease-in-out group-hover:scale-110 object-cover"
         priority={car.id <= 3}
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        onError={(e) => { e.currentTarget.src = '/cars/placeholder-car.png'; }}
+        onError={(e) => { (e.target as HTMLImageElement).src = '/cars/placeholder-car.png'; }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
       
@@ -290,6 +248,6 @@ function CarCard({ car, onDetails }: { car: Car; onDetails: () => void }) {
           </p>
         )}
       </div>
-    </div>
+    </Link>
   )
 }

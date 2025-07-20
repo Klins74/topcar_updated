@@ -2,22 +2,36 @@
  * =================================================================
  * ГЛАВНЫЕ ТИПЫ ДАННЫХ ВАШЕГО ПРИЛОЖЕНИЯ
  * =================================================================
- * Этот файл — единственный источник правды о структуре ваших данных.
- * Все названия полей здесь точно соответствуют названиям столбцов в Supabase.
  */
+
+// --- НОВЫЙ ТИП для цен ---
+export type Price = {
+  id: number;
+  car_id: number;
+  days_from: number;
+  days_to: number;
+  price_per_day: number;
+  with_driver: boolean;
+};
 
 /**
  * Тип для автомобиля.
- * Источник: таблица 'cars' в Supabase.
  */
 export type Car = {
   id: number;
   name: string;
+  slug: string;
   brand: string;
   class: 'Economy' | 'Business' | 'Premium' | 'Luxury';
   description: string;
+  full_description?: string;
   image_url: string;
+  gallery_images?: string[];
+  prices?: Price[]; // <-- ДОБАВЛЕНО: массив цен из новой таблицы
+  
+  // Старые поля цен, которые больше не нужны, но оставляем для совместимости
   price_per_day: number;
+  price_with_driver?: number;
 
   // Необязательные технические характеристики
   power?: number;
@@ -26,51 +40,32 @@ export type Car = {
   drive_type?: string;
   seats?: number;
   year?: number;
-
-  // Необязательная структура для сложных тарифов
-  pricing?: {
-    withoutDriver?: {
-      '24h'?: number;
-    };
-  };
+  
+  // Это поле больше не используется, можно будет позже удалить
+  pricing?: any;
 };
 
-/**
- * Тип для промокода.
- * Источник: таблица 'public_promocodes' в Supabase.
- * Названия полей точно скопированы из вашей таблицы.
- */
+// ...остальные типы без изменений
 export type PromoCode = {
   id: number;
   code: string;
   is_active: boolean;
-  
-  // Названия полей из вашей таблицы Supabase:
-  discount_perc: number;       // Скидка в процентах
-  expires_at: string;          // Дата окончания срока действия
-  times_used: number;          // Сколько раз был использован
-  
+  discount_perc: number;
+  expires_at: string;
+  times_used: number;
   usage_limit: number | null;
   is_personal: boolean;
   user_id: string | null;
   created_at: string;
 };
 
-/**
- * Базовый тип для пользователя.
- * Источник: таблица 'users' в Supabase Auth.
- */
 export type User = {
-    id: string; 
+    id: string;
     email?: string;
     full_name?: string;
     phone?: string;
 };
 
-/**
- * Базовый тип для бронирования.
- * Источник: таблица 'bookings' в Supabase.
- */
 export type Booking = {
     id: number;
     car_id: number;

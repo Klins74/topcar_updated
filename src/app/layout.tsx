@@ -2,16 +2,11 @@
 import type { Metadata, Viewport } from 'next';
 import { Manrope } from 'next/font/google';
 import { GoogleAnalytics } from '@next/third-parties/google';
+import Script from 'next/script'; // <-- Импортируем компонент Script
 import '@/styles/globals.css';
 
 import { AuthProvider } from '@/context/AuthContext';
-// Компоненты Header и Footer больше не нужно импортировать здесь, 
-// так как они будут рендериться внутри дочерних страниц (например, page.tsx)
-// import Header from '@/components/Header';
-// import Footer from '@/components/Footer';
 
-
-// 1. Упрощаем настройку шрифта, убирая 'variable'
 const manrope = Manrope({
   subsets: ['latin', 'cyrillic'],
   weight: ['400', '500', '600', '700', '800'],
@@ -50,17 +45,33 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    // 2. Применяем класс шрифта напрямую к <html>. Это лучший способ.
     <html lang="ru" className={manrope.className}>
-      {/* 3. Убрали лишние классы из body, так как шрифт наследуется от html */}
+      <head>
+        {/* --- Google Tag Manager --- */}
+        <Script id="google-tag-manager" strategy="afterInteractive">
+          {`
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-NCJ66Z6W');
+          `}
+        </Script>
+        {/* --- End Google Tag Manager --- */}
+      </head>
       <body className="bg-background text-foreground">
+        {/* --- Google Tag Manager (noscript) --- */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-NCJ66Z6W"
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          ></iframe>
+        </noscript>
+        {/* --- End Google Tag Manager (noscript) --- */}
+
         <AuthProvider>
-          {/* Header и Footer теперь должны быть частью дочерних компонентов, 
-            а не этого корневого макета, чтобы избежать проблем с 
-            передачей пропсов от страниц (как onLoginClick).
-            Next.js рендерит {children}, и внутри этого {children} 
-            уже будет ваша страница (page.tsx) со своим Header и Footer.
-          */}
           {children}
           
           {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
