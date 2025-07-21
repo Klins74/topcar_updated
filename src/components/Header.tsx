@@ -1,3 +1,4 @@
+// src/components/Header.tsx
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
@@ -5,7 +6,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { Menu, X, User, Download, Calculator, MessageSquare, LogOut, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
 import { useAuth } from '@/context/AuthContext';
 import NavLink from '@/components/ui/NavLink';
@@ -15,6 +15,10 @@ import MobileActionButton from '@/components/MobileActionButton';
 import LoginModal from './LoginModal';
 import CalculatorModal from './CalculatorModal';
 import { useScrollLock } from '@/hooks/useScrollLock';
+
+// Импортируем только используемые иконки, чтобы избежать предупреждений
+import { Menu, X, User, Download, Calculator, MessageSquare, LogOut, Loader2 } from 'lucide-react';
+
 
 const menuVariants: Variants = {
   hidden: { opacity: 0, y: -10 },
@@ -89,11 +93,13 @@ export default function Header() {
     };
   }, []);
 
+  // ИЗМЕНЕНИЕ: Убираем isMenuOpen из зависимостей
   useEffect(() => {
-    if (isMenuOpen) {
-      setIsMenuOpen(false);
+    // Этот эффект должен закрывать меню ТОЛЬКО при изменении маршрута
+    if (isMenuOpen) { // Если меню открыто, и мы перешли на новую страницу
+      setIsMenuOpen(false); // Закрываем его
     }
-  }, [pathname, isMenuOpen]); // <-- ИЗМЕНЕНИЕ ЗДЕСЬ
+  }, [pathname]); // <-- ИЗМЕНЕНИЕ ЗДЕСЬ: только pathname в зависимостях
 
   useEffect(() => {
     if (isMenuOpen && menuRef.current) {
@@ -106,7 +112,7 @@ export default function Header() {
 
   const toggleMenu = useCallback(() => setIsMenuOpen(prev => !prev), []);
   const handleAction = useCallback((action: () => void) => {
-    setIsMenuOpen(false);
+    setIsMenuOpen(false); // Закрываем меню после действия
     action();
   }, []);
   const handleLogin = useCallback(() => handleAction(() => setShowLoginModal(true)), [handleAction]);
