@@ -28,11 +28,8 @@ export type Car = {
   full_description?: string;
   image_url: string;
   gallery_images?: string[];
-  prices?: Price[]; // Массив цен из таблицы `prices`
-  
-  price_per_day: number; // Оставляем как запасной вариант
-
-  // Необязательные технические характеристики
+  prices?: Price[];
+  price_per_day: number;
   power?: number;
   acceleration?: number;
   fuel_type?: string;
@@ -41,7 +38,42 @@ export type Car = {
   year?: number;
 };
 
-// ...остальные типы без изменений
-export type PromoCode = { /* ... */ };
-export type User = { /* ... */ };
-export type Booking = { /* ... */ };
+/**
+ * Тип для промокода.
+ */
+export type PromoCode = {
+  id: number;
+  code: string;
+  is_active: boolean;
+  discount_perc: number;
+  expires_at: string;
+  times_used: number;
+  usage_limit: number | null;
+  is_personal: boolean;
+  user_id: string | null;
+  created_at: string;
+};
+
+/**
+ * Базовый тип для пользователя.
+ */
+export type User = {
+    id: string;
+    email?: string;
+    full_name?: string;
+    phone?: string;
+};
+
+/**
+ * Базовый тип для бронирования.
+ */
+export type Booking = {
+    id: number;
+    car_id: number;
+    user_id: string;
+    start_date: string;
+    end_date: string;
+    total_price: number;
+    status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+    created_at: string;
+};
