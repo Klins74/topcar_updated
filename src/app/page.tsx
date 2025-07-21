@@ -22,10 +22,7 @@ export default function HomePage() {
     setIsMounted(true);
   }, []);
 
-  // --- FIX: This unused function has been removed ---
-  // const handleLoginButtonClick = () => {
-  //   setShowLoginModal(true);
-  // };
+  // Неиспользуемая функция удалена
 
   const scrollToCatalog = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
