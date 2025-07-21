@@ -25,8 +25,8 @@ export default function CarModal({ car, onClose, onBook }: Props) {
     const { user } = useAuth();
     const [showLoginModal, setShowLoginModal] = useState(false);
     
-    // --- ИСПРАВЛЕНИЕ: Улучшена логика получения цены ---
-    const dailyPrice = car.pricing?.withoutDriver?.['24h'] || car.price_per_day || 0;
+    // --- FIX: Updated the price logic ---
+    const dailyPrice = car.prices?.find(p => !p.with_driver && p.days_from === 24)?.price_per_day || car.price_per_day || 0;
 
     const handleBooking = () => {
         if (!user) {
@@ -36,7 +36,7 @@ export default function CarModal({ car, onClose, onBook }: Props) {
         const exampleTariff = {
             serviceType: 'withoutDriver',
             duration: '24h',
-            price: dailyPrice, // Используем вычисленную цену
+            price: dailyPrice,
         };
         onBook(car, exampleTariff);
     };
@@ -98,7 +98,6 @@ export default function CarModal({ car, onClose, onBook }: Props) {
                                 <div>
                                     <p className="text-sm text-muted-foreground">Стоимость аренды (24ч)</p>
                                     <p className="text-3xl font-bold text-brand-accent">
-                                        {/* Используем вычисленную цену */}
                                         <FormattedPrice value={dailyPrice} /> ₸
                                     </p>
                                 </div>

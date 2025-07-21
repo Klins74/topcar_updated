@@ -9,13 +9,12 @@ import FAQ from '@/components/FAQ';
 import Subscription from '@/components/Subscription';
 import Footer from '@/components/Footer';
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper';
-import LoginModal from '@/components/LoginModal'; // Модальное окно импортируется здесь
+import LoginModal from '@/components/LoginModal';
 import { ArrowRightIcon, UserCircleIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '@/context/AuthContext';
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
-  // 1. Возвращаем управление модальным окном сюда
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -23,9 +22,10 @@ export default function HomePage() {
     setIsMounted(true);
   }, []);
 
-  const handleLoginButtonClick = () => {
-    setShowLoginModal(true);
-  };
+  // --- FIX: This unused function has been removed ---
+  // const handleLoginButtonClick = () => {
+  //   setShowLoginModal(true);
+  // };
 
   const scrollToCatalog = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -38,14 +38,11 @@ export default function HomePage() {
   return (
     <AnimatedPageWrapper>
       <main className="min-h-screen bg-neutral-950 text-white font-sans">
-        {/* 2. Передаем функцию для открытия окна в Header */}
        <Header />
 
-        {/* 3. Модальное окно рендерится здесь, а не в Header */}
         {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
 
         <section className="relative h-screen flex flex-col items-center justify-center text-center overflow-hidden">
-          {/* ... остальной код секции ... */}
           <video
             src="/videos/hero-rolls.mp4"
             className="absolute inset-0 w-full h-full object-cover filter brightness-75 contrast-125"
