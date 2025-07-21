@@ -1,3 +1,4 @@
+// src/components/CarModal.tsx (без изменений, просто для справки)
 'use client';
 
 import { useState } from 'react';
@@ -25,7 +26,6 @@ export default function CarModal({ car, onClose, onBook }: Props) {
     const { user } = useAuth();
     const [showLoginModal, setShowLoginModal] = useState(false);
     
-    // --- FIX: Updated the price logic ---
     const dailyPrice = car.prices?.find(p => !p.with_driver && p.days_from === 24)?.price_per_day || car.price_per_day || 0;
 
     const handleBooking = () => {

@@ -1,100 +1,187 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+// src/app/cars/[slug]/page.tsx
+import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import Header from '@/components/Header';
-import CarCatalog from '@/components/CarCatalog';
-import ServicesSection from '@/components/ServicesSection';
-import FAQ from '@/components/FAQ';
-import Subscription from '@/components/Subscription';
 import Footer from '@/components/Footer';
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper';
-import LoginModal from '@/components/LoginModal';
-import { ArrowRightIcon, UserCircleIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
-import { useAuth } from '@/context/AuthContext';
+import BookingForm from '@/components/BookingForm';
+// import { fleet } from '@/lib/fleet'; // БОЛЬШЕ НЕ НУЖНО ИСПОЛЬЗОВАТЬ ЛОКАЛЬНЫЙ ФЛОТ
+import { getSupabase } from '@/lib/supabase'; // Импортируем Supabase клиент
+import { Car } from '@/types'; // Убедитесь, что Car тип включает все нужные поля
 
-export default function HomePage() {
-  const { user, isLoading } = useAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+import {
+  Zap, Fuel, Dna, Users, Info, DollarSign,
+  PhoneIcon, CalendarDaysIcon, ClockIcon, MessageSquare
+} from 'lucide-react';
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+// Функция для получения деталей автомобиля из Supabase
+async function getCarDetails(slug: string): Promise<Car | null> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('cars')
+    .select('*, prices (*)') // Выбираем все поля из cars и связанные цены
+    .eq('slug', slug) // Фильтруем по slug
+    .single(); // Ожидаем одну запись
 
-  // --- ИЗМЕНЕНИЕ: Неиспользуемая функция удалена ---
-  // const handleLoginButtonClick = () => {
-  //   setShowLoginModal(true);
-  // };
+  if (error) {
+    console.error(`Ошибка загрузки автомобиля по slug "${slug}":`, error.message);
+    return null;
+  }
+  return data as Car | null;
+}
 
-  const scrollToCatalog = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const catalogSection = document.getElementById('car-catalog');
-    if (catalogSection) {
-      catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+// Если вы хотите использовать динамические метаданные
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  // Поскольку generateMetadata может работать на сервере, 
+  // мы получаем данные напрямую здесь.
+  const car = await getCarDetails(params.slug); 
+
+  if (!car) {
+    return {
+      title: 'Автомобиль не найден | TopCar Almaty',
+      description: 'Запрашиваемый автомобиль не найден в нашем автопарке.',
+    };
+  }
+
+  return {
+    title: `${car.name} | Аренда Авто в Алматы | TopCar`,
+    description: car.description,
+    openGraph: {
+      images: car.image_url,
+    },
   };
+}
+
+// Эта функция генерирует статические параметры (slug) для всех страниц
+export async function generateStaticParams() {
+  const supabase = getSupabase();
+  const { data: cars, error } = await supabase.from('cars').select('slug');
+
+  if (error) {
+    console.error("Ошибка при генерации статических параметров:", error.message);
+    return [];
+  }
+  
+  return cars.map(car => ({ slug: car.slug }));
+}
+
+
+export default async function CarDetailPage({ params }: { params: { slug: string } }) {
+  // Получаем детали автомобиля асинхронно
+  const car = await getCarDetails(params.slug);
+
+  if (!car) {
+    notFound(); // Отобразит страницу 404, если автомобиль не найден
+  }
+
+  // Здесь вы можете определить, как отображаются цены,
+  // например, всегда показывать цену за 24 часа для простоты на этой странице
+  // Убедитесь, что у вас есть price_per_day или логика для его вычисления из prices
+  const dailyPrice = car.prices?.find(p => !p.with_driver && p.days_from === 24)?.price_per_day || car.price_per_day || 0; 
+
+  const features = [
+    { icon: Zap, label: 'Мощность', value: car.power ? `${car.power} л.с.` : 'н/д' },
+    { icon: Info, label: 'Год выпуска', value: car.year || 'н/д' },
+    { icon: Fuel, label: 'Тип топлива', value: car.fuel_type || 'н/д' },
+    { icon: Dna, label: 'Привод', value: car.drive_type || 'н/д' },
+    { icon: Users, label: 'Кол-во мест', value: car.seats || 'н/д' },
+    { icon: ClockIcon, label: 'Разгон до 100', value: car.acceleration ? `${car.acceleration} сек` : 'н/д' },
+  ];
 
   return (
     <AnimatedPageWrapper>
-      <main className="min-h-screen bg-neutral-950 text-white font-sans">
-       <Header />
+      <Header />
+      <main className="min-h-screen bg-neutral-950 text-white font-sans pt-24">
+        <section className="py-16 sm:py-24 px-4 sm:px-6">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+            {/* Gallery / Main Image */}
+            <div className="space-y-6">
+              <div className="aspect-video w-full relative rounded-xl overflow-hidden shadow-2xl bg-neutral-800 border border-neutral-700">
+                <Image
+                  src={car.image_url}
+                  alt={car.name}
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw" // Добавлено свойство sizes
+                />
+              </div>
+              {car.gallery_images && car.gallery_images.length > 0 && (
+                <div className="grid grid-cols-3 gap-4">
+                  {car.gallery_images.map((img, index) => (
+                    <div key={index} className="aspect-video relative rounded-md overflow-hidden bg-neutral-800">
+                      <Image
+                        src={img}
+                        alt={`${car.name} - ${index + 1}`}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 33vw, 25vw" // Пример для галереи
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-        {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
+            {/* Car Details and Booking Form */}
+            <div className="lg:sticky lg:top-28 self-start space-y-8 bg-neutral-900 border border-neutral-700/80 rounded-2xl shadow-xl p-6 sm:p-8">
+              <div>
+                <p className="text-sm font-semibold text-[#d4af37] uppercase tracking-wider mb-2">
+                  {car.brand} &bull; {car.class}
+                </p>
+                <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                  {car.name}
+                </h1>
+                <p className="text-neutral-400 leading-relaxed text-sm sm:text-base">
+                  {car.full_description || car.description}
+                </p>
+              </div>
 
-        <section className="relative h-screen flex flex-col items-center justify-center text-center overflow-hidden">
-          <video
-            src="/videos/hero-rolls.mp4"
-            className="absolute inset-0 w-full h-full object-cover filter brightness-75 contrast-125"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/80" />
+              {/* Quick Features */}
+              <div className="grid grid-cols-2 gap-4 text-sm border-t border-neutral-800 pt-6">
+                {features.map((feature, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <feature.icon className="h-5 w-5 text-[#d4af37] flex-shrink-0" />
+                    <div>
+                      <p className="text-neutral-400">{feature.label}:</p>
+                      <p className="font-semibold text-white">{feature.value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-          <div className="relative z-10 px-4 sm:px-6 max-w-4xl lg:max-w-5xl text-shadow-strong">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-tight leading-tight md:leading-snug text-white animate-fadeInUp">
-              Владей Моментом. <br className="hidden sm:block" /> Арендуй <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f0dca0] to-[#d4af37]">Роскошь</span>.
-            </h1>
-            <p className="mt-6 md:mt-8 text-lg sm:text-xl lg:text-2xl text-neutral-200 max-w-xl lg:max-w-2xl mx-auto animate-fadeInUp animation-delay-300">
-              Эксклюзивный автопарк премиум-класса в Алматы. Ваш безупречный стиль начинается здесь.
-            </p>
-            <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-fadeInUp animation-delay-600">
-              <a
-                href="#car-catalog"
-                onClick={scrollToCatalog}
-                className="group relative w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-[#d4af37] text-black rounded-lg text-base sm:text-lg font-bold hover:bg-[#c0982c] transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 active:translate-y-0"
-              >
-                <span>Исследовать Автопарк</span>
-                <ArrowRightIcon className="ml-2 -mr-1 h-5 w-6 transition-transform duration-300 group-hover:translate-x-1.5" />
-              </a>
-              <div className="w-full sm:w-auto">
-                {isMounted && !isLoading && (
-                  user ? (
-                    <Link href="/dashboard" className="group relative w-full inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 border-2 border-[#d4af37] text-[#d4af37] rounded-lg text-base sm:text-lg font-bold hover:bg-[#d4af37] hover:text-black transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-lg hover:shadow-xl transform hover:-translate-y-1 active:translate-y-0">
-                      <UserCircleIcon className="mr-2 -ml-1 h-6 w-6 transition-colors duration-300 group-hover:text-black" />
-                      <span>Личный кабинет</span>
-                    </Link>
-                  ) : (
-                    <a href="https://wa.me/77776660295" target="_blank" rel="noopener noreferrer" className="group relative w-full inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 border-2 border-white text-white rounded-lg text-base sm:text-lg font-semibold hover:bg-white hover:text-black transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-white/50 shadow-lg hover:shadow-xl transform hover:-translate-y-1 active:translate-y-0">
-                      <ChatBubbleLeftRightIcon className="mr-2 -ml-1 h-6 w-6 transition-colors duration-300 group-hover:text-black" />
-                      <span>Связаться</span>
+              {/* Pricing & Call to Action */}
+              <div className="border-t border-neutral-800 pt-6">
+                <p className="text-sm text-neutral-300 mb-2">Стоимость аренды (от 24ч):</p>
+                <p className="text-4xl font-bold text-[#d4af37] mb-6">
+                  {dailyPrice.toLocaleString('ru-RU')} ₸ <span className="text-lg text-neutral-400">/ день</span>
+                </p>
+                
+                {/* Заголовок формы бронирования */}
+                <h3 className="text-2xl font-bold text-white mb-6 mt-8">
+                    Заявка на <span className="text-[#d4af37]">бронирование</span>
+                </h3>
+
+                {/* Контейнер для BookingForm - используем flexbox для выравнивания */}
+                <div className="flex flex-col gap-6"> 
+                    <BookingForm initialCarName={car.name} /> 
+
+                    <a 
+                      href="https://wa.me/77776660295"
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="w-full inline-flex items-center justify-center px-6 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-neutral-200 hover:text-white hover:bg-neutral-700 transition-colors text-base font-semibold"
+                    >
+                      <MessageSquare className="h-5 w-5 mr-2" />
+                      Обсудить в WhatsApp
                     </a>
-                  )
-                )}
+                </div>
               </div>
             </div>
           </div>
         </section>
-
-        <CarCatalog />
-        <ServicesSection />
-        <FAQ />
-        <Subscription />
-        <Footer />
       </main>
+      <Footer />
     </AnimatedPageWrapper>
   );
 }
