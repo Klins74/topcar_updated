@@ -1,154 +1,100 @@
-// src/app/cars/[slug]/page.tsx
+'use client';
 
-import { notFound } from 'next/navigation';
-import { getSupabase } from '@/lib/supabase';
-import { Car, Price } from '@/types';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Header from '@/components/Header';
+import CarCatalog from '@/components/CarCatalog';
+import ServicesSection from '@/components/ServicesSection';
+import FAQ from '@/components/FAQ';
+import Subscription from '@/components/Subscription';
 import Footer from '@/components/Footer';
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper';
-import Image from 'next/image';
-import FormattedPrice from '@/components/FormattedPrice';
-import { Zap, Clock, Fuel, Dna, Users, Info, CarFront } from 'lucide-react';
-import BookingForm from '@/components/BookingForm';
+import LoginModal from '@/components/LoginModal';
+import { ArrowRightIcon, UserCircleIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '@/context/AuthContext';
 
-// Тип Props больше не нужен
+export default function HomePage() {
+  const { user, isLoading } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-// Загружаем машину вместе с ценами одним запросом
-async function getCarData(slug: string): Promise<Car | null> {
-  const supabase = getSupabase();
-  const { data, error } = await supabase
-    .from('cars')
-    .select(`*, prices (*)`)
-    .eq('slug', slug)
-    .single();
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-  if (error || !data) {
-    console.error(`Ошибка загрузки данных для slug "${slug}":`, error);
-    return null;
-  }
-  return data as Car;
-}
+  // --- ИЗМЕНЕНИЕ: Неиспользуемая функция удалена ---
+  // const handleLoginButtonClick = () => {
+  //   setShowLoginModal(true);
+  // };
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-    const car = await getCarData(params.slug);
-    if (!car) { return { title: 'Автомобиль не найден' }; }
-    return {
-        title: `${car.name} | TopCar`,
-        description: car.description || `Аренда ${car.name} в Алматы.`,
-    };
-}
+  const scrollToCatalog = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const catalogSection = document.getElementById('car-catalog');
+    if (catalogSection) {
+      catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
-// Компонент для отображения цен
-function PriceList({ prices }: { prices: Price[] }) {
-    const withoutDriver = prices.filter(p => !p.with_driver).sort((a, b) => a.days_from - b.days_from);
-    const withDriver = prices.filter(p => p.with_driver).sort((a, b) => a.days_from - b.days_from);
+  return (
+    <AnimatedPageWrapper>
+      <main className="min-h-screen bg-neutral-950 text-white font-sans">
+       <Header />
 
-    // Функция для правильного склонения слова "час"
-    const formatHourText = (hours: number) => {
-        if (hours === 24) return 'часа (сутки)';
-        const cases = [2, 0, 1, 1, 1, 2]; // Падежи для 0, 1, 2, 3, 4, 5+
-        const titles = ['час', 'часа', 'часов'];
-        return titles[(hours % 100 > 4 && hours % 100 < 20) ? 2 : cases[(hours % 10 < 5) ? hours % 10 : 5]];
-    };
+        {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
 
-    const PriceCard = ({ title, priceList, icon }: { title: string, priceList: Price[], icon?: React.ReactNode }) => (
-        <div className="space-y-3">
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">{icon}{title}</h3>
-            <div className="divide-y divide-neutral-700/50 border-t border-b border-neutral-700/50">
-                {priceList.map(p => (
-                    <div key={p.id} className="py-3">
-                        <div className="flex justify-between items-center">
-                            <span className="font-semibold text-neutral-200">
-                                {`${p.days_from} ${formatHourText(p.days_from)}`}
-                            </span>
-                            <span className="font-mono text-lg font-semibold text-[#d4af37]">
-                                <FormattedPrice value={p.price_per_day} /> ₸
-                            </span>
-                        </div>
-                        {p.conditions && <p className="text-xs text-neutral-500 mt-1">{p.conditions}</p>}
-                    </div>
-                ))}
+        <section className="relative h-screen flex flex-col items-center justify-center text-center overflow-hidden">
+          <video
+            src="/videos/hero-rolls.mp4"
+            className="absolute inset-0 w-full h-full object-cover filter brightness-75 contrast-125"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/80" />
+
+          <div className="relative z-10 px-4 sm:px-6 max-w-4xl lg:max-w-5xl text-shadow-strong">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-tight leading-tight md:leading-snug text-white animate-fadeInUp">
+              Владей Моментом. <br className="hidden sm:block" /> Арендуй <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f0dca0] to-[#d4af37]">Роскошь</span>.
+            </h1>
+            <p className="mt-6 md:mt-8 text-lg sm:text-xl lg:text-2xl text-neutral-200 max-w-xl lg:max-w-2xl mx-auto animate-fadeInUp animation-delay-300">
+              Эксклюзивный автопарк премиум-класса в Алматы. Ваш безупречный стиль начинается здесь.
+            </p>
+            <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-fadeInUp animation-delay-600">
+              <a
+                href="#car-catalog"
+                onClick={scrollToCatalog}
+                className="group relative w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-[#d4af37] text-black rounded-lg text-base sm:text-lg font-bold hover:bg-[#c0982c] transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 active:translate-y-0"
+              >
+                <span>Исследовать Автопарк</span>
+                <ArrowRightIcon className="ml-2 -mr-1 h-5 w-6 transition-transform duration-300 group-hover:translate-x-1.5" />
+              </a>
+              <div className="w-full sm:w-auto">
+                {isMounted && !isLoading && (
+                  user ? (
+                    <Link href="/dashboard" className="group relative w-full inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 border-2 border-[#d4af37] text-[#d4af37] rounded-lg text-base sm:text-lg font-bold hover:bg-[#d4af37] hover:text-black transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-lg hover:shadow-xl transform hover:-translate-y-1 active:translate-y-0">
+                      <UserCircleIcon className="mr-2 -ml-1 h-6 w-6 transition-colors duration-300 group-hover:text-black" />
+                      <span>Личный кабинет</span>
+                    </Link>
+                  ) : (
+                    <a href="https://wa.me/77776660295" target="_blank" rel="noopener noreferrer" className="group relative w-full inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 border-2 border-white text-white rounded-lg text-base sm:text-lg font-semibold hover:bg-white hover:text-black transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-white/50 shadow-lg hover:shadow-xl transform hover:-translate-y-1 active:translate-y-0">
+                      <ChatBubbleLeftRightIcon className="mr-2 -ml-1 h-6 w-6 transition-colors duration-300 group-hover:text-black" />
+                      <span>Связаться</span>
+                    </a>
+                  )
+                )}
+              </div>
             </div>
-        </div>
-    );
+          </div>
+        </section>
 
-    return (
-        <div className="bg-neutral-900 border border-border rounded-2xl p-6 sm:p-8 space-y-8">
-            {withoutDriver.length > 0 && <PriceCard title="Без водителя" priceList={withoutDriver} />}
-            {withDriver.length > 0 && <PriceCard title="С водителем" priceList={withDriver} icon={<CarFront size={22} />} />}
-        </div>
-    );
-}
-
-export default async function CarDetailPage({ params }: { params: { slug: string } }) {
-    const car = await getCarData(params.slug);
-    if (!car) { notFound(); }
-
-    const features = [
-      { icon: Zap, label: 'Мощность', value: car.power ? `${car.power} л.с.` : 'н/д' },
-      { icon: Clock, label: 'Разгон до 100', value: car.acceleration ? `${car.acceleration} сек` : 'н/д' },
-      { icon: Fuel, label: 'Тип топлива', value: car.fuel_type || 'н/д' },
-      { icon: Dna, label: 'Привод', value: car.drive_type || 'н/д' },
-      { icon: Users, label: 'Кол-во мест', value: car.seats || 'н/д' },
-      { icon: Info, label: 'Год выпуска', value: car.year || 'н/д' },
-    ];
-
-    return (
-        <AnimatedPageWrapper>
-            <Header />
-            <main className="bg-background py-28 sm:py-32">
-                <div className="container mx-auto px-4 space-y-16 sm:space-y-24">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
-                        <div className="space-y-4">
-                            <div className="aspect-video w-full relative rounded-xl overflow-hidden border border-border shadow-lg">
-                                <Image src={car.image_url} alt={car.name} fill className="object-cover" priority sizes="(max-width: 1024px) 100vw, 50vw" />
-                            </div>
-                            {car.gallery_images && car.gallery_images.length > 0 && (
-                                <div className="grid grid-cols-4 gap-4">
-                                    {car.gallery_images.map((imgSrc, index) => (
-                                        <div key={index} className="aspect-video relative rounded-lg overflow-hidden border-2 border-transparent hover:border-[#d4af37] transition cursor-pointer">
-                                            <Image src={imgSrc} alt={`${car.name} галерея ${index + 1}`} fill className="object-cover" sizes="(max-width: 768px) 20vw, 10vw" />
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                        <div>
-                            <p className="text-[#d4af37] font-semibold mb-2">{car.brand} - {car.class}</p>
-                            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">{car.name}</h1>
-                            <div className="prose prose-invert text-neutral-300 space-y-4 leading-relaxed">
-                               <p>{car.description}</p>
-                               {car.full_description && <p>{car.full_description}</p>}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
-                         <div>
-                            <h2 className="text-3xl font-bold text-white mb-6">Характеристики</h2>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
-                                {features.map(f => ( f.value !== 'н/д' && (
-                                    <div key={f.label} className="bg-neutral-900 p-4 rounded-lg border border-border">
-                                        <f.icon className="w-6 h-6 text-[#d4af37] mb-2" />
-                                        <p className="text-neutral-400">{f.label}</p>
-                                        <p className="font-semibold text-white">{f.value}</p>
-                                    </div>
-                                )))}
-                            </div>
-                         </div>
-                         <div>
-                            <h2 className="text-3xl font-bold text-white mb-6">Тарифы</h2>
-                            {car.prices && car.prices.length > 0 
-                                ? <PriceList prices={car.prices} />
-                                : <p className="text-center text-neutral-500">Прайс-лист для этого автомобиля скоро появится.</p>
-                            }
-                         </div>
-                    </div>
-                    <div className="mt-16 sm:mt-24">
-                        <BookingForm initialCarName={car.name} />
-                    </div>
-                </div>
-            </main>
-            <Footer />
-        </AnimatedPageWrapper>
-    );
+        <CarCatalog />
+        <ServicesSection />
+        <FAQ />
+        <Subscription />
+        <Footer />
+      </main>
+    </AnimatedPageWrapper>
+  );
 }
