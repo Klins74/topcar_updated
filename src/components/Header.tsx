@@ -13,11 +13,9 @@ import NavButton from '@/components/ui/NavButton';
 import MobileNavLink from '@/components/MobileNavLink';
 import MobileActionButton from '@/components/MobileActionButton';
 import LoginModal from './LoginModal';
-// --- Компонент калькулятора уже импортирован, все верно ---
 import CalculatorModal from './CalculatorModal';
 import { useScrollLock } from '@/hooks/useScrollLock';
 
-// ... (variants and navItems remain the same)
 const menuVariants: Variants = {
   hidden: { opacity: 0, y: -10 },
   visible: {
@@ -61,7 +59,6 @@ const navItems = [
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  // --- Состояние для калькулятора уже есть, все правильно ---
   const [showCalcModal, setShowCalcModal] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -96,7 +93,7 @@ export default function Header() {
     if (isMenuOpen) {
       setIsMenuOpen(false);
     }
-  }, [pathname]);
+  }, [pathname, isMenuOpen]); // <-- ИЗМЕНЕНИЕ ЗДЕСЬ
 
   useEffect(() => {
     if (isMenuOpen && menuRef.current) {
@@ -113,7 +110,6 @@ export default function Header() {
     action();
   }, []);
   const handleLogin = useCallback(() => handleAction(() => setShowLoginModal(true)), [handleAction]);
-  // --- Функция для открытия калькулятора уже есть ---
   const openCalcModal = useCallback(() => handleAction(() => setShowCalcModal(true)), [handleAction]);
   const handleLogout = useCallback(() => handleAction(signOut), [handleAction, signOut]);
 
@@ -137,7 +133,6 @@ export default function Header() {
 
           <div className="flex items-center gap-2">
             <div className="hidden lg:flex items-center gap-2">
-              {/* --- Кнопка для вызова калькулятора на месте --- */}
               <NavButton onClick={() => setShowCalcModal(true)} title="Калькулятор аренды"><Calculator size={22} /></NavButton>
               {isMounted && !isLoading ? (
                 user ? (
@@ -199,7 +194,6 @@ export default function Header() {
                   <div className="border-t border-border/50"></div>
 
                   <div className="flex flex-col gap-1 pt-3">
-                      {/* --- Кнопка вызова в мобильном меню тоже на месте --- */}
                       <motion.div variants={menuItemVariants}><MobileActionButton onClick={openCalcModal}><Calculator size={20} /><span>Калькулятор</span></MobileActionButton></motion.div>
                       <motion.div variants={menuItemVariants}><MobileNavLink href="/download" currentPath={pathname} onClick={toggleMenu}><Download size={20} /><span>Скачать приложение</span></MobileNavLink></motion.div>
                   </div>
@@ -219,7 +213,6 @@ export default function Header() {
       
       {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
       
-      {/* --- Вызов модального окна калькулятора в конце файла, все отлично --- */}
       <CalculatorModal isOpen={showCalcModal} onClose={() => setShowCalcModal(false)} />
     </>
   );

@@ -11,7 +11,7 @@ import FormattedPrice from '@/components/FormattedPrice';
 import { Zap, Clock, Fuel, Dna, Users, Info, CarFront } from 'lucide-react';
 import BookingForm from '@/components/BookingForm';
 
-type Props = { params: { slug: string; }; };
+// Тип Props больше не нужен
 
 // Загружаем машину вместе с ценами одним запросом
 async function getCarData(slug: string): Promise<Car | null> {
@@ -29,7 +29,7 @@ async function getCarData(slug: string): Promise<Car | null> {
   return data as Car;
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: { params: { slug: string } }) {
     const car = await getCarData(params.slug);
     if (!car) { return { title: 'Автомобиль не найден' }; }
     return {
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props) {
     };
 }
 
-// --- КОМПОНЕНТ ДЛЯ ОТОБРАЖЕНИЯ ЦЕН (ИСПРАВЛЕННЫЙ) ---
+// Компонент для отображения цен
 function PriceList({ prices }: { prices: Price[] }) {
     const withoutDriver = prices.filter(p => !p.with_driver).sort((a, b) => a.days_from - b.days_from);
     const withDriver = prices.filter(p => p.with_driver).sort((a, b) => a.days_from - b.days_from);
@@ -58,7 +58,6 @@ function PriceList({ prices }: { prices: Price[] }) {
                 {priceList.map(p => (
                     <div key={p.id} className="py-3">
                         <div className="flex justify-between items-center">
-                            {/* --- ИЗМЕНЕНИЕ ЗДЕСЬ --- */}
                             <span className="font-semibold text-neutral-200">
                                 {`${p.days_from} ${formatHourText(p.days_from)}`}
                             </span>
@@ -81,7 +80,7 @@ function PriceList({ prices }: { prices: Price[] }) {
     );
 }
 
-export default async function CarDetailPage({ params }: Props) {
+export default async function CarDetailPage({ params }: { params: { slug: string } }) {
     const car = await getCarData(params.slug);
     if (!car) { notFound(); }
 
