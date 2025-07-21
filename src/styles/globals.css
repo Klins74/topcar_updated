@@ -1,3 +1,5 @@
+/* src/styles/globals.css */
+
 @import "tailwindcss";
 @tailwind base;
 @tailwind components;
@@ -8,9 +10,9 @@
   /* 1. Централизованные переменные для всего сайта */
   :root {
     /* Цветовая палитра: чуть мягче для глаз и премиальнее */
-    --background: #0a0a0a;  /* Вместо чистого #000000 */
-    --foreground: #f5f5f5;  /* Вместо чистого #ffffff */
-    --card: #171717;        /* Цвет для карточек, модальных окон */
+    --background: #0a0a0a;    /* Вместо чистого #000000 */
+    --foreground: #f5f5f5;    /* Вместо чистого #ffffff */
+    --card: #171717;          /* Цвет для карточек, модальных окон */
     --border: #27272a;        /* Цвет для границ, разделителей */
 
     /* Фирменный акцент TopCar (Ваш золотой цвет) */
@@ -99,6 +101,11 @@
   }
   .animation-delay-600 {
     animation-delay: 0.6s;
+  }
+
+  /* ДОБАВЛЕНО: Класс для блокировки прокрутки, используемый useScrollLock */
+  .overflow-hidden { 
+    overflow: hidden !important;
   }
 }
 
