@@ -14,33 +14,36 @@ import MobileNavLink from '@/components/MobileNavLink';
 import MobileActionButton from '@/components/MobileActionButton';
 import LoginModal from './LoginModal';
 import CalculatorModal from './CalculatorModal';
-// useScrollLock все еще нужен для блокировки прокрутки
 import { useScrollLock } from '@/hooks/useScrollLock';
 
+// Импортируем только используемые иконки, чтобы избежать предупреждений
 import { Menu, X, User, Download, Calculator, MessageSquare, LogOut, Loader2 } from 'lucide-react';
 
+
 const menuVariants: Variants = {
-  hidden: { x: '100%' }, // Изначально справа за экраном
+  hidden: { opacity: 0, y: -10 },
   visible: {
-    x: '0%', // При открытии - на 0%
+    opacity: 1,
+    y: 0,
     transition: {
-      duration: 0.3,
+      duration: 0.2,
       ease: 'easeOut',
       when: "beforeChildren",
       staggerChildren: 0.04,
     },
   },
   exit: {
-    x: '100%', // При закрытии - обратно справа за экран
+    opacity: 0,
+    y: -10,
     transition: {
-      duration: 0.2,
+      duration: 0.15,
       ease: 'easeIn',
     },
   },
 };
 
 const menuItemVariants: Variants = {
-  hidden: { opacity: 0, x: 20 },
+  hidden: { opacity: 0, x: -15 },
   visible: { opacity: 1, x: 0 },
 };
 
@@ -90,11 +93,13 @@ export default function Header() {
     };
   }, []);
 
+  // ИЗМЕНЕНИЕ: Убираем isMenuOpen из зависимостей
   useEffect(() => {
-    if (isMenuOpen) { 
-      setIsMenuOpen(false); 
+    // Этот эффект должен закрывать меню ТОЛЬКО при изменении маршрута
+    if (isMenuOpen) { // Если меню открыто, и мы перешли на новую страницу
+      setIsMenuOpen(false); // Закрываем его
     }
-  }, [pathname]); 
+  }, [pathname]); // <-- ИЗМЕНЕНИЕ ЗДЕСЬ: только pathname в зависимостях
 
   useEffect(() => {
     if (isMenuOpen && menuRef.current) {
@@ -107,22 +112,12 @@ export default function Header() {
 
   const toggleMenu = useCallback(() => setIsMenuOpen(prev => !prev), []);
   const handleAction = useCallback((action: () => void) => {
-    setIsMenuOpen(false); 
+    setIsMenuOpen(false); // Закрываем меню после действия
     action();
   }, []);
   const handleLogin = useCallback(() => handleAction(() => setShowLoginModal(true)), [handleAction]);
   const openCalcModal = useCallback(() => handleAction(() => setShowCalcModal(true)), [handleAction]);
   const handleLogout = useCallback(() => handleAction(signOut), [handleAction, signOut]);
-
-  // Добавляем/удаляем класс для body
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.classList.add('mobile-menu-open');
-    } else {
-      document.body.classList.remove('mobile-menu-open');
-    }
-  }, [isMenuOpen]);
-
 
   return (
     <>
@@ -172,13 +167,9 @@ export default function Header() {
                 id="mobile-menu"
                 role="dialog" aria-modal="true" aria-labelledby="menu-heading"
                 variants={menuVariants} initial="hidden" animate="visible" exit="exit"
-                // Изменения здесь:
-                // fixed вместо absolute, чтобы всегда быть в viewport
-                // right-0 чтобы привязать к правой стороне
-                // w-3/4 или w-64 чтобы задать ширину меню
-                className="fixed top-0 right-0 h-full w-3/4 max-w-xs bg-background/95 backdrop-blur-lg border-l border-border shadow-lg lg:hidden z-[999]" 
+                className="absolute top-full left-0 w-full bg-background/95 backdrop-blur-lg border-b border-border shadow-lg rounded-b-xl lg:hidden"
               >
-                <div className="flex flex-col p-4 pt-24 h-full overflow-y-auto"> {/* Добавляем отступ сверху, чтобы не перекрывать хедер */}
+                <div className="container mx-auto flex flex-col p-4">
                   <div className="flex flex-col gap-1 pb-3">
                     <motion.h2 variants={menuItemVariants} id="menu-heading" className="px-3 pt-1 pb-2 text-sm font-semibold text-muted-foreground">Навигация</motion.h2>
                     {navItems.map((item) => (
