@@ -71,6 +71,7 @@ export default function Header() {
   const { user, isLoading, signOut } = useAuth();
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Это уже правильно используется для блокировки прокрутки
   useScrollLock(isMenuOpen || showLoginModal || showCalcModal);
 
   useEffect(() => {
@@ -93,13 +94,12 @@ export default function Header() {
     };
   }, []);
 
-  // ИЗМЕНЕНИЕ: Убираем isMenuOpen из зависимостей
+  // Закрываем меню при изменении маршрута
   useEffect(() => {
-    // Этот эффект должен закрывать меню ТОЛЬКО при изменении маршрута
-    if (isMenuOpen) { // Если меню открыто, и мы перешли на новую страницу
-      setIsMenuOpen(false); // Закрываем его
+    if (isMenuOpen) { 
+      setIsMenuOpen(false); 
     }
-  }, [pathname]); // <-- ИЗМЕНЕНИЕ ЗДЕСЬ: только pathname в зависимостях
+  }, [pathname]); 
 
   useEffect(() => {
     if (isMenuOpen && menuRef.current) {
@@ -112,7 +112,7 @@ export default function Header() {
 
   const toggleMenu = useCallback(() => setIsMenuOpen(prev => !prev), []);
   const handleAction = useCallback((action: () => void) => {
-    setIsMenuOpen(false); // Закрываем меню после действия
+    setIsMenuOpen(false); 
     action();
   }, []);
   const handleLogin = useCallback(() => handleAction(() => setShowLoginModal(true)), [handleAction]);
@@ -167,7 +167,8 @@ export default function Header() {
                 id="mobile-menu"
                 role="dialog" aria-modal="true" aria-labelledby="menu-heading"
                 variants={menuVariants} initial="hidden" animate="visible" exit="exit"
-                className="absolute top-full left-0 w-full bg-background/95 backdrop-blur-lg border-b border-border shadow-lg rounded-b-xl lg:hidden"
+                // Убедитесь, что z-index достаточно высок, чтобы перекрыть все остальное
+                className="absolute top-full left-0 w-full bg-background/95 backdrop-blur-lg border-b border-border shadow-lg rounded-b-xl lg:hidden z-40" // z-40 или z-50
               >
                 <div className="container mx-auto flex flex-col p-4">
                   <div className="flex flex-col gap-1 pb-3">

@@ -229,6 +229,6 @@ export default function CarCatalog() {
             </FadeInWhenVisible>
         )}
       </div>
-    </section>
-  )
-}
+      </section>
+    );
+  }
