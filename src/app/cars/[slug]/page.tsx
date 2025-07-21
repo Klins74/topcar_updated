@@ -5,14 +5,16 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper';
 import BookingForm from '@/components/BookingForm';
-// import { fleet } from '@/lib/fleet'; // БОЛЬШЕ НЕ НУЖНО ИСПОЛЬЗОВАТЬ ЛОКАЛЬНЫЙ ФЛОТ
-import { getSupabase } from '@/lib/supabase'; // Импортируем Supabase клиент
-import { Car } from '@/types'; // Убедитесь, что Car тип включает все нужные поля
+import { getSupabase } from '@/lib/supabase';
+import { Car } from '@/types';
 
+// Исправляем предупреждения: удаляем неиспользуемые импорты
 import {
-  Zap, Fuel, Dna, Users, Info, DollarSign,
-  PhoneIcon, CalendarDaysIcon, ClockIcon, MessageSquare
+  Zap, Fuel, Dna, Users, Info, ClockIcon, MessageSquare
 } from 'lucide-react';
+// DollarSign, PhoneIcon, CalendarDaysIcon были удалены, так как они не используются напрямую здесь.
+// Если они нужны для других целей, используйте их в соответствующих компонентах.
+
 
 // Функция для получения деталей автомобиля из Supabase
 async function getCarDetails(slug: string): Promise<Car | null> {
@@ -31,10 +33,11 @@ async function getCarDetails(slug: string): Promise<Car | null> {
 }
 
 // Если вы хотите использовать динамические метаданные
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  // Поскольку generateMetadata может работать на сервере, 
-  // мы получаем данные напрямую здесь.
-  const car = await getCarDetails(params.slug); 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) { // ИЗМЕНЕНИЕ ТИПА ЗДЕСЬ
+  // Ожидаем params, как того требует компилятор, несмотря на то, что это не обычный Promise
+  const { slug } = await params; 
+  
+  const car = await getCarDetails(slug); 
 
   if (!car) {
     return {
@@ -66,9 +69,12 @@ export async function generateStaticParams() {
 }
 
 
-export default async function CarDetailPage({ params }: { params: { slug: string } }) {
-  // Получаем детали автомобиля асинхронно
-  const car = await getCarDetails(params.slug);
+export default async function CarDetailPage({ params }: { params: Promise<{ slug: string }> }) { // ИЗМЕНЕНИЕ ТИПА ЗДЕСЬ
+  // Ожидаем params, как того требует компилятор
+  const { slug } = await params;
+
+  // Теперь car будет содержать данные из Supabase
+  const car = await getCarDetails(slug);
 
   if (!car) {
     notFound(); // Отобразит страницу 404, если автомобиль не найден
@@ -103,7 +109,7 @@ export default async function CarDetailPage({ params }: { params: { slug: string
                   fill
                   priority
                   className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw" // Добавлено свойство sizes
+                  sizes="(max-width: 1024px) 100vw, 50vw" 
                 />
               </div>
               {car.gallery_images && car.gallery_images.length > 0 && (
@@ -115,7 +121,7 @@ export default async function CarDetailPage({ params }: { params: { slug: string
                         alt={`${car.name} - ${index + 1}`}
                         fill
                         className="object-cover"
-                        sizes="(max-width: 640px) 33vw, 25vw" // Пример для галереи
+                        sizes="(max-width: 640px) 33vw, 25vw" 
                       />
                     </div>
                   ))}
