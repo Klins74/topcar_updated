@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import CarCatalog from '@/components/CarCatalog';
 import ServicesSection from '@/components/ServicesSection';
-import RentalCalculator from '@/components/RentalCalculator';
 import FAQ from '@/components/FAQ';
 import Subscription from '@/components/Subscription';
 import Footer from '@/components/Footer';
@@ -95,7 +94,6 @@ export default function HomePage() {
 
         <CarCatalog />
         <ServicesSection />
-        <RentalCalculator />
         <FAQ />
         <Subscription />
         <Footer />

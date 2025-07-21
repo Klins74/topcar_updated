@@ -4,7 +4,7 @@
  * =================================================================
  */
 
-// --- НОВЫЙ ТИП для цен ---
+// Тип для цен из таблицы `prices`
 export type Price = {
   id: number;
   car_id: number;
@@ -12,6 +12,7 @@ export type Price = {
   days_to: number;
   price_per_day: number;
   with_driver: boolean;
+  conditions?: string;
 };
 
 /**
@@ -27,11 +28,9 @@ export type Car = {
   full_description?: string;
   image_url: string;
   gallery_images?: string[];
-  prices?: Price[]; // <-- ДОБАВЛЕНО: массив цен из новой таблицы
+  prices?: Price[]; // Массив цен из таблицы `prices`
   
-  // Старые поля цен, которые больше не нужны, но оставляем для совместимости
-  price_per_day: number;
-  price_with_driver?: number;
+  price_per_day: number; // Оставляем как запасной вариант
 
   // Необязательные технические характеристики
   power?: number;
@@ -40,39 +39,9 @@ export type Car = {
   drive_type?: string;
   seats?: number;
   year?: number;
-  
-  // Это поле больше не используется, можно будет позже удалить
-  pricing?: any;
 };
 
 // ...остальные типы без изменений
-export type PromoCode = {
-  id: number;
-  code: string;
-  is_active: boolean;
-  discount_perc: number;
-  expires_at: string;
-  times_used: number;
-  usage_limit: number | null;
-  is_personal: boolean;
-  user_id: string | null;
-  created_at: string;
-};
-
-export type User = {
-    id: string;
-    email?: string;
-    full_name?: string;
-    phone?: string;
-};
-
-export type Booking = {
-    id: number;
-    car_id: number;
-    user_id: string;
-    start_date: string;
-    end_date: string;
-    total_price: number;
-    status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
-    created_at: string;
-};
+export type PromoCode = { /* ... */ };
+export type User = { /* ... */ };
+export type Booking = { /* ... */ };

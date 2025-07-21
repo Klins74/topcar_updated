@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronDownIcon, FunnelIcon, NoSymbolIcon } from '@heroicons/react/24/outline'
@@ -13,23 +13,75 @@ import SkeletonCard from './SkeletonCard'
 const MIN_PRICE = 30000;
 const MAX_PRICE = 500000;
 
+// --- КОМПОНЕНТ КАРТОЧКИ АВТОМОБИЛЯ ---
+function CarCard({ car }: { car: Car; }) {
+  // --- ИЗМЕНЕНИЕ: Ищем конкретную цену за 24 часа ---
+  const basePrice = car.prices?.find(p => !p.with_driver && p.days_from === 24)?.price_per_day || car.price_per_day;
+
+  return (
+    <Link
+      href={`/cars/${car.slug}`}
+      className="relative group aspect-[16/10] w-full rounded-xl overflow-hidden shadow-xl cursor-pointer bg-black transform hover:-translate-y-1.5 transition-all duration-300 ease-in-out flex-grow"
+    >
+      <Image
+        src={car.image_url || '/cars/placeholder-car.png'}
+        alt={car.name}
+        fill
+        className="transition-transform duration-500 ease-in-out group-hover:scale-110 object-cover"
+        priority={car.id <= 3}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        onError={(e) => { (e.target as HTMLImageElement).src = '/cars/placeholder-car.png'; }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+      
+      <div className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-end text-white z-10 
+                       opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">
+        <h3 className="text-lg font-bold mb-2">{car.name}</h3>
+        <p className="text-xs sm:text-sm text-neutral-300 line-clamp-3 sm:line-clamp-4">
+          {car.description || 'Превосходный автомобиль для ваших поездок.'}
+        </p>
+      </div>
+
+      <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 text-white z-20 
+                       group-hover:opacity-0 transition-opacity duration-300">
+        <h3 className="text-base sm:text-lg lg:text-xl font-bold tracking-tight leading-tight mb-0.5 truncate" title={car.name}>
+          {car.name}
+        </h3>
+        {basePrice > 0 ? (
+          <p className="text-sm sm:text-base font-semibold text-[#d4af37]">
+            {/* --- ИЗМЕНЕНИЕ: Обновляем текст и убираем "от" --- */}
+            <FormattedPrice value={basePrice} /> ₸ <span className="text-xs text-white/70">/ 24 часа</span>
+          </p>
+        ) : (
+          <p className="text-sm sm:text-base font-semibold text-[#d4af37]">
+            Подробнее
+          </p>
+        )}
+      </div>
+    </Link>
+  )
+}
+
+
+// --- ОСНОВНОЙ КОМПОНЕНТ КАТАЛОГА ---
 export default function CarCatalog() {
   const [allCars, setAllCars] = useState<Car[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  const [maxPrice, setMaxPrice] = useState<number>(MAX_PRICE)
-  const [selectedBrand, setSelectedBrand] = useState('')
-  const [selectedClass, setSelectedClass] = useState<'Economy' | 'Business' | 'Premium' | 'Luxury' | ''>('')
-  const [showFiltersMobile, setShowFiltersMobile] = useState(false)
+  const [maxPrice, setMaxPrice] = useState<number>(MAX_PRICE);
+  const [selectedBrand, setSelectedBrand] = useState('');
+  const [selectedClass, setSelectedClass] = useState<'Economy' | 'Business' | 'Premium' | 'Luxury' | ''>('');
+  const [showFiltersMobile, setShowFiltersMobile] = useState(false);
 
   useEffect(() => {
     const fetchCars = async () => {
       setIsLoading(true);
       const supabase = getSupabase();
-      const { data, error } = await supabase.from('cars').select('*').order('id');
+      // Загружаем машины вместе с их ценами
+      const { data, error } = await supabase.from('cars').select('*, prices (*)').order('id');
       
       if (error) {
-        console.error("Ошибка загрузки автомобилей:", error);
+        console.error("Ошибка загрузки автомобилей с ценами:", error);
       } else if (data) {
         setAllCars(data as Car[]);
       }
@@ -41,14 +93,17 @@ export default function CarCatalog() {
   const allBrands = [...new Set(allCars.map(c => c.brand))].sort();
   const allClasses = ['Economy', 'Business', 'Premium', 'Luxury'] as const;
   
-  const filtered = allCars.filter(c => {
-    const dailyPrice = c.pricing?.withoutDriver?.['24h'] || c.price_per_day || 0;
-    return (
-      dailyPrice <= maxPrice &&
-      (!selectedBrand || c.brand === selectedBrand) &&
-      (!selectedClass || c.class === selectedClass)
-    );
-  });
+  // Используем useMemo для оптимизации фильтрации
+  const filteredCars = useMemo(() => {
+    return allCars.filter(car => {
+        const dailyPrice = car.prices?.find(p => !p.with_driver && p.days_from === 24)?.price_per_day || car.price_per_day || 0;
+        return (
+            dailyPrice <= maxPrice &&
+            (!selectedBrand || car.brand === selectedBrand) &&
+            (!selectedClass || car.class === selectedClass)
+        );
+    });
+  }, [allCars, maxPrice, selectedBrand, selectedClass]);
   
   const resetFilters = () => {
     setMaxPrice(MAX_PRICE);
@@ -100,27 +155,7 @@ export default function CarCatalog() {
                   step={10000}
                   value={maxPrice}
                   onChange={e => setMaxPrice(Number(e.target.value))}
-                  className="w-full h-3 bg-transparent appearance-none cursor-pointer group
-                             focus:outline-none 
-                             [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full 
-                             [&::-webkit-slider-runnable-track]:bg-neutral-700
-                             [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full 
-                             [&::-moz-range-track]:bg-neutral-700
-                             [&::-webkit-slider-thumb]:appearance-none 
-                             [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 
-                             [&::-webkit-slider-thumb]:bg-[#d4af37] 
-                             [&::-webkit-slider-thumb]:rounded-full 
-                             [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-neutral-900
-                             [&::-webkit-slider-thumb]:shadow-md
-                             [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:duration-150 [&::-webkit-slider-thumb]:ease-in-out
-                             [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:active:scale-125
-                             [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 
-                             [&::-moz-range-thumb]:bg-[#d4af37] 
-                             [&::-moz-range-thumb]:rounded-full 
-                             [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-neutral-900
-                             [&::-moz-range-thumb]:shadow-md
-                             [&::-moz-range-thumb]:transition-all [&::-moz-range-thumb]:duration-150 [&::-moz-range-thumb]:ease-in-out
-                             [&::-moz-range-thumb]:hover:scale-110 [&::-moz-range-thumb]:active:scale-125"
+                  className="w-full h-3 bg-transparent appearance-none cursor-pointer group focus:outline-none [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-neutral-700 [&::-moz-range-track]:h-1.5 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-neutral-700 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#d4af37] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-neutral-900 [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:duration-150 [&::-webkit-slider-thumb]:ease-in-out [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:active:scale-125 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-[#d4af37] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-neutral-900 [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition-all [&::-moz-range-thumb]:duration-150 [&::-moz-range-thumb]:ease-in-out [&::-moz-range-thumb]:hover:scale-110 [&::-moz-range-thumb]:active:scale-125"
                   style={{ background: `linear-gradient(to right, #d4af37 0%, #d4af37 ${pricePercentage}%, #404040 ${pricePercentage}%, #404040 100%)` }}
                 />
                 <div className="flex justify-between text-xs text-neutral-500 mt-1">
@@ -131,41 +166,21 @@ export default function CarCatalog() {
               <div>
                 <label htmlFor="classFilter" className="block text-xs sm:text-sm font-medium text-neutral-300 mb-1.5">Класс</label>
                 <div className="relative">
-                  <select
-                    id="classFilter"
-                    className="w-full pl-3 pr-10 py-2.5 text-sm text-white bg-neutral-800 border border-neutral-600 rounded-lg 
-                                 focus:outline-none focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] appearance-none"
-                    value={selectedClass}
-                    onChange={e => setSelectedClass(e.target.value as typeof selectedClass)}
-                  >
+                  <select id="classFilter" className="w-full pl-3 pr-10 py-2.5 text-sm text-white bg-neutral-800 border border-neutral-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] appearance-none" value={selectedClass} onChange={e => setSelectedClass(e.target.value as typeof selectedClass)}>
                     <option value="" className="text-neutral-400 bg-neutral-800">Все классы</option>
-                    {allClasses.map(c => (
-                      <option key={c} value={c} className="text-white bg-neutral-800">{c}</option>
-                    ))}
+                    {allClasses.map(c => (<option key={c} value={c} className="text-white bg-neutral-800">{c}</option>))}
                   </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400">
-                    <ChevronDownIcon className="h-5 w-5" />
-                  </div>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400"><ChevronDownIcon className="h-5 w-5" /></div>
                 </div>
               </div>
               <div>
                 <label htmlFor="brandFilter" className="block text-xs sm:text-sm font-medium text-neutral-300 mb-1.5">Марка</label>
                   <div className="relative">
-                    <select
-                        id="brandFilter"
-                        className="w-full pl-3 pr-10 py-2.5 text-sm text-white bg-neutral-800 border border-neutral-600 rounded-lg 
-                                   focus:outline-none focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] appearance-none"
-                        value={selectedBrand}
-                        onChange={e => setSelectedBrand(e.target.value)}
-                    >
+                    <select id="brandFilter" className="w-full pl-3 pr-10 py-2.5 text-sm text-white bg-neutral-800 border border-neutral-600 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] appearance-none" value={selectedBrand} onChange={e => setSelectedBrand(e.target.value)}>
                         <option value="" className="text-neutral-400 bg-neutral-800">Все марки</option>
-                        {allBrands.map(b => (
-                        <option key={b} value={b} className="text-white bg-neutral-800">{b}</option>
-                        ))}
+                        {allBrands.map(b => (<option key={b} value={b} className="text-white bg-neutral-800">{b}</option>))}
                     </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400">
-                        <ChevronDownIcon className="h-5 w-5" />
-                    </div>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400"><ChevronDownIcon className="h-5 w-5" /></div>
                   </div>
               </div>
             </div>
@@ -174,13 +189,11 @@ export default function CarCatalog() {
 
         {isLoading ? (
             <div className="grid gap-x-6 gap-y-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                {Array.from({ length: 6 }).map((_, index) => (
-                    <SkeletonCard key={index} />
-                ))}
+                {Array.from({ length: 6 }).map((_, index) => (<SkeletonCard key={index} />))}
             </div>
-        ) : filtered.length > 0 ? (
+        ) : filteredCars.length > 0 ? (
             <div className="grid gap-x-6 gap-y-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                {filtered.map(car => (
+                {filteredCars.map(car => (
                 <FadeInWhenVisible key={car.id} className="flex">
                     <CarCard car={car} />
                 </FadeInWhenVisible>
@@ -192,10 +205,7 @@ export default function CarCatalog() {
                     <NoSymbolIcon className="h-16 w-16 text-neutral-700 mx-auto mb-4" />
                     <p className="text-xl font-semibold text-neutral-300 mb-2">Автомобили не найдены</p>
                     <p className="text-neutral-400 mb-6">Попробуйте изменить критерии поиска.</p>
-                    <button 
-                        onClick={resetFilters}
-                        className="px-5 py-2.5 text-sm font-semibold text-black bg-[#d4af37] rounded-lg hover:bg-[#c0982c] transition-colors"
-                    >
+                    <button onClick={resetFilters} className="px-5 py-2.5 text-sm font-semibold text-black bg-[#d4af37] rounded-lg hover:bg-[#c0982c] transition-colors">
                         Сбросить все фильтры
                     </button>
                 </div>
@@ -203,51 +213,5 @@ export default function CarCatalog() {
         )}
       </div>
     </section>
-  )
-}
-
-function CarCard({ car }: { car: Car; }) {
-  const basePrice = car.pricing?.withoutDriver?.['24h'] || car.price_per_day;
-
-  return (
-    <Link
-      href={`/cars/${car.slug}`} // <-- ИЗМЕНЕНИЕ ЗДЕСЬ
-      className="relative group aspect-[16/10] w-full rounded-xl overflow-hidden shadow-xl cursor-pointer bg-black transform hover:-translate-y-1.5 transition-all duration-300 ease-in-out flex-grow"
-    >
-      <Image
-        src={car.image_url || '/cars/placeholder-car.png'}
-        alt={car.name}
-        fill
-        className="transition-transform duration-500 ease-in-out group-hover:scale-110 object-cover"
-        priority={car.id <= 3}
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        onError={(e) => { (e.target as HTMLImageElement).src = '/cars/placeholder-car.png'; }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-      
-      <div className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-end text-white z-10 
-                       opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">
-        <h3 className="text-lg font-bold mb-2">{car.name}</h3>
-        <p className="text-xs sm:text-sm text-neutral-300 line-clamp-3 sm:line-clamp-4">
-          {car.description || 'Превосходный автомобиль для ваших поездок.'}
-        </p>
-      </div>
-
-      <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 text-white z-20 
-                       group-hover:opacity-0 transition-opacity duration-300">
-        <h3 className="text-base sm:text-lg lg:text-xl font-bold tracking-tight leading-tight mb-0.5 truncate" title={car.name}>
-          {car.name}
-        </h3>
-        {basePrice ? (
-          <p className="text-sm sm:text-base font-semibold text-[#d4af37]">
-            <FormattedPrice value={basePrice} /> ₸ <span className="text-xs text-white/70">/ день</span>
-          </p>
-        ) : (
-          <p className="text-sm sm:text-base font-semibold text-[#d4af37]">
-            Подробнее
-          </p>
-        )}
-      </div>
-    </Link>
   )
 }

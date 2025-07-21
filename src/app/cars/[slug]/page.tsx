@@ -2,28 +2,23 @@
 
 import { notFound } from 'next/navigation';
 import { getSupabase } from '@/lib/supabase';
-import { Car } from '@/types';
+import { Car, Price } from '@/types';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper';
 import Image from 'next/image';
 import FormattedPrice from '@/components/FormattedPrice';
-// --- ИЗМЕНЕНИЕ ЗДЕСЬ: Заменили SteeringWheel на CarFront ---
-import { Zap, Clock, Fuel, Dna, Users, Info, CarFront } from 'lucide-react'; 
+import { Zap, Clock, Fuel, Dna, Users, Info, CarFront } from 'lucide-react';
 import BookingForm from '@/components/BookingForm';
 
-type Props = {
-  params: {
-    slug: string;
-  };
-};
+type Props = { params: { slug: string; }; };
 
-// --- Функция для загрузки данных об автомобиле ---
+// Загружаем машину вместе с ценами одним запросом
 async function getCarData(slug: string): Promise<Car | null> {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('cars')
-    .select('*')
+    .select(`*, prices (*)`)
     .eq('slug', slug)
     .single();
 
@@ -34,27 +29,61 @@ async function getCarData(slug: string): Promise<Car | null> {
   return data as Car;
 }
 
-// --- Динамическая генерация метаданных для SEO ---
 export async function generateMetadata({ params }: Props) {
     const car = await getCarData(params.slug);
-    if (!car) {
-        return { title: 'Автомобиль не найден' };
-    }
+    if (!car) { return { title: 'Автомобиль не найден' }; }
     return {
         title: `${car.name} | TopCar`,
-        description: car.description || `Аренда ${car.name} в Алматы. Лучшие условия и сервис от TopCar.`,
+        description: car.description || `Аренда ${car.name} в Алматы.`,
     };
 }
 
-// --- Основной компонент страницы ---
+// --- КОМПОНЕНТ ДЛЯ ОТОБРАЖЕНИЯ ЦЕН (ИСПРАВЛЕННЫЙ) ---
+function PriceList({ prices }: { prices: Price[] }) {
+    const withoutDriver = prices.filter(p => !p.with_driver).sort((a, b) => a.days_from - b.days_from);
+    const withDriver = prices.filter(p => p.with_driver).sort((a, b) => a.days_from - b.days_from);
+
+    // Функция для правильного склонения слова "час"
+    const formatHourText = (hours: number) => {
+        if (hours === 24) return 'часа (сутки)';
+        const cases = [2, 0, 1, 1, 1, 2]; // Падежи для 0, 1, 2, 3, 4, 5+
+        const titles = ['час', 'часа', 'часов'];
+        return titles[(hours % 100 > 4 && hours % 100 < 20) ? 2 : cases[(hours % 10 < 5) ? hours % 10 : 5]];
+    };
+
+    const PriceCard = ({ title, priceList, icon }: { title: string, priceList: Price[], icon?: React.ReactNode }) => (
+        <div className="space-y-3">
+            <h3 className="text-xl font-bold text-white flex items-center gap-2">{icon}{title}</h3>
+            <div className="divide-y divide-neutral-700/50 border-t border-b border-neutral-700/50">
+                {priceList.map(p => (
+                    <div key={p.id} className="py-3">
+                        <div className="flex justify-between items-center">
+                            {/* --- ИЗМЕНЕНИЕ ЗДЕСЬ --- */}
+                            <span className="font-semibold text-neutral-200">
+                                {`${p.days_from} ${formatHourText(p.days_from)}`}
+                            </span>
+                            <span className="font-mono text-lg font-semibold text-[#d4af37]">
+                                <FormattedPrice value={p.price_per_day} /> ₸
+                            </span>
+                        </div>
+                        {p.conditions && <p className="text-xs text-neutral-500 mt-1">{p.conditions}</p>}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="bg-neutral-900 border border-border rounded-2xl p-6 sm:p-8 space-y-8">
+            {withoutDriver.length > 0 && <PriceCard title="Без водителя" priceList={withoutDriver} />}
+            {withDriver.length > 0 && <PriceCard title="С водителем" priceList={withDriver} icon={<CarFront size={22} />} />}
+        </div>
+    );
+}
+
 export default async function CarDetailPage({ params }: Props) {
     const car = await getCarData(params.slug);
-
-    if (!car) {
-        notFound();
-    }
-    
-    const dailyPrice = car.pricing?.withoutDriver?.['24h'] || car.price_per_day || 0;
+    if (!car) { notFound(); }
 
     const features = [
       { icon: Zap, label: 'Мощность', value: car.power ? `${car.power} л.с.` : 'н/д' },
@@ -69,89 +98,52 @@ export default async function CarDetailPage({ params }: Props) {
         <AnimatedPageWrapper>
             <Header />
             <main className="bg-background py-28 sm:py-32">
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto px-4 space-y-16 sm:space-y-24">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
-                        
-                        {/* Левая колонка: Галерея и характеристики */}
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             <div className="aspect-video w-full relative rounded-xl overflow-hidden border border-border shadow-lg">
-                                <Image
-                                    src={car.image_url}
-                                    alt={car.name}
-                                    fill
-                                    className="object-cover"
-                                    priority
-                                    sizes="(max-width: 1024px) 100vw, 50vw"
-                                />
+                                <Image src={car.image_url} alt={car.name} fill className="object-cover" priority sizes="(max-width: 1024px) 100vw, 50vw" />
                             </div>
                             {car.gallery_images && car.gallery_images.length > 0 && (
                                 <div className="grid grid-cols-4 gap-4">
                                     {car.gallery_images.map((imgSrc, index) => (
                                         <div key={index} className="aspect-video relative rounded-lg overflow-hidden border-2 border-transparent hover:border-[#d4af37] transition cursor-pointer">
-                                            <Image
-                                                src={imgSrc}
-                                                alt={`${car.name} галерея ${index + 1}`}
-                                                fill
-                                                className="object-cover"
-                                                sizes="(max-width: 768px) 20vw, 10vw"
-                                            />
+                                            <Image src={imgSrc} alt={`${car.name} галерея ${index + 1}`} fill className="object-cover" sizes="(max-width: 768px) 20vw, 10vw" />
                                         </div>
                                     ))}
                                 </div>
                             )}
-                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm pt-4">
-                                {features.map(f => (
-                                    f.value !== 'н/д' && (
-                                        <div key={f.label} className="bg-neutral-900 p-4 rounded-lg border border-border">
-                                            <f.icon className="w-6 h-6 text-[#d4af37] mb-2" />
-                                            <p className="text-neutral-400">{f.label}</p>
-                                            <p className="font-semibold text-white">{f.value}</p>
-                                        </div>
-                                    )
-                                ))}
-                            </div>
                         </div>
-
-                        {/* Правая колонка: Описание и цена */}
-                        <div className="flex flex-col">
+                        <div>
                             <p className="text-[#d4af37] font-semibold mb-2">{car.brand} - {car.class}</p>
-                            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{car.name}</h1>
+                            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">{car.name}</h1>
                             <div className="prose prose-invert text-neutral-300 space-y-4 leading-relaxed">
                                <p>{car.description}</p>
                                {car.full_description && <p>{car.full_description}</p>}
                             </div>
-                            
-                            <div className="mt-auto pt-8">
-                              <div className="bg-neutral-900 border border-border rounded-xl p-6 divide-y divide-neutral-700">
-                                  {/* Цена без водителя */}
-                                  <div className="py-3">
-                                    <p className="text-sm text-neutral-400">Аренда без водителя</p>
-                                    <p className="text-4xl font-bold text-[#d4af37]">
-                                        <FormattedPrice value={dailyPrice} /> ₸
-                                        <span className="text-lg text-neutral-400 font-medium"> / день</span>
-                                    </p>
-                                  </div>
-                                  
-                                  {/* Цена с водителем (появляется, если есть) */}
-                                  {car.price_with_driver && (
-                                    <div className="py-3">
-                                        <p className="text-sm text-neutral-400 flex items-center gap-2">
-                                            {/* --- ИЗМЕНЕНИЕ ЗДЕСЬ: Заменили иконку --- */}
-                                            <CarFront size={16} />
-                                            Аренда с водителем
-                                        </p>
-                                        <p className="text-4xl font-bold text-[#d4af37]">
-                                            <FormattedPrice value={car.price_with_driver} /> ₸
-                                            <span className="text-lg text-neutral-400 font-medium"> / день</span>
-                                        </p>
-                                    </div>
-                                  )}
-                              </div>
-                            </div>
                         </div>
                     </div>
-
-                    {/* Форма бронирования */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+                         <div>
+                            <h2 className="text-3xl font-bold text-white mb-6">Характеристики</h2>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+                                {features.map(f => ( f.value !== 'н/д' && (
+                                    <div key={f.label} className="bg-neutral-900 p-4 rounded-lg border border-border">
+                                        <f.icon className="w-6 h-6 text-[#d4af37] mb-2" />
+                                        <p className="text-neutral-400">{f.label}</p>
+                                        <p className="font-semibold text-white">{f.value}</p>
+                                    </div>
+                                )))}
+                            </div>
+                         </div>
+                         <div>
+                            <h2 className="text-3xl font-bold text-white mb-6">Тарифы</h2>
+                            {car.prices && car.prices.length > 0 
+                                ? <PriceList prices={car.prices} />
+                                : <p className="text-center text-neutral-500">Прайс-лист для этого автомобиля скоро появится.</p>
+                            }
+                         </div>
+                    </div>
                     <div className="mt-16 sm:mt-24">
                         <BookingForm initialCarName={car.name} />
                     </div>

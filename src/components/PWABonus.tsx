@@ -1,7 +1,6 @@
-// src/components/PWABonus.tsx
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Header from '@/components/Header'
 import LoginModal from '@/components/LoginModal'
 import AnimatedPageWrapper from '@/components/AnimatedPageWrapper'
@@ -9,10 +8,6 @@ import Footer from '@/components/Footer'
 
 export default function PWABonusPage() {
   const [showLoginModal, setShowLoginModal] = useState(false);
-
-  const handleLoginButtonClick = () => {
-    setShowLoginModal(true);
-  };
 
   return (
     <AnimatedPageWrapper>
@@ -26,8 +21,8 @@ export default function PWABonusPage() {
               const storedUser = localStorage.getItem('topcar-user');
               if (storedUser) {
                 try {
-                  JSON.parse(storedUser); // можно использовать данные, если нужно
-                } catch (err) {
+                  JSON.parse(storedUser);
+                } catch {
                   localStorage.removeItem('topcar-user');
                 }
               }
