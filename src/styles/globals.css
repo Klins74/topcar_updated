@@ -1,16 +1,18 @@
-@import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* src/styles/globals.css */
+
+/* Обновленные импорты для Tailwind CSS v4 */
+@import "tailwindcss/preflight"; /* Заменяет @tailwind base */
+/* @tailwind components удаляется, согласно сообщению об ошибке */
+@import "tailwindcss/utilities";  /* Заменяет @tailwind utilities и, по всей видимости, включает компоненты в v4 */
 
 /* --- СЛОЙ BASE: ОСНОВНЫЕ СТИЛИ И ПЕРЕМЕННЫЕ --- */
 @layer base {
   /* 1. Централизованные переменные для всего сайта */
   :root {
     /* Цветовая палитра: чуть мягче для глаз и премиальнее */
-    --background: #0a0a0a;  /* Вместо чистого #000000 */
-    --foreground: #f5f5f5;  /* Вместо чистого #ffffff */
-    --card: #171717;        /* Цвет для карточек, модальных окон */
+    --background: #0a0a0a;    /* Вместо чистого #000000 */
+    --foreground: #f5f5f5;    /* Вместо чистого #ffffff */
+    --card: #171717;          /* Цвет для карточек, модальных окон */
     --border: #27272a;        /* Цвет для границ, разделителей */
 
     /* Фирменный акцент TopCar (Ваш золотой цвет) */
@@ -19,6 +21,15 @@
 
     /* Переменные для консистентности UI-элементов */
     --radius: 0.75rem; /* Используем для всех скруглений */
+
+    /* НОВАЯ ПЕРЕМЕННАЯ: Ширина мобильного меню для эффекта "push" */
+    --mobile-menu-width: 75vw; /* Соответствует w-3/4 в Header.tsx */
+    /* Если вы используете max-w-xs (320px) в Header, то на больших мобильных экранах
+       меню будет 320px. В этом случае лучше использовать calc() или медиа-запрос
+       для более точного соответствия. Например:
+       --mobile-menu-width: clamp(240px, 75vw, 320px);
+       Но пока оставим 75vw для простоты, если это соответствует вашим нуждам.
+    */
   }
 
   /* 2. Настройки Body: производительность и UX на мобильных */
@@ -32,32 +43,37 @@
     overscroll-behavior-y: none;        /* Отключает "оттягивание" страницы */
     -webkit-font-smoothing: antialiased;    /* Сглаживание шрифтов */
     -moz-osx-font-smoothing: grayscale;
+
+    /* НОВОЕ: Плавный переход для transform */
+    transition: transform 0.3s ease-out; 
+  }
+
+  /* НОВЫЙ КЛАСС: Для сдвига контента, когда мобильное меню открыто */
+  body.mobile-menu-open {
+    transform: translateX(-var(--mobile-menu-width)); /* Сдвигаем на ширину меню влево */
   }
 
   /* 3. АДАПТИВНАЯ ТИПОГРАФИКА: плавное масштабирование на всех устройствах */
-  /* Это заменяет ваш медиа-запрос (max-width: 640px) на более гибкое решение */
   h1 {
-    font-size: clamp(2.25rem, 1.8rem + 2.2vw, 3.5rem); /* Плавный рост от 36px до 56px */
+    font-size: clamp(2.25rem, 1.8rem + 2.2vw, 3.5rem); 
     font-weight: 700;
   }
   h2 {
-    font-size: clamp(1.875rem, 1.5rem + 1.8vw, 3rem); /* Плавный рост от 30px до 48px */
+    font-size: clamp(1.875rem, 1.5rem + 1.8vw, 3rem); 
     font-weight: 600;
   }
   h3 {
-    font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); /* Плавный рост от 24px до 36px */
+    font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); 
     font-weight: 600;
   }
   p, a, button, input, select, textarea {
-    /* Базовый размер для мобильных, который плавно увеличится */
-    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem); /* от 16px до 18px */
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem); 
     line-height: 1.6;
   }
 }
 
-/* --- СЛОЙ UTILITIES: ПОЛЬЗОВАТЕЛЬСКИЕ АНИМАЦИИ И ЭФФЕКТЫ (Ваш код) --- */
+/* --- СЛОЙ UTILITIES: ПОЛЬЗОВАТЕЛЬСКИЕ АНИМАЦИИ И ЭФФЕКТЫ --- */
 @layer utilities {
-  /* Ваша анимация мерцания текста - отлично подходит для заголовков! */
   .animate-shine {
     background-image: linear-gradient(
       120deg,
@@ -77,7 +93,6 @@
     100% { background-position: 200%; }
   }
 
-  /* Ваши анимации появления - идеально для карточек и блоков */
   .animate-fade-in-up {
     animation: fade-in-up 0.5s ease-out both;
   }
@@ -93,12 +108,23 @@
     }
   }
 
-  /* Утилиты для задержки анимации (полезно для списков) */
   .animation-delay-300 {
     animation-delay: 0.3s;
   }
   .animation-delay-600 {
     animation-delay: 0.6s;
+  }
+
+  /* Класс, используемый useScrollLock для блокировки прокрутки */
+  .overflow-hidden { 
+    overflow: hidden !important;
+  }
+}
+
+/* НОВОЕ: Отключаем сдвиг контента на больших экранах */
+@media (min-width: 1024px) { /* lg breakpoint в Tailwind CSS */
+  body.mobile-menu-open {
+    transform: translateX(0) !important; /* Убеждаемся, что на больших экранах сдвига нет */
   }
 }
 
