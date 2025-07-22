@@ -36,7 +36,8 @@ export default function Footer() {
 
   // --- ОБНОВЛЕННЫЙ МАССИВ ССЫЛОК ---
   const socialLinks = [
-    { name: 'Instagram', href: '#', Icon: InstagramIcon }, // Заглушка для ссылки
+    // Я ОБНОВИЛ ССЫЛКУ НА INSTAGRAM ЗДЕСЬ
+    { name: 'Instagram', href: 'https://www.instagram.com/topcar.qz?igsh=MXJjbTZ5M3BwdTkzMA==', Icon: InstagramIcon },
     { name: 'Telegram', href: 'https://t.me/topcar_elite_kz_support', Icon: TelegramIcon },
     { name: 'WhatsApp', href: 'https://wa.me/77776660295', Icon: WhatsAppIcon },
   ];
@@ -105,25 +106,25 @@ export default function Footer() {
           <div className="md:col-span-3 xl:col-span-3">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-400 mb-5 sm:mb-6">Поддержка клиентов</h4>
              <ul className="space-y-3 text-sm sm:text-base">
-              <li>
-                <a href="https://wa.me/77776660295" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center group">
-                  <WhatsAppIcon className="h-5 w-5 mr-2 text-[#d4af37]" />
-                  WhatsApp
-                </a>
-              </li>
-              <li>
-                <a href="https://t.me/topcar_elite_kz_support" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center group">
-                  <TelegramIcon className="h-5 w-5 mr-2 text-[#d4af37]" />
-                  Telegram
-                </a>
-              </li>
-              <li>
-                <a href="mailto:topcarelite.kz@gmail.com" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center">
-                  <EnvelopeIcon className="h-5 w-5 text-[#d4af37] mr-2" />
-                  Написать на Email
-                </a>
-              </li>
-            </ul>
+               <li>
+                 <a href="https://wa.me/77776660295" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center group">
+                   <WhatsAppIcon className="h-5 w-5 mr-2 text-[#d4af37]" />
+                   WhatsApp
+                 </a>
+               </li>
+               <li>
+                 <a href="https://t.me/topcar_elite_kz_support" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center group">
+                   <TelegramIcon className="h-5 w-5 mr-2 text-[#d4af37]" />
+                   Telegram
+                 </a>
+               </li>
+               <li>
+                 <a href="mailto:topcarelite.kz@gmail.com" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center">
+                   <EnvelopeIcon className="h-5 w-5 text-[#d4af37] mr-2" />
+                   Написать на Email
+                 </a>
+               </li>
+             </ul>
           </div>
         </div>
 
@@ -140,4 +141,3 @@ export default function Footer() {
     </footer>
   )
 }
-  
