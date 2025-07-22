@@ -26,7 +26,7 @@ const itemVariants = {
     opacity: 1,
     transition: {
       duration: 0.6,
-      ease: "easeInOut" as const, // ✅ Правильная типизация
+      ease: "easeInOut" as const,
     },
   },
 }
@@ -41,20 +41,23 @@ export default function Hero() {
 
   return (
     <section className="relative h-screen flex flex-col items-center justify-center text-center overflow-hidden">
-      {/* Фоновое видео */}
+      
+      {/* --- НАЧАЛО: Правильно настроенное фоновое видео --- */}
       <video
         src="/videos/hero-rolls.mp4"
-        poster="/images/hero-car.jpg"
+        poster="/images/hero-car.jpg" // Постер, пока видео грузится
         className="absolute inset-0 w-full h-full object-cover filter brightness-75"
-        autoPlay
-        muted
-        loop
-        playsInline
+        autoPlay // 👈 Автоматическое воспроизведение
+        muted    // 👈 ОБЯЗАТЕЛЬНО: без звука, иначе браузеры блокируют autoplay
+        loop     // 👈 Проигрывать по кругу
+        playsInline // 👈 КЛЮЧЕВОЙ АТРИБУТ для мобильных
         preload="auto"
       />
+      {/* --- КОНЕЦ --- */}
+
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/80" />
 
-      {/* Контент с анимацией */}
+      {/* Контент с анимацией (без изменений) */}
       <motion.div
         className="relative z-10 px-4 max-w-5xl"
         variants={containerVariants}
@@ -112,4 +115,4 @@ export default function Hero() {
       </div>
     </section>
   )
-} 
+}
