@@ -44,7 +44,7 @@ export default function Hero() {
       {/* Фоновое видео */}
       <video
         src="/videos/hero-rolls.mp4"
-        poster="/images/hero-poster.jpg"
+        poster="/images/hero-car.jpg"
         className="absolute inset-0 w-full h-full object-cover filter brightness-75"
         autoPlay
         muted
@@ -112,4 +112,4 @@ export default function Hero() {
       </div>
     </section>
   )
-}
+} 
