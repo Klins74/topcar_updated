@@ -124,12 +124,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--brand-accent);
 }
-
-/* --- НАЧАЛО: Добавленный код --- */
-/* Скрываем видео на мобильных устройствах, чтобы ускорить загрузку */
-@media (max-width: 767px) {
-  video {
-    display: none;
-  }
-}
-/* --- КОНЕЦ: Добавленного кода --- */
