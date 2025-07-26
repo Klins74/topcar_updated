@@ -38,7 +38,7 @@ export default function Footer() {
   const socialLinks = [
     // Я ОБНОВИЛ ССЫЛКУ НА INSTAGRAM ЗДЕСЬ
     { name: 'Instagram', href: 'https://www.instagram.com/topcar.qz?igsh=MXJjbTZ5M3BwdTkzMA==', Icon: InstagramIcon },
-    { name: 'Telegram', href: 'https://t.me/topcar_elite_kz_support', Icon: TelegramIcon },
+    { name: 'Telegram', href: 'https://t.me/topcarqz', Icon: TelegramIcon },
     { name: 'WhatsApp', href: 'https://wa.me/77776660295', Icon: WhatsAppIcon },
   ];
 
