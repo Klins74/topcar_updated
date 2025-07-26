@@ -64,7 +64,7 @@ export default function HomePage() {
                 onClick={scrollToCatalog}
                 className="group relative w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-[#d4af37] text-black rounded-lg text-base sm:text-lg font-bold hover:bg-[#c0982c] transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 active:translate-y-0"
               >
-                <span>Исследовать Автопарк</span>
+                <span>Узнать Цены</span>
                 <ArrowRightIcon className="ml-2 -mr-1 h-5 w-6 transition-transform duration-300 group-hover:translate-x-1.5" />
               </a>
               <div className="w-full sm:w-auto">

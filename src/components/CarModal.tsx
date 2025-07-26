@@ -114,7 +114,7 @@ export default function CarModal({ car, onClose, onBook }: Props) {
                                         className="w-full bg-border text-foreground font-semibold py-3.5 rounded-lg hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2"
                                     >
                                         <MessageSquare size={18}/>
-                                        Обсудить в WhatsApp
+                                        Перейти в WhatsApp
                                     </a>
                                 </div>
                             </div>

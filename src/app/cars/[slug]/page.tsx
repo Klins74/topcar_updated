@@ -172,15 +172,6 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
                 <div className="flex flex-col gap-6"> 
                     <BookingForm initialCarName={car.name} /> 
 
-                    <a 
-                      href="https://wa.me/77776660295"
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center px-6 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-neutral-200 hover:text-white hover:bg-neutral-700 transition-colors text-base font-semibold"
-                    >
-                      <MessageSquare className="h-5 w-5 mr-2" />
-                      Обсудить в WhatsApp
-                    </a>
                 </div>
               </div>
             </div>
