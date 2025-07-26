@@ -113,7 +113,7 @@ export default function Footer() {
                  </a>
                </li>
                <li>
-                 <a href="https://t.me/topcar_elite_kz_support" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center group">
+                 <a href="https://t.me/topcarqz" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center group">
                    <TelegramIcon className="h-5 w-5 mr-2 text-[#d4af37]" />
                    Telegram
                  </a>
