@@ -18,13 +18,11 @@ import { useScrollLock } from '@/hooks/useScrollLock';
 import { Menu, X, User, Download, Calculator, MessageSquare, LogOut, Loader2 } from 'lucide-react';
 
 // GTM helper for click analytics
-const pushEvent = (event: string, payload: Record<string, any> = {}) => {
+const pushEvent = (event: string, payload: Record<string, unknown> = {}) => {
   try {
-    // @ts-ignore
     window.dataLayer = window.dataLayer || [];
-    // @ts-ignore
     window.dataLayer.push({ event, ...payload });
-  } catch (e) {
+  } catch {
     // noop
   }
 };
@@ -98,7 +96,7 @@ export default function Header() {
 
   useEffect(() => {
     if (isMenuOpen) setIsMenuOpen(false);
-  }, [pathname]);
+  }, [pathname, isMenuOpen]);
 
   useEffect(() => {
     if (isMenuOpen && menuRef.current) {

@@ -8,10 +8,11 @@ import AnimatedPageWrapper from '@/components/AnimatedPageWrapper';
 import BookingForm from '@/components/BookingForm';
 import { getSupabase } from '@/lib/supabase';
 import { Car } from '@/types';
+// import type { PageProps } from 'next';
 
 // Исправляем предупреждения: удаляем неиспользуемые импорты
 import {
-  Zap, Fuel, Dna, Users, Info, ClockIcon, MessageSquare
+  Zap, Fuel, Dna, Users, Info, ClockIcon
 } from 'lucide-react';
 // DollarSign, PhoneIcon, CalendarDaysIcon были удалены, так как они не используются напрямую здесь.
 // Если они нужны для других целей, используйте их в соответствующих компонентах.
@@ -140,7 +141,7 @@ export default async function CarDetailPage({ params }: { params: { slug: string
               '@type': 'Product',
               name: car!.name,
               description: car!.full_description || car!.description,
-              image: car!.gallery_images?.length ? car!.gallery_images : [car!.image_url],
+              image: car!.gallery_images?.length ? car!.gallery_images : [car!.gallery_images],
               brand: car!.brand ? { '@type': 'Brand', name: car!.brand } : undefined,
               url: `https://topcar.club/cars/${slug}`,
               offers: {

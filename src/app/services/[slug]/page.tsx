@@ -5,13 +5,6 @@ import Footer from "@/components/Footer";
 import AnimatedPageWrapper from "@/components/AnimatedPageWrapper";
 import Link from "next/link";
 
-// Defines the properties that this page will receive
-type Props = {
-    params: {
-        slug: string;
-    };
-};
-
 // This is sample data. In the future, you will get this from a database.
 const servicesData: { [key: string]: { title: string, description: string, content: string } } = {
     'arenda-s-voditelem': {
@@ -32,7 +25,7 @@ const servicesData: { [key: string]: { title: string, description: string, conte
 }
 
 // This function generates the page title and description for SEO
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: { params: { slug: string } }) {
     const service = servicesData[params.slug];
 
     if (!service) {
@@ -51,7 +44,7 @@ export async function generateMetadata({ params }: Props) {
 }
 
 // This is the main page component that renders the HTML
-export default function ServiceDetailPage({ params }: Props) {
+export default function ServiceDetailPage({ params }: { params: { slug: string } }) {
     const service = servicesData[params.slug];
 
     // If a service with the given slug is not found, show an error message

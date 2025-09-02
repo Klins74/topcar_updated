@@ -30,19 +30,9 @@ export default function ContactPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   // GTM helper: безопасно пушим события, если dataLayer доступен
-  const pushEvent = (event: Record<string, any>) => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const dl = (window as any)?.dataLayer
-      if (Array.isArray(dl)) {
-        dl.push(event)
-      } else {
-        // eslint-disable-next-line no-console
-        console.debug('GTM dataLayer not found, event:', event)
-      }
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.warn('GTM pushEvent error:', e)
+  function pushEvent(event: Record<string, unknown>) {
+    if (window && (window as unknown as { dataLayer?: unknown }).dataLayer) {
+      (window as unknown as { dataLayer?: { push: (event: Record<string, unknown>) => void } }).dataLayer?.push(event);
     }
   }
 

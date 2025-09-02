@@ -30,21 +30,12 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-// GTM dataLayer helper
-const pushEvent = (event: string, data: Record<string, any>) => {
-  if (typeof window !== 'undefined') {
-    const w = window as any;
-    w.dataLayer = w.dataLayer || [];
-    w.dataLayer.push({ event, ...data });
-  }
-};
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   // --- ОБНОВЛЕННЫЙ МАССИВ ССЫЛОК ---
-  const socialLinks = [
-    // Я ОБНОВИЛ ССЫЛКУ НА INSTAGRAM ЗДЕСЬ
+  const socialLinks: { name: string; href: string; Icon: React.FC<{ className?: string }> }[] = [
     { name: 'Instagram', href: 'https://www.instagram.com/topcar.qz?igsh=MXJjbTZ5M3BwdTkzMA==', Icon: InstagramIcon },
     { name: 'Telegram', href: 'https://t.me/topcarqz', Icon: TelegramIcon },
     { name: 'WhatsApp', href: 'https://wa.me/77776660295', Icon: WhatsAppIcon },
@@ -74,7 +65,6 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="text-neutral-500 hover:text-[#d4af37] group transition-colors duration-200"
                   aria-label={item.name}
-                  onClick={() => pushEvent('social_click', { channel: item.name.toLowerCase(), location: 'footer' })}
                 >
                   <item.Icon className="w-6 h-6" />
                 </a>
@@ -102,11 +92,11 @@ export default function Footer() {
               </li>
               <li className="flex items-start">
                 <PhoneIcon className="h-5 w-5 text-[#d4af37] mr-2.5 mt-0.5 flex-shrink-0" />
-                <a href="tel:+77776660295" className="hover:text-[#d4af37] transition-colors" onClick={() => pushEvent('contact_click', { channel: 'phone', label: '+77776660295', location: 'footer' })}>+7 (777) 666-02-95</a>
+                <a href="tel:+77776660295" className="hover:text-[#d4af37] transition-colors">+7 (777) 666-02-95</a>
               </li>
               <li className="flex items-start">
                 <EnvelopeIcon className="h-5 w-5 text-[#d4af37] mr-2.5 mt-0.5 flex-shrink-0" />
-                <a href="mailto:topcarelite.kz@gmail.com" className="hover:text-[#d4af37] transition-colors" onClick={() => pushEvent('contact_click', { channel: 'email', label: 'topcarelite.kz@gmail.com', location: 'footer' })}>topcarelite.kz@gmail.com</a>
+                <a href="mailto:topcarelite.kz@gmail.com" className="hover:text-[#d4af37] transition-colors">topcarelite.kz@gmail.com</a>
               </li>
               <li className="text-xs text-neutral-500 mt-2">Работаем круглосуточно</li>
             </ul>
@@ -116,19 +106,19 @@ export default function Footer() {
             <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-400 mb-5 sm:mb-6">Поддержка клиентов</h4>
              <ul className="space-y-3 text-sm sm:text-base">
                <li>
-                 <a href="https://wa.me/77776660295" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center group" onClick={() => pushEvent('contact_click', { channel: 'whatsapp', label: 'wa.me/77776660295', location: 'footer' })}>
+                 <a href="https://wa.me/77776660295" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center group">
                    <WhatsAppIcon className="h-5 w-5 mr-2 text-[#d4af37]" />
                    WhatsApp
                  </a>
                </li>
                <li>
-                 <a href="https://t.me/topcarqz" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center group" onClick={() => pushEvent('contact_click', { channel: 'telegram', label: 't.me/topcarqz', location: 'footer' })}>
+                 <a href="https://t.me/topcarqz" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center group">
                    <TelegramIcon className="h-5 w-5 mr-2 text-[#d4af37]" />
                    Telegram
                  </a>
                </li>
                <li>
-                 <a href="mailto:topcarelite.kz@gmail.com" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center" onClick={() => pushEvent('contact_click', { channel: 'email', label: 'topcarelite.kz@gmail.com', location: 'footer' })}>
+                 <a href="mailto:topcarelite.kz@gmail.com" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center">
                    <EnvelopeIcon className="h-5 w-5 text-[#d4af37] mr-2" />
                    Написать на Email
                  </a>

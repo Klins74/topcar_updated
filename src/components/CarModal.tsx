@@ -11,13 +11,13 @@ import { useAuth } from '@/context/AuthContext';
 import LoginModal from './LoginModal';
 
 // GTM helper for click analytics
-const pushEvent = (event: string, payload: Record<string, any> = {}) => {
+const pushEvent = (event: string, payload: Record<string, unknown> = {}) => {
   try {
-    // @ts-ignore
+    // @ts-expect-error: window.dataLayer may not exist on the window object
     window.dataLayer = window.dataLayer || [];
-    // @ts-ignore
+    // @ts-expect-error: window.dataLayer may not exist on the window object
     window.dataLayer.push({ event, ...payload });
-  } catch (e) {
+  } catch {
     // noop
   }
 };
