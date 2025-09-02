@@ -29,6 +29,23 @@ export default function ContactPage() {
   const [formStatus, setFormStatus] = useState<{ type: 'success' | 'error' | ''; message: string }>({ type: '', message: '' })
   const [isLoading, setIsLoading] = useState(false)
 
+  // GTM helper: безопасно пушим события, если dataLayer доступен
+  const pushEvent = (event: Record<string, any>) => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const dl = (window as any)?.dataLayer
+      if (Array.isArray(dl)) {
+        dl.push(event)
+      } else {
+        // eslint-disable-next-line no-console
+        console.debug('GTM dataLayer not found, event:', event)
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn('GTM pushEvent error:', e)
+    }
+  }
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormValues(prev => ({ ...prev, [name]: value }))
@@ -42,6 +59,12 @@ export default function ContactPage() {
     if (!formValues.name || !formValues.contact || !formValues.message) {
       setFormStatus({ type: 'error', message: 'Пожалуйста, заполните все поля формы.' })
       setIsLoading(false)
+      // Analytics: form validation error
+      pushEvent({
+        event: 'contact_form_submit',
+        form_status: 'validation_error',
+        page: 'contacts',
+      })
       return
     }
 
@@ -50,9 +73,21 @@ export default function ContactPage() {
       await new Promise(resolve => setTimeout(resolve, 1500));
       setFormStatus({ type: 'success', message: 'Ваше сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.' })
       setFormValues({ name: '', contact: '', message: '' })
+      // Analytics: form submit success
+      pushEvent({
+        event: 'contact_form_submit',
+        form_status: 'success',
+        page: 'contacts',
+      })
     } catch (error) {
       console.error("Contact form submission error:", error)
       setFormStatus({ type: 'error', message: 'Произошла ошибка при отправке. Пожалуйста, попробуйте еще раз.' })
+      // Analytics: form submit error
+      pushEvent({
+        event: 'contact_form_submit',
+        form_status: 'error',
+        page: 'contacts',
+      })
     } finally {
       setIsLoading(false)
     }
@@ -69,6 +104,22 @@ export default function ContactPage() {
     { name: 'WhatsApp', Icon: () => <MessengerIconPlaceholder name="WA" />, href: 'https://wa.me/77776660295', text: 'Написать в WhatsApp' },
     { name: 'Telegram', Icon: () => <MessengerIconPlaceholder name="TG" />, href: 'https://t.me/topcar_elite_kz_support', text: 'Связаться в Telegram' },
   ];
+
+  // Click handlers for analytics
+  const handleContactClick = (href?: string, label?: string) => () => {
+    if (!href) return
+    if (href.startsWith('tel:')) {
+      pushEvent({ event: 'phone_click', method: 'tel', label: label ?? href, page: 'contacts' })
+    } else if (href.startsWith('mailto:')) {
+      pushEvent({ event: 'email_click', method: 'mailto', label: label ?? href, page: 'contacts' })
+    } else if (href.startsWith('http')) {
+      pushEvent({ event: 'external_link_click', label: label ?? href, page: 'contacts' })
+    }
+  }
+
+  const handleMessengerClick = (name: string, href: string) => () => {
+    pushEvent({ event: 'messenger_click', messenger: name, label: href, page: 'contacts' })
+  }
 
   return (
     <AnimatedPageWrapper>
@@ -109,7 +160,7 @@ export default function ContactPage() {
                         <li key={index} className="flex items-start">
                           <item.Icon className="h-6 w-6 text-[#d4af37] mr-3 mt-0.5 flex-shrink-0" />
                           {item.href ? (
-                            <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" aria-label={item.ariaLabel} className="text-base text-neutral-200 hover:text-[#d4af37] transition-colors duration-200 break-all">
+                            <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" aria-label={item.ariaLabel} className="text-base text-neutral-200 hover:text-[#d4af37] transition-colors duration-200 break-all" onClick={handleContactClick(item.href, item.text)}>
                               {item.text}
                             </a>
                           ) : (
@@ -129,6 +180,7 @@ export default function ContactPage() {
                               target="_blank"
                               rel="noopener noreferrer"
                               className="group flex-1 inline-flex items-center justify-center gap-3 px-6 py-3 bg-neutral-800 border border-neutral-700 rounded-lg text-neutral-200 hover:text-black hover:bg-[#d4af37] transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#d4af37]/80"
+                              onClick={handleMessengerClick(linkItem.name, linkItem.href)}
                             >
                               <linkItem.Icon /> 
                               <span className="text-sm font-medium">{linkItem.text}</span>

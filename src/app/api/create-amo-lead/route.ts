@@ -7,22 +7,22 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const {
-  AMO_SUBDOMAIN,
-  AMO_CLIENT_ID,
-  AMO_CLIENT_SECRET,
-  AMO_REDIRECT_URI,
-  AMO_AUTH_CODE,
+  AMOCRM_SUBDOMAIN,
+  AMOCRM_CLIENT_ID,
+  AMOCRM_CLIENT_SECRET,
+  AMOCRM_REDIRECT_URI,
+  AMOCRM_AUTH_CODE,
 } = process.env;
 
 // Функция получения токена доступа (остается без изменений)
 async function getAccessToken() {
-  const url = `https://${AMO_SUBDOMAIN}.amocrm.ru/oauth2/access_token`;
+  const url = `${AMOCRM_SUBDOMAIN}/oauth2/access_token`;
   const body = {
-    client_id: AMO_CLIENT_ID,
-    client_secret: AMO_CLIENT_SECRET,
+    client_id: AMOCRM_CLIENT_ID,
+    client_secret: AMOCRM_CLIENT_SECRET,
     grant_type: 'authorization_code',
-    code: AMO_AUTH_CODE,
-    redirect_uri: AMO_REDIRECT_URI,
+    code: AMOCRM_AUTH_CODE,
+    redirect_uri: AMOCRM_REDIRECT_URI,
   };
 
   try {
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     // 1. Отправка данных в amoCRM (без изменений)
     try {
       const accessToken = await getAccessToken();
-      const url = `https://${AMO_SUBDOMAIN}.amocrm.ru/api/v4/leads/complex`;
+      const url = `${AMOCRM_SUBDOMAIN}/api/v4/leads/complex`;
       const leadData = [{
         name: `Заявка на ${carName} от ${userName}`,
         price: bookingDetails.price,
@@ -105,4 +105,4 @@ export async function POST(req: NextRequest) {
     console.error('Общая ошибка в обработчике:', error);
     return NextResponse.json({ message: 'Внутренняя ошибка сервера' }, { status: 500 });
   }
-} 
+}

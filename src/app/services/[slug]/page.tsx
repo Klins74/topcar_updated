@@ -3,6 +3,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AnimatedPageWrapper from "@/components/AnimatedPageWrapper";
+import Link from "next/link";
 
 // Defines the properties that this page will receive
 type Props = {
@@ -36,13 +37,16 @@ export async function generateMetadata({ params }: Props) {
 
     if (!service) {
         return {
-            title: 'Услуга не найдена'
+            title: 'Услуга не найдена',
+            robots: { index: false, follow: false },
         }
     }
 
     return {
         title: `${service.title} | TopCar`,
         description: service.description,
+        alternates: { canonical: `https://topcar.club/services/${params.slug}` },
+        robots: { index: true, follow: true },
     }
 }
 
@@ -69,7 +73,35 @@ export default function ServiceDetailPage({ params }: Props) {
         <AnimatedPageWrapper>
             <Header />
             <main className="bg-background py-16 sm:py-24">
+                {/* Breadcrumbs JSON-LD */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            '@context': 'https://schema.org',
+                            '@type': 'BreadcrumbList',
+                            itemListElement: [
+                                { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://topcar.club/' },
+                                { '@type': 'ListItem', position: 2, name: 'Услуги', item: 'https://topcar.club/services' },
+                                { '@type': 'ListItem', position: 3, name: service.title, item: `https://topcar.club/services/${params.slug}` },
+                            ],
+                        }),
+                    }}
+                />
                 <div className="container mx-auto px-4">
+                    <nav aria-label="Хлебные крошки" className="mb-6 text-sm text-muted-foreground">
+                        <ol className="flex items-center gap-2">
+                            <li>
+                                <Link href="/" className="hover:text-foreground transition-colors">Главная</Link>
+                            </li>
+                            <li className="opacity-60">/</li>
+                            <li>
+                                <Link href="/services" className="hover:text-foreground transition-colors">Услуги</Link>
+                            </li>
+                            <li className="opacity-60">/</li>
+                            <li aria-current="page" className="text-foreground font-medium">{service.title}</li>
+                        </ol>
+                    </nav>
                     <div className="max-w-3xl mx-auto">
                         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
                             {service.title}

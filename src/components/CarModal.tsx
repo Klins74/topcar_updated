@@ -10,6 +10,18 @@ import FormattedPrice from './FormattedPrice';
 import { useAuth } from '@/context/AuthContext';
 import LoginModal from './LoginModal';
 
+// GTM helper for click analytics
+const pushEvent = (event: string, payload: Record<string, any> = {}) => {
+  try {
+    // @ts-ignore
+    window.dataLayer = window.dataLayer || [];
+    // @ts-ignore
+    window.dataLayer.push({ event, ...payload });
+  } catch (e) {
+    // noop
+  }
+};
+
 type SelectedTariff = {
   serviceType: string;
   duration: string;
@@ -74,7 +86,7 @@ export default function CarModal({ car, onClose, onBook }: Props) {
                     <div className="flex-grow overflow-y-auto p-6 md:p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div className="space-y-6">
                             <div className="aspect-video w-full relative rounded-lg overflow-hidden border border-border">
-                                <Image src={car.image_url} alt={car.name} layout="fill" objectFit="cover" className="transition-transform duration-300 hover:scale-105"/>
+                                <Image src={car.image_url} alt={car.name} fill className="object-cover transition-transform duration-300 hover:scale-105" sizes="(max-width: 1024px) 100vw, 50vw"/>
                             </div>
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
                                 {features.map(f => (
@@ -112,6 +124,7 @@ export default function CarModal({ car, onClose, onBook }: Props) {
                                         href="https://wa.me/77776660295"
                                         target="_blank" rel="noopener noreferrer"
                                         className="w-full bg-border text-foreground font-semibold py-3.5 rounded-lg hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2"
+                                        onClick={() => pushEvent('contact_click', { channel: 'whatsapp', label: 'wa.me/77776660295', location: 'car_modal' })}
                                     >
                                         <MessageSquare size={18}/>
                                         Перейти в WhatsApp

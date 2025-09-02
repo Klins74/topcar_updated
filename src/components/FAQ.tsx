@@ -28,9 +28,26 @@ const faqData = [
   },
 ];
 
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  'mainEntity': faqData.map(item => ({
+    '@type': 'Question',
+    'name': item.question,
+    'acceptedAnswer': {
+      '@type': 'Answer',
+      'text': item.answer
+    }
+  }))
+};
+
 export default function FAQ() {
   return (
-    <section id="faq" className="py-24 sm:py-32 px-4 sm:px-6 bg-neutral-950"> {/* Darker section bg */}
+    <section id="faq" className="py-24 sm:py-32 px-4 sm:px-6 bg-neutral-950">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <div className="max-w-4xl mx-auto">
         <FadeInWhenVisible>
           <h2 className="text-4xl sm:text-5xl font-extrabold mb-16 sm:mb-20 text-center tracking-tight text-white">

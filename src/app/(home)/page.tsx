@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
-import CarCatalog from '@/components/CarCatalog';
 import ServicesSection from '@/components/ServicesSection';
 import FAQ from '@/components/FAQ';
 import Subscription from '@/components/Subscription';
@@ -12,6 +11,7 @@ import AnimatedPageWrapper from '@/components/AnimatedPageWrapper';
 import LoginModal from '@/components/LoginModal';
 import { ArrowRightIcon, UserCircleIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '@/context/AuthContext';
+import Head from 'next/head';
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
@@ -22,18 +22,36 @@ export default function HomePage() {
     setIsMounted(true);
   }, []);
 
-  // Неиспользуемая функция удалена
-
-  const scrollToCatalog = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const catalogSection = document.getElementById('car-catalog');
-    if (catalogSection) {
-      catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   return (
     <AnimatedPageWrapper>
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': ['LocalBusiness', 'CarRental'],
+              name: 'TopCar Club',
+              image: 'https://topcar.club/logo.png',
+              url: 'https://topcar.club/',
+              telephone: '+7 (777) 666-02-95',
+              address: {
+                '@type': 'PostalAddress',
+                streetAddress: 'ул. Байтурсынова, 179/2',
+                addressLocality: 'Алматы',
+                addressCountry: 'KZ',
+              },
+              openingHours: 'Mo-Su 00:00-24:00',
+              priceRange: '₸₸₸',
+              email: 'topcarelite.kz@gmail.com',
+              sameAs: [
+                'https://wa.me/77776660295',
+                'https://t.me/topcar_elite_kz_support',
+              ],
+            }),
+          }}
+        />
+      </Head>
       <main className="min-h-screen bg-neutral-950 text-white font-sans">
        <Header />
 
@@ -59,14 +77,13 @@ export default function HomePage() {
               Эксклюзивный автопарк премиум-класса в Алматы. Ваш безупречный стиль начинается здесь.
             </p>
             <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-fadeInUp animation-delay-600">
-              <a
-                href="#car-catalog"
-                onClick={scrollToCatalog}
+              <Link
+                href="/autopark"
                 className="group relative w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-[#d4af37] text-black rounded-lg text-base sm:text-lg font-bold hover:bg-[#c0982c] transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 active:translate-y-0"
               >
                 <span>Узнать Цены</span>
                 <ArrowRightIcon className="ml-2 -mr-1 h-5 w-6 transition-transform duration-300 group-hover:translate-x-1.5" />
-              </a>
+              </Link>
               <div className="w-full sm:w-auto">
                 {isMounted && !isLoading && (
                   user ? (
@@ -86,7 +103,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <CarCatalog />
+        {/* Removed <CarCatalog /> to avoid empty state on home. */}
         <ServicesSection />
         <FAQ />
         <Subscription />
