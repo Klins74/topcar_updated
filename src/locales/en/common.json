@@ -5,22 +5,57 @@
     "services": "Services",
     "contacts": "Contacts",
     "dashboard": "Dashboard",
-    "login": "Login"
+    "login": "Login",
+    "terms": "Rental Terms",
+    "download": "Download App",
+    "calculator": "Rental Calculator",
+    "logout": "Logout",
+    "navigation": "Navigation",
+    "account": "Account"
   },
   "hero": {
     "title": "Premium Car Rental",
     "subtitle": "in Almaty",
-    "description": "Exclusive premium-class fleet. VIP service, transfers, rental with and without driver.",
-    "cta": "Choose a Car"
+    "description": "Exclusive premium-class fleet. VIP service, transfers, rental with and without driver. Your impeccable style starts here.",
+    "cta": "Choose a Car",
+    "ctaSecondary": "Learn More",
+    "features": {
+      "luxury": "Elite Vehicles",
+      "service": "VIP Service 24/7",
+      "driver": "With & Without Driver"
+    }
   },
   "services": {
     "title": "Our Services",
+    "subtitle": "Professional premium-class services",
     "withDriver": "Rental with Driver",
     "withDriverDesc": "Maximum comfort and safety with our professional drivers",
     "transfer": "Airport Transfer",
     "transferDesc": "Punctual and comfortable delivery to and from the airport",
     "events": "Event Rental",
-    "eventsDesc": "Make your event unforgettable with our premium vehicles"
+    "eventsDesc": "Make your event unforgettable with our premium vehicles",
+    "learnMore": "Learn More"
+  },
+  "autopark": {
+    "title": "Our Fleet",
+    "subtitle": "Choose the perfect vehicle for your next trip",
+    "description": "We offer a wide selection of models, from elegant sedans to powerful SUVs.",
+    "filters": {
+      "all": "All Vehicles",
+      "luxury": "Luxury",
+      "business": "Business",
+      "comfort": "Comfort"
+    }
+  },
+  "contacts": {
+    "title": "Contacts",
+    "subtitle": "Contact us in any convenient way",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "workingHours": "Working Hours",
+    "workingTime": "24/7",
+    "getInTouch": "Get in Touch"
   },
   "footer": {
     "description": "Premium car rental in Almaty",
@@ -29,10 +64,23 @@
     "legal": "Legal Information",
     "terms": "Terms of Service",
     "privacy": "Privacy Policy",
+    "security": "Security",
     "contacts": "Contacts",
     "address": "Almaty, Baitursynova St., 179/2",
     "phone": "+7 (777) 666-02-95",
-    "email": "topcar_club@mail.ru"
+    "email": "topcar_club@mail.ru",
+    "followUs": "Follow Us",
+    "rights": "All rights reserved"
+  },
+  "booking": {
+    "title": "Booking",
+    "name": "Name",
+    "phone": "Phone",
+    "car": "Car",
+    "dates": "Rental Dates",
+    "submit": "Submit Request",
+    "success": "Request submitted successfully!",
+    "error": "Error submitting request"
   },
   "common": {
     "book": "Book",
@@ -43,6 +91,28 @@
     "to": "to",
     "currency": "₸",
     "loading": "Loading...",
-    "error": "An error occurred"
+    "error": "An error occurred",
+    "close": "Close",
+    "open": "Open",
+    "menu": "Menu",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "reset": "Reset",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "view": "View",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "continue": "Continue"
+  },
+  "meta": {
+    "title": "TopCar - Premium Car Rental in Almaty",
+    "description": "Exclusive premium-class fleet in Almaty: elite cars, electric vehicles, luxury cars for tourists. VIP service, transfers, rental with and without driver."
   }
 }

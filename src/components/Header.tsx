@@ -66,7 +66,7 @@ export default function Header() {
     { href: "/autopark", label: t('nav.autopark') },
     { href: "/services", label: t('nav.services') },
     { href: "/contacts", label: t('nav.contacts') },
-    { href: "/terms", label: "Условия аренды" }, // Keep static for now
+    { href: "/terms", label: t('nav.terms') },
   ];
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -143,21 +143,21 @@ export default function Header() {
 
           <div className="flex items-center gap-2">
             <div className="hidden lg:flex items-center gap-2">
-              <NavButton onClick={() => setShowCalcModal(true)} title="Калькулятор аренды">
+              <NavButton onClick={() => setShowCalcModal(true)} title={t('nav.calculator')}>
                 <Calculator size={22} />
               </NavButton>
               {isMounted && !isLoading ? (
                 user ? (
                   <>
-                    <NavButton href="/dashboard" title="Личный кабинет">
+                    <NavButton href="/dashboard" title={t('nav.dashboard')}>
                       <User size={22} />
                     </NavButton>
-                    <NavButton onClick={signOut} title="Выйти">
+                    <NavButton onClick={signOut} title={t('nav.logout')}>
                       <LogOut size={22} />
                     </NavButton>
                   </>
                 ) : (
-                  <NavButton onClick={() => setShowLoginModal(true)} title="Войти в личный кабинет">
+                  <NavButton onClick={() => setShowLoginModal(true)} title={t('nav.login')}>
                     <User size={22} />
                   </NavButton>
                 )
@@ -166,7 +166,7 @@ export default function Header() {
                   <Loader2 size={22} className="animate-spin text-muted-foreground" />
                 </div>
               )}
-              <NavButton href="/download" title="Скачать приложение">
+              <NavButton href="/download" title={t('nav.download')}>
                 <Download size={22} />
               </NavButton>
               <LanguageSwitcher />
@@ -175,7 +175,7 @@ export default function Header() {
             <button
               className="p-2 lg:hidden text-foreground hover:text-brand-accent transition-colors z-50"
               onClick={toggleMenu}
-              aria-label={isMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
+              aria-label={isMenuOpen ? t('common.close') + ' ' + t('common.menu') : t('common.open') + ' ' + t('common.menu')}
               aria-expanded={isMenuOpen}
               aria-controls="mobile-menu"
             >
@@ -214,7 +214,7 @@ export default function Header() {
                   id="menu-heading"
                   className="px-3 pt-1 pb-2 text-sm font-semibold text-muted-foreground"
                 >
-                  Навигация
+                  {t('nav.navigation')}
                 </motion.h2>
                 {navItems.map((item) => (
                   <motion.div key={item.href} variants={menuItemVariants}>
@@ -232,13 +232,13 @@ export default function Header() {
                   variants={menuItemVariants}
                   className="px-3 pt-1 pb-2 text-sm font-semibold text-muted-foreground"
                 >
-                  Аккаунт
+                  {t('nav.account')}
                 </motion.h2>
                 {isLoading ? (
                   <motion.div variants={menuItemVariants}>
                     <MobileActionButton disabled>
                       <Loader2 size={20} className="animate-spin" />
-                      <span>Загрузка...</span>
+                      <span>{t('common.loading')}</span>
                     </MobileActionButton>
                   </motion.div>
                 ) : user ? (
@@ -246,13 +246,13 @@ export default function Header() {
                     <motion.div variants={menuItemVariants}>
                       <MobileNavLink href="/dashboard" currentPath={pathname} onClick={toggleMenu}>
                         <User size={20} />
-                        <span>Личный кабинет</span>
+                        <span>{t('nav.dashboard')}</span>
                       </MobileNavLink>
                     </motion.div>
                     <motion.div variants={menuItemVariants}>
                       <MobileActionButton onClick={handleLogout}>
                         <LogOut size={20} />
-                        <span>Выйти</span>
+                        <span>{t('nav.logout')}</span>
                       </MobileActionButton>
                     </motion.div>
                   </>
@@ -260,7 +260,7 @@ export default function Header() {
                   <motion.div variants={menuItemVariants}>
                     <MobileActionButton onClick={handleLogin}>
                       <User size={20} />
-                      <span>Войти / Регистрация</span>
+                      <span>{t('nav.login')}</span>
                     </MobileActionButton>
                   </motion.div>
                 )}
@@ -272,13 +272,13 @@ export default function Header() {
                 <motion.div variants={menuItemVariants}>
                   <MobileActionButton onClick={openCalcModal}>
                     <Calculator size={20} />
-                    <span>Калькулятор</span>
+                    <span>{t('nav.calculator')}</span>
                   </MobileActionButton>
                 </motion.div>
                 <motion.div variants={menuItemVariants}>
                   <MobileNavLink href="/download" currentPath={pathname} onClick={toggleMenu}>
                     <Download size={20} />
-                    <span>Скачать приложение</span>
+                    <span>{t('nav.download')}</span>
                   </MobileNavLink>
                 </motion.div>
               </div>

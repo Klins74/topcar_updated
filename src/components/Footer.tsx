@@ -4,6 +4,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { PhoneIcon, EnvelopeIcon, MapPinIcon } from '@heroicons/react/20/solid'
+import { useTranslations } from '@/lib/i18n'
 
 // --- НОВЫЕ SVG-ИКОНКИ ---
 
@@ -32,6 +33,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 
 
 export default function Footer() {
+  const { t } = useTranslations();
   const currentYear = new Date().getFullYear();
 
   // --- ОБНОВЛЕННЫЙ МАССИВ ССЫЛОК ---
@@ -54,7 +56,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-neutral-400 leading-relaxed text-sm sm:text-base max-w-md mb-6">
-              Премиальная аренда автомобилей в Алматы без компромиссов. Ваш комфорт и статус – наш приоритет, 24/7.
+              {t('footer.description')}
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((item) => (
@@ -73,37 +75,37 @@ export default function Footer() {
           </div>
 
           <div className="md:col-span-2 xl:col-span-2">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-400 mb-5 sm:mb-6">Разделы</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-400 mb-5 sm:mb-6">{t('footer.quickLinks')}</h4>
             <ul className="space-y-3 text-sm sm:text-base">
-              <li><Link href="/autopark" className="text-neutral-300 hover:text-[#d4af37] transition-colors">Автопарк</Link></li>
-              <li><Link href="/services" className="text-neutral-300 hover:text-[#d4af37] transition-colors">Услуги</Link></li>
+              <li><Link href="/autopark" className="text-neutral-300 hover:text-[#d4af37] transition-colors">{t('nav.autopark')}</Link></li>
+              <li><Link href="/services" className="text-neutral-300 hover:text-[#d4af37] transition-colors">{t('nav.services')}</Link></li>
               <li><Link href="/#faq" className="text-neutral-300 hover:text-[#d4af37] transition-colors">FAQ</Link></li>
-              <li><Link href="/contacts" className="text-neutral-300 hover:text-[#d4af37] transition-colors">Контакты</Link></li>
-              <li><Link href="/terms" className="text-neutral-300 hover:text-[#d4af37] transition-colors">Условия аренды</Link></li>
+              <li><Link href="/contacts" className="text-neutral-300 hover:text-[#d4af37] transition-colors">{t('nav.contacts')}</Link></li>
+              <li><Link href="/terms" className="text-neutral-300 hover:text-[#d4af37] transition-colors">{t('nav.terms')}</Link></li>
             </ul>
           </div>
 
           <div className="md:col-span-3 xl:col-span-2">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-400 mb-5 sm:mb-6">Контакты</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-400 mb-5 sm:mb-6">{t('footer.contacts')}</h4>
             <ul className="space-y-3 text-sm sm:text-base text-neutral-300">
               <li className="flex items-start">
                 <MapPinIcon className="h-5 w-5 text-[#d4af37] mr-2.5 mt-0.5 flex-shrink-0" />
-                <span>г. Алматы, ул. Байтурсынова, 179/2</span>
+                <span>{t('footer.address')}</span>
               </li>
               <li className="flex items-start">
                 <PhoneIcon className="h-5 w-5 text-[#d4af37] mr-2.5 mt-0.5 flex-shrink-0" />
-                <a href="tel:+77776660295" className="hover:text-[#d4af37] transition-colors">+7 (777) 666-02-95</a>
+                <a href="tel:+77776660295" className="hover:text-[#d4af37] transition-colors">{t('footer.phone')}</a>
               </li>
               <li className="flex items-start">
                 <EnvelopeIcon className="h-5 w-5 text-[#d4af37] mr-2.5 mt-0.5 flex-shrink-0" />
-                <a href="mailto:topcarelite.kz@gmail.com" className="hover:text-[#d4af37] transition-colors">topcarelite.kz@gmail.com</a>
+                <a href="mailto:topcarelite.kz@gmail.com" className="hover:text-[#d4af37] transition-colors">{t('footer.email')}</a>
               </li>
-              <li className="text-xs text-neutral-500 mt-2">Работаем круглосуточно</li>
+              <li className="text-xs text-neutral-500 mt-2">{t('contacts.workingTime')}</li>
             </ul>
           </div>
           
           <div className="md:col-span-3 xl:col-span-3">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-400 mb-5 sm:mb-6">Поддержка клиентов</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-neutral-400 mb-5 sm:mb-6">{t('contacts.getInTouch')}</h4>
              <ul className="space-y-3 text-sm sm:text-base">
                <li>
                  <a href="https://wa.me/77776660295" target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center group">
@@ -120,7 +122,7 @@ export default function Footer() {
                <li>
                  <a href="mailto:topcarelite.kz@gmail.com" className="text-neutral-300 hover:text-[#d4af37] transition-colors flex items-center">
                    <EnvelopeIcon className="h-5 w-5 text-[#d4af37] mr-2" />
-                   Написать на Email
+                   {t('contacts.email')}
                  </a>
                </li>
              </ul>
@@ -129,11 +131,11 @@ export default function Footer() {
 
         <div className="mt-16 sm:mt-20 pt-8 border-t border-neutral-800 text-center sm:flex sm:justify-between">
           <p className="text-xs text-neutral-500 mb-3 sm:mb-0">
-            © {currentYear} TopCar Club. Все права защищены.
+            © {currentYear} TopCar Club. {t('footer.rights')}
           </p>
           <div className="flex justify-center space-x-4">
-            <Link href="/privacy-policy" className="text-xs text-neutral-500 hover:text-[#d4af37] transition-colors">Политика конфиденциальности</Link>
-            <Link href="/terms" className="text-xs text-neutral-500 hover:text-[#d4af37] transition-colors">Условия использования</Link>
+            <Link href="/privacy-policy" className="text-xs text-neutral-500 hover:text-[#d4af37] transition-colors">{t('footer.privacy')}</Link>
+            <Link href="/terms" className="text-xs text-neutral-500 hover:text-[#d4af37] transition-colors">{t('footer.terms')}</Link>
           </div>
         </div>
       </div>
