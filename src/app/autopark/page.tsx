@@ -9,8 +9,9 @@ import type { Metadata } from 'next';
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: 'Автопарк — Аренда авто в Алматы | TopCar',
-  description: 'Каталог автомобилей премиум-класса для аренды в Алматы. Седаны, внедорожники и спорткары. Прозрачные цены, круглосуточная поддержка.',
+  title: 'Автопарк — Элитные Авто и Электрокары | TopCar Almaty',
+  description: 'Каталог элитных автомобилей премиум-класса для аренды в Алматы: роскошные седаны, внедорожники, спорткары и электрокары для туристов. Luxury cars, premium vehicles, electric cars rental in Almaty. Прозрачные цены, VIP-сервис.',
+  keywords: 'автопарк Алматы, элитные авто, электрокары, премиум автомобили, для туристов, luxury car fleet, electric vehicles, premium car catalog Almaty',
   alternates: {
     canonical: 'https://topcar.club/autopark',
   },

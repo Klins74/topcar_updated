@@ -2,40 +2,45 @@ import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Define the base URL of your site
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.topcar.club';
+  const siteUrl = 'https://topcar.club';
 
-  // Static routes
-  // The KEY FIX is adding `: MetadataRoute.Sitemap` to explicitly type the array
+  // Static routes according to requirements
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: siteUrl,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 1,
-    },
-    {
-      url: `${siteUrl}/services`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/contacts`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.5,
+      lastModified: new Date('2025-08-30'),
+      changeFrequency: 'daily',
+      priority: 1.0,
     },
     {
       url: `${siteUrl}/autopark`,
-      lastModified: new Date(),
+      lastModified: new Date('2025-08-30'),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: `${siteUrl}/download`,
-      lastModified: new Date(),
+      url: `${siteUrl}/services`,
+      lastModified: new Date('2025-08-30'),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/contacts`,
+      lastModified: new Date('2025-08-30'),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${siteUrl}/terms`,
+      lastModified: new Date('2025-08-30'),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${siteUrl}/privacy-policy`,
+      lastModified: new Date('2025-08-30'),
       changeFrequency: 'yearly',
-      priority: 0.3,
+      priority: 0.5,
     },
   ];
 

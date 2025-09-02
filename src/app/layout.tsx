@@ -16,9 +16,10 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: {
     template: '%s | TopCar Almaty',
-    default: 'TopCar - Премиум Аренда Авто в Алматы',
+    default: 'TopCar - Премиум Аренда Авто в Алматы | Elite Cars Rental',
   },
-  description: 'Эксклюзивный автопарк премиум-класса в Алматы. VIP-сервис, трансферы, аренда с водителем и без. Ваш безупречный стиль начинается здесь.',
+  description: 'Эксклюзивный автопарк премиум-класса в Алматы: элитные авто, электрокары, luxury cars для туристов. VIP-сервис, трансферы, аренда с водителем и без. Premium car rental, elite vehicles, electric cars for tourists in Almaty.',
+  keywords: 'аренда авто Алматы, элитные авто, премиум автомобили, электрокары, для туристов, car rental Almaty, luxury cars, premium vehicles, elite cars, electric cars, VIP service, трансфер аэропорт',
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.ico',
