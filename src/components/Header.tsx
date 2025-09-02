@@ -14,7 +14,9 @@ import MobileNavLink from '@/components/MobileNavLink';
 import MobileActionButton from '@/components/MobileActionButton';
 import LoginModal from './LoginModal';
 import CalculatorModal from './CalculatorModal';
+import LanguageSwitcher from './LanguageSwitcher';
 import { useScrollLock } from '@/hooks/useScrollLock';
+import { useTranslations } from '@/lib/i18n';
 import { Menu, X, User, Download, Calculator, MessageSquare, LogOut, Loader2 } from 'lucide-react';
 
 // GTM helper for click analytics
@@ -54,17 +56,18 @@ const ctaButtonVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { delay: 0.3, duration: 0.3 } },
 };
 
-const navItems = [
-  { href: "/autopark", label: "Автопарк" },
-  { href: "/services", label: "Услуги" },
-  { href: "/contacts", label: "Контакты" },
-  { href: "/terms", label: "Условия аренды" },
-];
-
 export default function Header() {
+  const { t } = useTranslations();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showCalcModal, setShowCalcModal] = useState(false);
+  
+  const navItems = [
+    { href: "/autopark", label: t('nav.autopark') },
+    { href: "/services", label: t('nav.services') },
+    { href: "/contacts", label: t('nav.contacts') },
+    { href: "/terms", label: "Условия аренды" }, // Keep static for now
+  ];
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -166,6 +169,7 @@ export default function Header() {
               <NavButton href="/download" title="Скачать приложение">
                 <Download size={22} />
               </NavButton>
+              <LanguageSwitcher />
             </div>
 
             <button

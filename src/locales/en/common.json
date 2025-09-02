@@ -1,0 +1,48 @@
+{
+  "nav": {
+    "home": "Home",
+    "autopark": "Fleet",
+    "services": "Services",
+    "contacts": "Contacts",
+    "dashboard": "Dashboard",
+    "login": "Login"
+  },
+  "hero": {
+    "title": "Premium Car Rental",
+    "subtitle": "in Almaty",
+    "description": "Exclusive premium-class fleet. VIP service, transfers, rental with and without driver.",
+    "cta": "Choose a Car"
+  },
+  "services": {
+    "title": "Our Services",
+    "withDriver": "Rental with Driver",
+    "withDriverDesc": "Maximum comfort and safety with our professional drivers",
+    "transfer": "Airport Transfer",
+    "transferDesc": "Punctual and comfortable delivery to and from the airport",
+    "events": "Event Rental",
+    "eventsDesc": "Make your event unforgettable with our premium vehicles"
+  },
+  "footer": {
+    "description": "Premium car rental in Almaty",
+    "quickLinks": "Quick Links",
+    "services": "Services",
+    "legal": "Legal Information",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "contacts": "Contacts",
+    "address": "Almaty, Baitursynova St., 179/2",
+    "phone": "+7 (777) 666-02-95",
+    "email": "topcar_club@mail.ru"
+  },
+  "common": {
+    "book": "Book",
+    "more": "Learn More",
+    "price": "Price",
+    "day": "day",
+    "from": "from",
+    "to": "to",
+    "currency": "₸",
+    "loading": "Loading...",
+    "error": "An error occurred"
+  }
+}
