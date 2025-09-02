@@ -13,10 +13,10 @@ import LoginModal from './LoginModal';
 // GTM helper for click analytics
 const pushEvent = (event: string, payload: Record<string, unknown> = {}) => {
   try {
-    // @ts-expect-error: window.dataLayer may not exist on the window object
-    window.dataLayer = window.dataLayer || [];
-    // @ts-expect-error: window.dataLayer may not exist on the window object
-    window.dataLayer.push({ event, ...payload });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).dataLayer = (window as any).dataLayer || [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).dataLayer.push({ event, ...payload });
   } catch {
     // noop
   }

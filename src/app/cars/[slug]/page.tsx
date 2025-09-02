@@ -35,8 +35,8 @@ async function getCarDetails(slug: string): Promise<Car | null> {
 }
 
 // Если вы хотите использовать динамические метаданные
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const canonical = `https://topcar.club/cars/${slug}`;
   const car = await getCarDetails(slug);
 
@@ -74,22 +74,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   } as const;
 }
 
-// Эта функция генерирует статические параметры (slug) для всех страниц
-export async function generateStaticParams() {
-  const supabase = getSupabase();
-  const { data: cars, error } = await supabase.from('cars').select('slug');
-
-  if (error) {
-    console.error("Ошибка при генерации статических параметров:", error.message);
-    return [] as { slug: string }[];
-  }
-  
-  return (cars || []).map((car: { slug: string }) => ({ slug: car.slug }));
-}
+// Отключаем статическую генерацию для динамического рендеринга
+export const dynamic = 'force-dynamic';
 
 
-export default async function CarDetailPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function CarDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
   // Теперь car будет содержать данные из Supabase
   const car = await getCarDetails(slug);

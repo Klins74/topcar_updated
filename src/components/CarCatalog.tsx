@@ -42,7 +42,6 @@ function CarCard({ car }: { car: Car; }) {
           className="transition-transform duration-500 ease-in-out group-hover:scale-110 object-cover"
           priority={car.id <= 3}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          onError={(e) => { (e.target as HTMLImageElement).src = '/cars/placeholder-car.png'; }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
         <div className="absolute inset-0 p-4 sm:p-5 flex flex-col justify-end text-white z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">

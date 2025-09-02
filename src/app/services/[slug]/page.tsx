@@ -25,8 +25,9 @@ const servicesData: { [key: string]: { title: string, description: string, conte
 }
 
 // This function generates the page title and description for SEO
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-    const service = servicesData[params.slug];
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const service = servicesData[slug];
 
     if (!service) {
         return {
@@ -38,14 +39,15 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     return {
         title: `${service.title} | TopCar`,
         description: service.description,
-        alternates: { canonical: `https://topcar.club/services/${params.slug}` },
+        alternates: { canonical: `https://topcar.club/services/${slug}` },
         robots: { index: true, follow: true },
     }
 }
 
 // This is the main page component that renders the HTML
-export default function ServiceDetailPage({ params }: { params: { slug: string } }) {
-    const service = servicesData[params.slug];
+export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const service = servicesData[slug];
 
     // If a service with the given slug is not found, show an error message
     if (!service) {
@@ -76,7 +78,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                             itemListElement: [
                                 { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://topcar.club/' },
                                 { '@type': 'ListItem', position: 2, name: 'Услуги', item: 'https://topcar.club/services' },
-                                { '@type': 'ListItem', position: 3, name: service.title, item: `https://topcar.club/services/${params.slug}` },
+                                { '@type': 'ListItem', position: 3, name: service.title, item: `https://topcar.club/services/${slug}` },
                             ],
                         }),
                     }}
