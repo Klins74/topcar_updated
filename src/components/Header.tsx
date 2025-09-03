@@ -61,27 +61,17 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showCalcModal, setShowCalcModal] = useState(false);
-  
-  const navItems = [
-    { href: "/autopark", label: t('nav.autopark') },
-    { href: "/services", label: t('nav.services') },
-    { href: "/contacts", label: t('nav.contacts') },
-    { href: "/terms", label: t('nav.terms') },
-  ];
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-
   const pathname = usePathname();
   const { user, isLoading, signOut } = useAuth();
   const menuRef = useRef<HTMLDivElement>(null);
-
   useScrollLock(isMenuOpen || showLoginModal || showCalcModal);
 
   useEffect(() => {
     setIsMounted(true);
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setIsMenuOpen(false);
@@ -90,7 +80,6 @@ export default function Header() {
       }
     };
     document.addEventListener('keydown', handleKeyDown);
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
       document.removeEventListener('keydown', handleKeyDown);
@@ -117,6 +106,30 @@ export default function Header() {
   const openCalcModal = useCallback(() => handleAction(() => setShowCalcModal(true)), [handleAction]);
   const handleLogout = useCallback(() => handleAction(signOut), [handleAction, signOut]);
 
+  // navItems теперь вычисляется на каждом рендере
+  const navItems = [
+    { href: "/autopark", label: t('nav.autopark') },
+    { href: "/services", label: t('nav.services') },
+    { href: "/contacts", label: t('nav.contacts') },
+    { href: "/terms", label: t('nav.terms') },
+  ];
+
+  if (!isMounted) {
+    return (
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 border-b border-border h-20 flex items-center">
+        <div className="container mx-auto px-4 flex justify-between items-center h-20 relative">
+          <Link href="/" className="flex items-center gap-2" aria-label="TopCar Home">
+            <Image src="/logo.png" alt="TopCar Logo" width={40} height={40} priority />
+            <span className="text-2xl font-bold text-foreground">TOPCAR</span>
+          </Link>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <>
       <header
@@ -132,7 +145,6 @@ export default function Header() {
             <Image src="/logo.png" alt="TopCar Logo" width={40} height={40} priority />
             <span className="text-2xl font-bold text-foreground">TOPCAR</span>
           </Link>
-
           <nav className="hidden lg:flex items-center gap-8">
             {navItems.map((item) => (
               <NavLink key={item.href} href={item.href} currentPath={pathname}>
@@ -140,7 +152,6 @@ export default function Header() {
               </NavLink>
             ))}
           </nav>
-
           <div className="flex items-center gap-2">
             <div className="hidden lg:flex items-center gap-2">
               <NavButton onClick={() => setShowCalcModal(true)} title={t('nav.calculator')}>
@@ -171,7 +182,6 @@ export default function Header() {
               </NavButton>
               <LanguageSwitcher />
             </div>
-
             <button
               className="p-2 lg:hidden text-foreground hover:text-brand-accent transition-colors z-50"
               onClick={toggleMenu}

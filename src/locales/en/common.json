@@ -19,11 +19,21 @@
     "description": "Exclusive premium-class fleet. VIP service, transfers, rental with and without driver. Your impeccable style starts here.",
     "cta": "Choose a Car",
     "ctaSecondary": "Learn More",
-    "features": {
-      "luxury": "Elite Vehicles",
-      "service": "VIP Service 24/7",
-      "driver": "With & Without Driver"
-    }
+    "ownTheMoment": "Own the Moment.",
+    "rentLuxury": "Rent Luxury.",
+    "mainDescription": "Exclusive premium-class fleet in Almaty. Your impeccable style starts here.",
+    "seePrices": "See Prices",
+    "contact": "Contact"
+  },
+  "features": {
+    "withDriver": "Rental with Driver",
+    "withDriverDesc": "Professional drivers with city knowledge for your maximum convenience.",
+    "airportTransfer": "Airport Transfer",
+    "airportTransferDesc": "We will meet you or your guests with a sign and comfortably deliver you anywhere in the city.",
+    "eventRental": "Event Rental",
+    "eventRentalDesc": "Flexible rates for business trips, weddings, photoshoots, or personal use.",
+    "safetyDocs": "Safety and Documents",
+    "safetyDocsDesc": "We operate fully officially. Check out our licenses and certificates."
   },
   "services": {
     "title": "Our Services",
@@ -45,16 +55,19 @@
       "luxury": "Luxury",
       "business": "Business",
       "comfort": "Comfort"
-    }
+    },
+    "noName": "No name",
+    "noDescription": "No description available.",
+    "notFound": "No cars found",
+    "tryChangeFilters": "Try changing your search criteria."
   },
   "contacts": {
     "title": "Contacts",
     "subtitle": "Contact us in any convenient way",
-    "address": "Address",
-    "phone": "Phone",
-    "email": "Email",
-    "workingHours": "Working Hours",
-    "workingTime": "24/7",
+    "address": "Almaty, Baitursynova St., 179/2",
+    "phone": "+7 (777) 666-02-95",
+    "email": "topcar_club@mail.ru",
+    "workingHours": "24/7",
     "getInTouch": "Get in Touch"
   },
   "footer": {
@@ -81,6 +94,61 @@
     "submit": "Submit Request",
     "success": "Request submitted successfully!",
     "error": "Error submitting request"
+  },
+  "terms": {
+    "title": "Rental Terms",
+    "minAge": "Minimum driver age is 23",
+    "minExperience": "Minimum driving experience is 3 years",
+    "docs": "Required documents: passport, driver's license. International license is required for foreign citizens.",
+    "insurance": "All cars are insured."
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "payment": "Payment and Deposits",
+    "paymentDesc": "We accept Visa, MasterCard, and cash. The deposit depends on the car class and rental period. All deposit information will be provided before booking confirmation. The deposit is refunded within 1-3 business days after the car is returned without damage.",
+    "terms": "Rental Terms",
+    "termsDesc": "Minimum driver age is 23, minimum driving experience is 3 years. Some premium cars may have higher requirements. Required documents: passport, driver's license. International license is required for foreign citizens. All cars are insured.",
+    "return": "Car Return",
+    "returnDesc": "The car must be returned at the time and place specified in the contract, with the same fuel level and clean. Return at another place or after hours is possible by prior arrangement and for an extra fee. We value your time and strive to make the return process as quick and convenient as possible.",
+    "outOfCity": "Can I travel outside the city/country?",
+    "outOfCityDesc": "Travel outside Almaty is possible by prior arrangement. For travel outside Kazakhstan, special conditions and rates apply, which must be clarified with our manager when booking. We will help you find the best option for your trip."
+  },
+  "club": {
+    "title": "Join TopCar Elite",
+    "desc": "Discover a world of unrivaled luxury and exclusive benefits with our club subscription.",
+    "exclusiveRates": "Exclusive Rates",
+    "exclusiveRatesDesc": "Special prices available only to club members.",
+    "priorityBooking": "Priority Booking",
+    "priorityBookingDesc": "First access to new and popular fleet models.",
+    "concierge": "Personal Concierge",
+    "conciergeDesc": "Dedicated support line and assistance in choosing a car.",
+    "join": "Join the Club"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "history": "Booking History",
+    "profile": "Profile",
+    "promo": "Promo Codes",
+    "logout": "Logout"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "server": "Internal server error",
+    "required": "Required field",
+    "invalidEmail": "Invalid email"
+  },
+  "notifications": {
+    "success": "Success!",
+    "error": "Error!",
+    "bookingSent": "Your request has been sent. We will contact you shortly."
+  },
+  "form": {
+    "name": "Name",
+    "phone": "Phone",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send",
+    "reset": "Reset"
   },
   "common": {
     "book": "Book",

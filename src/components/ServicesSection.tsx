@@ -9,35 +9,36 @@ import {
   CalendarDaysIcon,
   ShieldCheckIcon
 } from '@heroicons/react/24/outline';
-
-const services = [
-    {
-        slug: 'arenda-s-voditelem', // Slug для URL
-        icon: UserGroupIcon,
-        title: 'Аренда с водителем',
-        description: 'Профессиональные водители со знанием города для вашего максимального удобства.'
-    },
-    {
-        slug: 'transfer-v-aeroport', // Slug для URL
-        icon: GlobeAltIcon,
-        title: 'Трансфер в/из аэропорта',
-        description: 'Встретим вас или ваших гостей с табличкой и комфортом доставим в любую точку города.'
-    },
-    {
-        slug: 'arenda-na-meropriyatiya', // Slug для URL
-        icon: CalendarDaysIcon,
-        title: 'Аренда на мероприятия',
-        description: 'Гибкие тарифы для деловых поездок, свадеб, фотосессий или личного пользования.'
-    },
-    {
-        slug: 'security', // Slug для URL (ссылка на страницу безопасности)
-        icon: ShieldCheckIcon,
-        title: 'Безопасность и документы',
-        description: 'Мы работаем полностью официально. Ознакомьтесь с нашими лицензиями и сертификатами.'
-    }
-];
+import { useTranslations } from '@/lib/i18n';
 
 const ServicesSection = () => {
+    const { t } = useTranslations();
+    const services = [
+        {
+            slug: 'arenda-s-voditelem',
+            icon: UserGroupIcon,
+            title: t('features.withDriver'),
+            description: t('features.withDriverDesc'),
+        },
+        {
+            slug: 'transfer-v-aeroport',
+            icon: GlobeAltIcon,
+            title: t('features.airportTransfer'),
+            description: t('features.airportTransferDesc'),
+        },
+        {
+            slug: 'arenda-na-meropriyatiya',
+            icon: CalendarDaysIcon,
+            title: t('features.eventRental'),
+            description: t('features.eventRentalDesc'),
+        },
+        {
+            slug: 'security',
+            icon: ShieldCheckIcon,
+            title: t('features.safetyDocs'),
+            description: t('features.safetyDocsDesc'),
+        },
+    ];
     return (
         <section className="py-24 bg-neutral-950">
             <div className="container mx-auto px-4">

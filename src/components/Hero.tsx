@@ -6,6 +6,7 @@ import {
   ArrowRightIcon,
   SparklesIcon,
 } from '@heroicons/react/24/outline'
+import { useTranslations } from '@/lib/i18n';
 
 // Анимации
 const containerVariants = {
@@ -32,6 +33,7 @@ const itemVariants = {
 }
 
 export default function Hero() {
+  const { t } = useTranslations();
   const scrollToCatalog = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
     document
@@ -69,18 +71,21 @@ export default function Hero() {
           variants={itemVariants}
         >
           <SparklesIcon className="h-4 w-4" />
-          <span>Премиум-сервис в Алматы</span>
+          <span>{t('hero.subtitle')}</span>
         </motion.div>
 
         <motion.h1
           className="text-4xl sm:text-6xl lg:text-8xl font-extrabold tracking-tight text-white"
           variants={itemVariants}
         >
-          Владей Моментом. <br className="hidden sm:block" />
-          Арендуй{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f0dca0] to-[#d4af37]">
-            Роскошь
-          </span>
+          {t('hero.ownTheMoment')} <br className="hidden sm:block" />
+          {t('hero.rentLuxury').split(' ').map((word, i) =>
+            i === 1 ? (
+              <span key={i} className="text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f0dca0] to-[#d4af37]">{word}</span>
+            ) : (
+              ' ' + word + ' '
+            )
+          )}
           .
         </motion.h1>
 
@@ -88,7 +93,7 @@ export default function Hero() {
           className="mt-6 md:mt-8 text-lg sm:text-2xl text-neutral-200 max-w-2xl mx-auto"
           variants={itemVariants}
         >
-          Эксклюзивный автопарк премиум-класса в Алматы. Ваш безупречный стиль начинается здесь.
+          {t('hero.mainDescription')}
         </motion.p>
 
         <motion.div
@@ -100,8 +105,14 @@ export default function Hero() {
             onClick={scrollToCatalog}
             className="group w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-[#d4af37] text-black rounded-lg text-lg font-bold hover:bg-[#c0982c] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
           >
-            <span>Исследовать Автопарк</span>
+            <span>{t('hero.seePrices')}</span>
             <ArrowRightIcon className="ml-2 h-6 w-6 transition-transform duration-300 group-hover:translate-x-1.5" />
+          </a>
+          <a
+            href="#contacts"
+            className="group w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 border border-white text-white rounded-lg text-lg font-bold hover:bg-white hover:text-black transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
+          >
+            <span>{t('hero.contact')}</span>
           </a>
         </motion.div>
       </motion.div>
@@ -109,7 +120,7 @@ export default function Hero() {
       <div
         className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 animate-bounce cursor-pointer hidden sm:block"
         onClick={scrollToCatalog}
-        aria-label="Прокрутить вниз"
+        aria-label={t('common.next')}
       >
         <ArrowDownIcon className="h-8 w-8 text-white/70 hover:text-white" />
       </div>

@@ -13,6 +13,7 @@ import {
 
 import InputField, { HeroIconType } from '@/components/ui/InputField';
 import { formatPhoneNumber } from '@/lib/formatters';
+import { useTranslations } from '@/lib/i18n';
 
 // Иконка-заглушка для автомобиля
 const CarIconPlaceholder: HeroIconType = React.forwardRef<SVGSVGElement, React.SVGProps<SVGSVGElement>>(function CarIconPlaceholder(props, ref) {
@@ -28,6 +29,7 @@ type BookingFormProps = {
 }
 
 export default function BookingForm({ initialCarName = '' }: BookingFormProps) {
+  const { t } = useTranslations();
   const [formData, setFormData] = useState({
     carName: initialCarName,
     dateFrom: '',
@@ -60,12 +62,12 @@ export default function BookingForm({ initialCarName = '' }: BookingFormProps) {
     const cleanedPhone = userPhone.replace(/[^\d]/g, '');
 
     if (!carName || !dateFrom || !dateTo || !userName || !cleanedPhone) {
-      setFormStatus({ type: 'error', message: 'Пожалуйста, заполните все обязательные поля.' });
+      setFormStatus({ type: 'error', message: t('errors.required') });
       setLoading(false);
       return;
     }
     if (new Date(dateFrom) > new Date(dateTo)) {
-      setFormStatus({ type: 'error', message: 'Дата окончания не может быть раньше даты начала.'});
+      setFormStatus({ type: 'error', message: t('booking.error') });
       setLoading(false);
       return;
     }
@@ -88,15 +90,15 @@ export default function BookingForm({ initialCarName = '' }: BookingFormProps) {
             body: JSON.stringify(submissionData),
         });
         const responseData = await response.json();
-        if (!response.ok) throw new Error(responseData.message || 'Произошла ошибка на сервере.');
+        if (!response.ok) throw new Error(responseData.message || t('errors.server'));
 
-        setFormStatus({ type: 'success', message: 'Ваша заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.' });
+        setFormStatus({ type: 'success', message: t('booking.success') });
         setFormData({ carName: '', dateFrom: '', dateTo: '', userName: '', userPhone: '' });
         setTimeout(() => setFormStatus({ type: '', message: '' }), 7000);
 
     } catch (apiError: unknown) {
         console.error("Ошибка при отправке в amoCRM:", apiError);
-        const errorMessage = apiError instanceof Error ? apiError.message : 'Не удалось отправить заявку. Попробуйте позже.';
+        const errorMessage = apiError instanceof Error ? apiError.message : t('booking.error');
         setFormStatus({ type: 'error', message: errorMessage });
     }
     
@@ -112,8 +114,8 @@ export default function BookingForm({ initialCarName = '' }: BookingFormProps) {
       <InputField
         id="carName"
         name="carName"
-        label="Автомобиль"
-        placeholder="Например: Mercedes-Benz G63 AMG"
+        label={t('booking.car')}
+        placeholder={t('booking.car')}
         value={formData.carName}
         onChange={handleChange}
         icon={CarIconPlaceholder} 
@@ -123,7 +125,7 @@ export default function BookingForm({ initialCarName = '' }: BookingFormProps) {
         <InputField
           id="dateFrom"
           name="dateFrom"
-          label="Дата начала"
+          label={t('booking.dates') + ' (от)'}
           type="date"
           placeholder=""
           value={formData.dateFrom}
@@ -134,7 +136,7 @@ export default function BookingForm({ initialCarName = '' }: BookingFormProps) {
         <InputField
           id="dateTo"
           name="dateTo"
-          label="Дата окончания"
+          label={t('booking.dates') + ' (до)'}
           type="date"
           placeholder=""
           value={formData.dateTo}
@@ -148,8 +150,8 @@ export default function BookingForm({ initialCarName = '' }: BookingFormProps) {
       <InputField
         id="userName"
         name="userName"
-        label="Ваше имя (ФИО)"
-        placeholder="Иван Петров"
+        label={t('booking.name')}
+        placeholder={t('booking.name')}
         value={formData.userName}
         onChange={handleChange}
         icon={UserSolidIcon}
@@ -157,9 +159,9 @@ export default function BookingForm({ initialCarName = '' }: BookingFormProps) {
       <InputField
         id="userPhone"
         name="userPhone"
-        label="Контактный телефон"
+        label={t('booking.phone')}
         type="tel"
-        placeholder="+7 (___) ___-__-__"
+        placeholder={t('form.phone')}
         value={formData.userPhone}
         onChange={handleChange}
         icon={PhoneSolidIcon}
@@ -184,11 +186,11 @@ export default function BookingForm({ initialCarName = '' }: BookingFormProps) {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <span>Отправка...</span>
+            <span>{t('common.loading')}</span>
           </>
         ) : (
           <>
-            Отправить заявку
+            {t('form.send')}
             <PaperAirplaneIcon className="h-5 w-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 ml-1" />
           </>
         )}

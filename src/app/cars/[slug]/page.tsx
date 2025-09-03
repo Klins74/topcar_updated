@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     alternates: { canonical },
     robots: { index: true, follow: true },
     openGraph: {
-      type: 'product',
+      type: 'website', // исправлено с 'product'
       url: canonical,
       siteName: 'TopCar',
       title,

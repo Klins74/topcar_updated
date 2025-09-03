@@ -4,6 +4,7 @@
 import Link from 'next/link' // Import Link
 import FadeInWhenVisible from './FadeInWhenVisible'
 import { CheckBadgeIcon, CurrencyEuroIcon, SparklesIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import { useTranslations } from '@/lib/i18n';
 
 type Benefit = {
   name: string;
@@ -15,10 +16,11 @@ type Benefit = {
 };
 
 export default function Subscription() {
+  const { t } = useTranslations();
   const benefits: Benefit[] = [
-    { name: 'Эксклюзивные тарифы', description: 'Особые цены, доступные только для членов клуба.', Icon: CurrencyEuroIcon },
-    { name: 'Приоритетное бронирование', description: 'Первоочередной доступ к новинкам и популярным моделям автопарка.', Icon: SparklesIcon },
-    { name: 'Персональный консьерж', description: 'Выделенная линия поддержки и помощь в подборе автомобиля.', Icon: CheckBadgeIcon },
+    { name: t('club.exclusiveRates'), description: t('club.exclusiveRatesDesc'), Icon: CurrencyEuroIcon },
+    { name: t('club.priorityBooking'), description: t('club.priorityBookingDesc'), Icon: SparklesIcon },
+    { name: t('club.concierge'), description: t('club.conciergeDesc'), Icon: CheckBadgeIcon },
   ];
 
   return (
@@ -26,10 +28,10 @@ export default function Subscription() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <FadeInWhenVisible>
           <h2 className="text-4xl sm:text-5xl font-extrabold mb-6 text-center tracking-tight">
-            Станьте частью <span className="text-[#d4af37]">TopCar Elite</span>
+            {t('club.title')} <span className="text-[#d4af37]">TopCar Elite</span>
           </h2>
           <p className="text-lg sm:text-xl text-neutral-400 mb-16 sm:mb-20 text-center max-w-2xl mx-auto">
-            Откройте для себя мир непревзойденной роскоши и эксклюзивных преимуществ с нашей клубной подпиской.
+            {t('club.desc')}
           </p>
         </FadeInWhenVisible>
 
@@ -67,11 +69,11 @@ export default function Subscription() {
                            focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-lg hover:shadow-xl
                            transform hover:-translate-y-0.5 active:translate-y-0"
               >
-                <span>Присоединиться к клубу</span>
+                <span>{t('club.join')}</span>
                 <ArrowRightIcon className="ml-2 -mr-1 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
               <p className="mt-4 text-xs text-neutral-500">
-                Нажимая &quot;Присоединиться&quot;, вы соглашаетесь с условиями клубной программы.
+                {t('club.termsNote', 'Нажимая "Присоединиться", вы соглашаетесь с условиями клубной программы.')}
               </p>
             </div>
           </FadeInWhenVisible>

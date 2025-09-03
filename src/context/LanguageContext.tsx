@@ -13,19 +13,27 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>('ru');
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Load saved language from localStorage
-    const savedLocale = localStorage.getItem('topcar-locale') as Locale;
-    if (savedLocale && ['ru', 'en', 'kk'].includes(savedLocale)) {
-      setLocaleState(savedLocale);
+    setIsMounted(true);
+    if (typeof window !== 'undefined') {
+      const savedLocale = localStorage.getItem('topcar-locale') as Locale;
+      if (savedLocale && ['ru', 'en', 'kk'].includes(savedLocale)) {
+        setLocaleState(savedLocale);
+      }
     }
   }, []);
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
-    localStorage.setItem('topcar-locale', newLocale);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('topcar-locale', newLocale);
+      window.location.reload();
+    }
   };
+
+  if (!isMounted) return null;
 
   return (
     <LanguageContext.Provider value={{ locale, setLocale }}>
