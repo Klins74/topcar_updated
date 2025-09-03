@@ -122,7 +122,8 @@
     "priorityBookingDesc": "First access to new and popular fleet models.",
     "concierge": "Personal Concierge",
     "conciergeDesc": "Dedicated support line and assistance in choosing a car.",
-    "join": "Join the Club"
+    "join": "Join the Club",
+    "termsNote": "By clicking \"Join\", you agree to the terms of the club program."
   },
   "dashboard": {
     "title": "Dashboard",

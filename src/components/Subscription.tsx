@@ -73,7 +73,7 @@ export default function Subscription() {
                 <ArrowRightIcon className="ml-2 -mr-1 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
               <p className="mt-4 text-xs text-neutral-500">
-                {t('club.termsNote', 'Нажимая "Присоединиться", вы соглашаетесь с условиями клубной программы.')}
+                {t('club.termsNote')}
               </p>
             </div>
           </FadeInWhenVisible>

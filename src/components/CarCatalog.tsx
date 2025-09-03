@@ -4,7 +4,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import FadeInWhenVisible from './FadeInWhenVisible'
 import { Car } from '@/types'
-import FormattedPrice from './FormattedPrice'
 import SkeletonCard from './SkeletonCard'
 import { NoSymbolIcon } from '@heroicons/react/24/outline'
 import { useTranslations } from '@/lib/i18n';
@@ -61,7 +60,7 @@ function CarCard({ car }: { car: Car; }) {
 }
 
 export default function CarCatalog({ cars = [], isLoading = false }: { cars?: Car[]; isLoading?: boolean }) {
-  const { t, locale } = useTranslations();
+  const { t } = useTranslations();
   return (
     <section id="car-catalog" className="py-16 sm:py-20 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
