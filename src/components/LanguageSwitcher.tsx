@@ -5,7 +5,12 @@ import { ChevronDownIcon, LanguageIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/context/LanguageContext';
 import { languages } from '@/lib/i18n';
 
-export default function LanguageSwitcher() {
+// Добавляем тип пропсов
+interface LanguageSwitcherProps {
+  className?: string;
+}
+
+export default function LanguageSwitcher({ className }: LanguageSwitcherProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { locale, setLocale } = useLanguage();
   
@@ -17,7 +22,7 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <div className="relative">
+    <div className={className ? `relative ${className}` : 'relative'}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-neutral-300 hover:text-white bg-neutral-800/50 hover:bg-neutral-700/50 rounded-lg transition-all duration-200 border border-neutral-700/50 hover:border-neutral-600"
