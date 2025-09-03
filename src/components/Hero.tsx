@@ -86,7 +86,6 @@ export default function Hero() {
               ' ' + word + ' '
             )
           )}
-          .
         </motion.h1>
 
         <motion.p

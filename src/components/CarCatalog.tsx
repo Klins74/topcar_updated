@@ -10,7 +10,6 @@ import { useTranslations } from '@/lib/i18n';
 
 function CarCard({ car }: { car: Car; }) {
   const { t } = useTranslations();
-  // const basePrice = car.prices?.find(p => !p.with_driver && p.days_from === 24)?.price_per_day || car.price_per_day || 0;
   return (
     <>
       <script

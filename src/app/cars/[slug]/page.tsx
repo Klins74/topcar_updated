@@ -219,21 +219,28 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               </div>
 
               {/* Pricing & Call to Action */}
+              {/* Удаляем блок стоимости аренды */}
+              {/*
               <div className="border-t border-neutral-800 pt-6">
                 <p className="text-sm text-neutral-300 mb-2">Стоимость аренды (от 24ч):</p>
                 <p className="text-4xl font-bold text-[#d4af37] mb-6">
                   {dailyPrice.toLocaleString('ru-RU')} ₸ <span className="text-lg text-neutral-400">/ день</span>
                 </p>
-                
-                {/* Заголовок формы бронирования */}
                 <h3 className="text-2xl font-bold text-white mb-6 mt-8">
                     Заявка на <span className="text-[#d4af37]">бронирование</span>
                 </h3>
-
-                {/* Контейнер для BookingForm - используем flexbox для выравнивания */}
                 <div className="flex flex-col gap-6"> 
                     <BookingForm initialCarName={car!.name} /> 
-
+                </div>
+              </div>
+              */}
+              {/* Оставляем только форму бронирования */}
+              <div className="border-t border-neutral-800 pt-6">
+                <h3 className="text-2xl font-bold text-white mb-6 mt-8">
+                    Заявка на <span className="text-[#d4af37]">бронирование</span>
+                </h3>
+                <div className="flex flex-col gap-6"> 
+                    <BookingForm initialCarName={car!.name} /> 
                 </div>
               </div>
             </div>

@@ -87,8 +87,8 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    if (isMenuOpen) setIsMenuOpen(false);
-  }, [pathname, isMenuOpen]);
+    setIsMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (isMenuOpen && menuRef.current) {
@@ -153,6 +153,10 @@ export default function Header() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
+            {/* LanguageSwitcher теперь всегда рядом с бургер-меню */}
+            <div className="flex items-center lg:hidden">
+              <LanguageSwitcher />
+            </div>
             <div className="hidden lg:flex items-center gap-2">
               <NavButton onClick={() => setShowCalcModal(true)} title={t('nav.calculator')}>
                 <Calculator size={22} />
@@ -180,7 +184,7 @@ export default function Header() {
               <NavButton href="/download" title={t('nav.download')}>
                 <Download size={22} />
               </NavButton>
-              <LanguageSwitcher />
+              <LanguageSwitcher className="hidden lg:block" />
             </div>
             <button
               className="p-2 lg:hidden text-foreground hover:text-brand-accent transition-colors z-50"
@@ -216,6 +220,11 @@ export default function Header() {
             >
               <X size={28} />
             </button>
+
+            {/* LanguageSwitcher в самом верху мобильного меню */}
+            <div className="flex justify-center mb-6 mt-2">
+              <LanguageSwitcher />
+            </div>
 
             <div className="container mx-auto flex flex-col p-4 pt-20 min-h-screen">
               <div className="flex flex-col gap-1 pb-3">
@@ -293,7 +302,12 @@ export default function Header() {
                 </motion.div>
               </div>
 
-              <motion.div className="mt-6 mb-2" variants={ctaButtonVariants}>
+              {/* Добавляем LanguageSwitcher для мобильного меню */}
+              <div className="mt-6 mb-2 flex justify-center">
+                <LanguageSwitcher />
+              </div>
+
+              <motion.div className="mb-2" variants={ctaButtonVariants}>
                 <a
                   href="https://wa.me/77776660295"
                   target="_blank"

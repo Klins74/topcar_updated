@@ -108,7 +108,6 @@ export default function CarModal({ car, onClose, onBook }: Props) {
 
                             <div className="border-t border-border mt-6 pt-6 space-y-4">
                                 <div>
-                                    <p className="text-sm text-muted-foreground">Стоимость аренды (24ч)</p>
                                     <p className="text-3xl font-bold text-brand-accent">
                                         <FormattedPrice value={dailyPrice} /> ₸
                                     </p>
