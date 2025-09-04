@@ -62,9 +62,9 @@ export default function RootLayout({
         {/* --- End Google Tag Manager --- */}
 
         {/* --- SEO: alternate, canonical, language redirect --- */}
-        <link rel="alternate" href="https://topcar.club/" hreflang="ru" />
-        <link rel="alternate" href="https://topcar.club/en/" hreflang="en" />
-        <link rel="alternate" href="https://topcar.club/kk/" hreflang="kk" />
+        <link rel="alternate" href="https://topcar.club/" hrefLang="ru" />
+        <link rel="alternate" href="https://topcar.club/en/" hrefLang="en" />
+        <link rel="alternate" href="https://topcar.club/kk/" hrefLang="kk" />
         <link rel="canonical" href="https://topcar.club/" />
         <Script id="lang-redirect" strategy="afterInteractive">
           {`
