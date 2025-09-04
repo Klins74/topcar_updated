@@ -60,6 +60,25 @@ export default function RootLayout({
           `}
         </Script>
         {/* --- End Google Tag Manager --- */}
+
+        {/* --- SEO: alternate, canonical, language redirect --- */}
+        <link rel="alternate" href="https://topcar.club/" hreflang="ru" />
+        <link rel="alternate" href="https://topcar.club/en/" hreflang="en" />
+        <link rel="alternate" href="https://topcar.club/kk/" hreflang="kk" />
+        <link rel="canonical" href="https://topcar.club/" />
+        <Script id="lang-redirect" strategy="afterInteractive">
+          {`
+            document.addEventListener("DOMContentLoaded", function() {
+              var userLang = navigator.language || navigator.userLanguage;
+              if (userLang.startsWith("en")) {
+                window.location.href = "https://topcar.club/en/";
+              } else if (userLang.startsWith("kk")) {
+                window.location.href = "https://topcar.club/kk/";
+              }
+            });
+          `}
+        </Script>
+        {/* --- END SEO --- */}
       </head>
       <body className="bg-background text-foreground">
         {/* --- Google Tag Manager (noscript) --- */}
