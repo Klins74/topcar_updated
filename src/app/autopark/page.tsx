@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { getSupabase } from "@/lib/supabase";
 import type { Metadata } from 'next';
 import Link from "next/link";
+import SEOBlock from "@/components/SEOBlock";
 
 export const metadata: Metadata = {
   title: 'Автопарк — Элитные Авто и Электрокары | TopCar Almaty',
@@ -65,6 +66,7 @@ export default async function AutoparkPage() {
           </p>
           <CarCatalog cars={cars || []} isLoading={!!error} />
         </div>
+        <SEOBlock page="autopark" />
       </main>
       <Footer />
     </AnimatedPageWrapper>

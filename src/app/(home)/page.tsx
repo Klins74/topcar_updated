@@ -13,6 +13,7 @@ import { ArrowRightIcon, UserCircleIcon, ChatBubbleLeftRightIcon } from '@heroic
 import { useAuth } from '@/context/AuthContext';
 import Head from 'next/head';
 import Hero from '@/components/Hero';
+import SEOBlock from '@/components/SEOBlock';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function HomePage() {
@@ -66,6 +67,7 @@ export default function HomePage() {
         <ServicesSection />
         <FAQ />
         <Subscription />
+        <SEOBlock page="home" />
         <Footer />
       </main>
     </AnimatedPageWrapper>

@@ -183,5 +183,39 @@
   "meta": {
     "title": "TopCar - Premium Car Rental in Almaty",
     "description": "Exclusive premium-class fleet in Almaty: elite cars, electric vehicles, luxury cars for tourists. VIP service, transfers, rental with and without driver."
+  },
+  "seo": {
+    "home": {
+      "title": "Premium Car Rental in Almaty — TopCar Club",
+      "content": "TopCar Club offers <strong>exclusive luxury car rental in Almaty</strong> with impeccable 24/7 service. Our fleet includes luxury sedans, premium SUVs, and modern electric cars for tourists and business travelers.<br><br>We provide <strong>VIP car rental services with and without driver</strong>, airport transfers, event services, and individual solutions for each client. Transparent terms, competitive prices, and quality guarantee — choose TopCar Club for unforgettable trips around Kazakhstan."
+    },
+    "autopark": {
+      "title": "Elite Cars and Electric Vehicles for Rent — TopCar Fleet",
+      "content": "Discover the <strong>TopCar Club elite car catalog</strong> — from luxury sedans to powerful SUVs and eco-friendly electric cars. Every vehicle in our fleet undergoes thorough inspection and regular maintenance.<br><br><strong>Premium car rental in Almaty</strong> is available for both short-term trips and long-term use. Special offers for tourists, business trips, and ceremonial events. Book your perfect car today!"
+    },
+    "services": {
+      "title": "Professional Elite Car Rental Services in Almaty",
+      "content": "<strong>Comprehensive premium car rental services</strong> from TopCar Club include rental with personal driver, VIP airport transfers, business meeting services, and ceremonial event support.<br><br>Our professional drivers know the city like the back of their hand and ensure maximum comfort during your trip. <strong>Individual approach to each client</strong>, flexible rates, and 24/7 support — trust us to organize your perfect journey."
+    },
+    "contacts": {
+      "title": "TopCar Club Contacts — Contact Us for Elite Car Rental",
+      "content": "The TopCar Club team works <strong>24/7</strong> for your convenience. Our office is located in the center of Almaty at 179/2 Baitursynov Street. We are always ready to answer your questions and help you choose the perfect car.<br><br>Contact us at <strong>+7 (777) 666-02-95</strong>, WhatsApp, or Telegram for quick booking. A <strong>personal manager</strong> will consult you on all matters of elite car and electric vehicle rental in Almaty."
+    },
+    "terms": {
+      "title": "Elite Car Rental Terms — Transparent TopCar Rules",
+      "content": "Learn about the <strong>elite car rental terms</strong> at TopCar Club. We work exclusively officially and provide full legal protection for our clients.<br><br>Minimum requirements: age from 23 years, driving experience from 3 years. <strong>All cars are insured</strong> and undergo regular maintenance. Flexible payment terms, transparent deposit system, and possibility of early car return."
+    },
+    "privacy": {
+      "title": "Privacy Policy — TopCar Client Data Protection",
+      "content": "TopCar Club guarantees <strong>complete confidentiality of personal data</strong> of our clients. We use modern encryption technologies and strictly comply with the requirements of the legislation of the Republic of Kazakhstan.<br><br>Your data is used exclusively to provide quality car rental service and is not transferred to third parties. <strong>Secure payments</strong>, protected document processing, and complete transparency in personal information usage."
+    },
+    "download": {
+      "title": "TopCar Mobile App — Convenient Car Booking",
+      "content": "Download the <strong>TopCar Club mobile app</strong> for quick and convenient booking of elite cars in Almaty. The app is available for iOS and Android devices.<br><br>In the app, you can view available cars, compare prices, book cars for needed dates, and track order status. <strong>Exclusive discounts</strong> and special offers are available only to mobile app users."
+    },
+    "security": {
+      "title": "Security and Reliability — TopCar Club Quality Guarantees",
+      "content": "Our clients' safety is our top priority. All TopCar Club vehicles undergo <strong>mandatory pre-trip inspection</strong> and regular maintenance at official dealers.<br><br><strong>Comprehensive CASCO and OSAGO insurance</strong>, 24/7 roadside technical support, GPS monitoring for your safety. We work only with verified partners and guarantee the highest level of service."
+    }
   }
 }

@@ -100,8 +100,7 @@ export default function Hero() {
           variants={itemVariants}
         >
           <a
-            href="#car-catalog"
-            onClick={scrollToCatalog}
+            href="tel:+77776660295"
             className="group w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-[#d4af37] text-black rounded-lg text-lg font-bold hover:bg-[#c0982c] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
           >
             <span>{t('hero.seePrices')}</span>

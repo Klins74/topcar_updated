@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServicesSection from "@/components/ServicesSection";
 import FadeInWhenVisible from "@/components/FadeInWhenVisible";
+import SEOBlock from "@/components/SEOBlock";
 
 // export const metadata: Metadata = {
 //   title: 'Услуги аренды авто — TopCar Club Алматы',
@@ -36,6 +37,7 @@ export default function ServicesPage() {
 
         {/* Only the ServicesSection component remains */}
         <ServicesSection />
+        <SEOBlock page="services" />
 
       </main>
       <Footer />

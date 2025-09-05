@@ -1,35 +1,55 @@
-// Файл: src/middleware.ts
+import { NextRequest, NextResponse } from 'next/server';
 
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+const locales = ['ru', 'en', 'kk'] as const;
+const defaultLocale = 'ru' as const;
 
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
-
-  // Создаем серверный клиент Supabase, используя куки из запроса
-  const supabase = createMiddlewareClient({ req, res });
-
-  // Получаем информацию о текущем пользователе
-  const { data: { user } } = await supabase.auth.getUser();
-
-  // Проверяем, является ли пользователь администратором
-  const isAdmin = user?.email === process.env.ADMIN_EMAIL;
-
-  // Если пользователь пытается зайти в /admin, но он не админ,
-  // перенаправляем его на главную страницу.
-  if (!isAdmin && req.nextUrl.pathname.startsWith('/admin')) {
-    const url = req.nextUrl.clone();
-    url.pathname = '/';
-    return NextResponse.redirect(url);
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  
+  // Пропускаем статические файлы и API роуты
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/favicon') ||
+    pathname.includes('.') ||
+    pathname.startsWith('/logo') ||
+    pathname.startsWith('/manifest') ||
+    pathname.startsWith('/robots') ||
+    pathname.startsWith('/sitemap') ||
+    pathname.startsWith('/google') ||
+    pathname.startsWith('/yandex')
+  ) {
+    return NextResponse.next();
   }
 
-  // Если все в порядке, разрешаем доступ к странице
-  return res;
+  // Проверяем, есть ли локаль в URL
+  const pathnameHasLocale = locales.some(
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  );
+
+  if (pathnameHasLocale) {
+    return NextResponse.next();
+  }
+
+  // Если локали нет, редиректим на дефолтную (русскую) без префикса
+  // Это означает, что / = русский, /en/ = английский, /kk/ = казахский
+  if (pathname === '/') {
+    return NextResponse.next(); // Главная остается без префикса (русский)
+  }
+
+  // Для всех остальных путей без локали добавляем дефолтную
+  return NextResponse.next();
 }
 
-// Указываем, что этот middleware должен работать для всех маршрутов,
-// начинающихся с /admin/
 export const config = {
-  matcher: '/admin/:path*',
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|logo|manifest|robots|sitemap|google|yandex).*)',
+  ],
 };
