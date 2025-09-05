@@ -6,7 +6,7 @@ import Script from 'next/script'; // <-- Импортируем компонен
 import '@/styles/globals.css';
 
 import { AuthProvider } from '@/context/AuthContext';
-import { LanguageProvider } from '@/context/LanguageContext';
+import { LocaleProvider } from '@/context/LocaleContext';
 
 const manrope = Manrope({
   subsets: ['latin', 'cyrillic'],
@@ -92,7 +92,7 @@ export default function RootLayout({
         </noscript>
         {/* --- End Google Tag Manager (noscript) --- */}
 
-        <LanguageProvider>
+        <LocaleProvider locale="ru">
           <AuthProvider>
             {children}
             
@@ -100,7 +100,7 @@ export default function RootLayout({
               <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
             )}
           </AuthProvider>
-        </LanguageProvider>
+        </LocaleProvider>
       </body>
     </html>
   );

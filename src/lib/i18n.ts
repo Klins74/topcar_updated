@@ -1,4 +1,4 @@
-import { useLanguage } from '@/context/LanguageContext';
+import { useLocale } from '@/context/LocaleContext';
 import en from '@/locales/en/common.json';
 import ru from '@/locales/ru/common.json';
 import kk from '@/locales/kk/common.json';
@@ -12,7 +12,7 @@ const translations = {
 export type Locale = keyof typeof translations;
 
 export function useTranslations() {
-  const { locale } = useLanguage();
+  const { locale } = useLocale();
   
   const t = (key: string): string => {
     const keys = key.split('.');

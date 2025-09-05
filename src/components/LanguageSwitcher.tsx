@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { ChevronDownIcon, LanguageIcon } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/context/LanguageContext';
 import { languages } from '@/lib/i18n';
 
 // Добавляем тип пропсов
@@ -12,13 +13,34 @@ interface LanguageSwitcherProps {
 
 export default function LanguageSwitcher({ className }: LanguageSwitcherProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { locale, setLocale } = useLanguage();
+  const pathname = usePathname();
   
+  // Определяем текущую локаль из URL
+  const getCurrentLocale = () => {
+    if (pathname.startsWith('/en')) return 'en';
+    if (pathname.startsWith('/kk')) return 'kk';
+    return 'ru'; // дефолтная локаль
+  };
+  
+  const locale = getCurrentLocale();
   const currentLanguage = languages.find(lang => lang.code === locale) || languages[0];
 
-  const handleLanguageChange = (newLocale: 'ru' | 'en' | 'kk') => {
-    setLocale(newLocale);
-    setIsOpen(false);
+  // Функция для создания URL с новой локалью
+  const getLocalizedPath = (newLocale: 'ru' | 'en' | 'kk') => {
+    // Убираем текущую локаль из пути
+    let cleanPath = pathname;
+    if (pathname.startsWith('/en')) {
+      cleanPath = pathname.slice(3) || '/';
+    } else if (pathname.startsWith('/kk')) {
+      cleanPath = pathname.slice(3) || '/';
+    }
+    
+    // Добавляем новую локаль (кроме русского - он без префикса)
+    if (newLocale === 'ru') {
+      return cleanPath;
+    } else {
+      return `/${newLocale}${cleanPath}`;
+    }
   };
 
   return (
@@ -49,9 +71,10 @@ export default function LanguageSwitcher({ className }: LanguageSwitcherProps) {
           {/* Dropdown */}
           <div className="absolute right-0 top-full mt-2 w-48 bg-neutral-900 border border-neutral-700 rounded-lg shadow-xl z-50 overflow-hidden">
             {languages.map((language) => (
-              <button
+              <Link
                 key={language.code}
-                onClick={() => handleLanguageChange(language.code as 'ru' | 'en' | 'kk')}
+                href={getLocalizedPath(language.code as 'ru' | 'en' | 'kk')}
+                onClick={() => setIsOpen(false)}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left hover:bg-neutral-800 transition-colors ${
                   locale === language.code 
                     ? 'bg-neutral-800 text-[#d4af37]' 
@@ -63,7 +86,7 @@ export default function LanguageSwitcher({ className }: LanguageSwitcherProps) {
                 {locale === language.code && (
                   <div className="ml-auto w-2 h-2 bg-[#d4af37] rounded-full" />
                 )}
-              </button>
+              </Link>
             ))}
           </div>
         </>

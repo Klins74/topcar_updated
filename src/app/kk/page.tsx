@@ -15,7 +15,7 @@ import Head from 'next/head';
 import Hero from '@/components/Hero';
 import SEOBlock from '@/components/SEOBlock';
 
-export default function HomePage() {
+export default function KkHomePage() {
   const { user, isLoading } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -35,11 +35,11 @@ export default function HomePage() {
               '@type': ['LocalBusiness', 'CarRental'],
               name: 'TopCar Club',
               image: 'https://topcar.club/logo.png',
-              url: 'https://topcar.club/',
+              url: 'https://topcar.club/kk/',
               telephone: '+7 (777) 666-02-95',
               address: {
                 '@type': 'PostalAddress',
-                streetAddress: 'ул. Байтурсынова, 179/2',
+                streetAddress: 'Байтұрсынов көшесі, 179/2',
                 addressLocality: 'Алматы',
                 addressCountry: 'KZ',
               },
@@ -61,7 +61,6 @@ export default function HomePage() {
 
         <Hero />
 
-        {/* Removed <CarCatalog /> to avoid empty state on home. */}
         <ServicesSection />
         <FAQ />
         <Subscription />
