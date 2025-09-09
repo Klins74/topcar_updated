@@ -14,10 +14,13 @@ import { useAuth } from '@/context/AuthContext';
 import Head from 'next/head';
 import Hero from '@/components/Hero';
 import SEOBlock from '@/components/SEOBlock';
+import CalculatorModal from '@/components/CalculatorModal';
+import FloatingWidget from '@/components/FloatingWidget';
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showCalcModal, setShowCalcModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -45,7 +48,7 @@ export default function HomePage() {
               },
               openingHours: 'Mo-Su 00:00-24:00',
               priceRange: '₸₸₸',
-              email: 'topcarelite.kz@gmail.com',
+              email: 'topcar_club@mail.ru',
               sameAs: [
                 'https://wa.me/77776660295',
                 'https://t.me/topcar_elite_kz_support',
@@ -53,19 +56,26 @@ export default function HomePage() {
             }),
           }}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function () { var widget = document.createElement('script'); widget.defer = true; widget.dataset.pfId = '16d9cc23-1faa-402c-a45e-7af9bcebd9c1'; widget.src = 'https://widget.yourgood.app/script/widget.js?id=16d9cc23-1faa-402c-a45e-7af9bcebd9c1&now='+Date.now(); document.head.appendChild(widget); })()`,
+          }}
+        />
       </Head>
       <main className="min-h-screen bg-neutral-950 text-white font-sans">
        <Header />
 
         {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
+        <CalculatorModal isOpen={showCalcModal} onClose={() => setShowCalcModal(false)} />
 
-        <Hero />
+        <Hero setShowCalcModal={setShowCalcModal} />
 
         {/* Removed <CarCatalog /> to avoid empty state on home. */}
         <ServicesSection />
         <FAQ />
         <Subscription />
         <SEOBlock page="home" />
+        <FloatingWidget />
         <Footer />
       </main>
     </AnimatedPageWrapper>

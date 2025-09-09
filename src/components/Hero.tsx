@@ -32,7 +32,7 @@ const itemVariants = {
   },
 }
 
-export default function Hero() {
+export default function Hero({ setShowCalcModal }: { setShowCalcModal?: (value: boolean) => void }) {
   const { t } = useTranslations();
   const scrollToCatalog = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
@@ -99,15 +99,16 @@ export default function Hero() {
           className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6"
           variants={itemVariants}
         >
-          <a
-            href="tel:+77776660295"
+          <button
+            type="button"
+            onClick={() => setShowCalcModal?.(true)}
             className="group w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-[#d4af37] text-black rounded-lg text-lg font-bold hover:bg-[#c0982c] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
           >
             <span>{t('hero.seePrices')}</span>
             <ArrowRightIcon className="ml-2 h-6 w-6 transition-transform duration-300 group-hover:translate-x-1.5" />
-          </a>
+          </button>
           <a
-            href="#contacts"
+            href="tel:+77776660295"
             className="group w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 border border-white text-white rounded-lg text-lg font-bold hover:bg-white hover:text-black transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#d4af37]/50 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
           >
             <span>{t('hero.contact')}</span>

@@ -28,7 +28,7 @@ export default function Subscription() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <FadeInWhenVisible>
           <h2 className="text-4xl sm:text-5xl font-extrabold mb-6 text-center tracking-tight">
-            {t('club.title')} <span className="text-[#d4af37]">TopCar Elite</span>
+            {t('club.title')}
           </h2>
           <p className="text-lg sm:text-xl text-neutral-400 mb-16 sm:mb-20 text-center max-w-2xl mx-auto">
             {t('club.desc')}
