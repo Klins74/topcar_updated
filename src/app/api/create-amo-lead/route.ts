@@ -3,8 +3,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-// Инициализируем Resend с помощью API ключа
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Ленивая инициализация Resend только при наличии ключа
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    return null;
+  }
+  return new Resend(apiKey);
+}
 
 const {
   AMOCRM_SUBDOMAIN,
@@ -80,7 +86,11 @@ export async function POST(req: NextRequest) {
 
     // 2. Отправка письма через Resend
     try {
-      await resend.emails.send({
+      const resend = getResendClient();
+      if (!resend) {
+        console.warn('RESEND_API_KEY отсутствует — пропускаем отправку email');
+      } else {
+        await resend.emails.send({
         // ВАЖНО: Используем ваш подтвержденный домен
         from: 'Заявка с сайта <booking@topcar.club>',
         to: 'topcar_club@mail.ru', // Ваша почта для получения заявок
@@ -94,7 +104,8 @@ export async function POST(req: NextRequest) {
             <p><strong>Детали:</strong> ${bookingDetails.duration}</p>
           </div>
         `,
-      });
+        });
+      }
     } catch (emailError) {
       console.error('Ошибка отправки email:', emailError);
     }
