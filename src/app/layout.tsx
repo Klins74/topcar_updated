@@ -1,7 +1,6 @@
 // src/app/layout.tsx
 import type { Metadata, Viewport } from 'next';
 import { Manrope } from 'next/font/google';
-import { GoogleAnalytics } from '@next/third-parties/google';
 import Script from 'next/script'; // <-- Импортируем компонент Script
 import '@/styles/globals.css';
 
@@ -61,6 +60,22 @@ export default function RootLayout({
         </Script>
         {/* --- End Google Tag Manager --- */}
 
+        {/* --- Google tag (gtag.js) --- */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-RN8FMGTC04"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-RN8FMGTC04');
+          `}
+        </Script>
+        {/* --- End Google tag (gtag.js) --- */}
+
         {/* --- SEO: alternate, canonical, language redirect --- */}
         <link rel="alternate" href="https://topcar.club/" hrefLang="ru" />
         <link rel="alternate" href="https://topcar.club/en/" hrefLang="en" />
@@ -95,10 +110,6 @@ export default function RootLayout({
         <LocaleProvider locale="ru">
           <AuthProvider>
             {children}
-            
-            {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-              <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
-            )}
           </AuthProvider>
         </LocaleProvider>
       </body>
