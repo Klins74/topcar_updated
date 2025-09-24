@@ -15,7 +15,7 @@ import Head from 'next/head';
 import Hero from '@/components/Hero';
 import SEOBlock from '@/components/SEOBlock';
 import CalculatorModal from '@/components/CalculatorModal';
-import FloatingWidget from '@/components/FloatingWidget';
+// import FloatingWidget from '@/components/FloatingWidget';
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
@@ -75,7 +75,6 @@ export default function HomePage() {
         <FAQ />
         <Subscription />
         <SEOBlock page="home" />
-        <FloatingWidget />
         <Footer />
       </main>
     </AnimatedPageWrapper>
