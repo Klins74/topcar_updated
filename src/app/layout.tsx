@@ -90,6 +90,46 @@ export default function RootLayout({
             {children}
           </AuthProvider>
         </LocaleProvider>
+
+        {/* --- WhatsApp Widget (edna) --- */}
+        <Script id="whatsapp-widget" strategy="afterInteractive">
+          {`
+            (function(){
+              var url = 'https://edna.ru/wp-content/plugins/whatsapp-widget-generator/js/generator-ru.js?5545';
+              var s = document.createElement('script');
+              s.type = 'text/javascript';
+              s.async = true;
+              s.src = url;
+              var options = {
+                "host":"https://edna.ru",
+                "enabled":true,
+                "chatButtonSetting":{
+                    "backgroundColor":"#00e118",
+                    "ctaText":"Написать в Whatsapp",
+                    "icon":"whatsapp",
+                    "position":"right",
+                },
+                "brandSetting":{
+                    "backgroundColor":"#2a5a53",
+                    "brandImg":"",
+                    "brandName":"TopCar",
+                    "brandSubTitle":"Ответим моментально",
+                    "ctaText":"Whatsapp",
+                    "phoneNumber":"77776660295",
+                    "welcomeText":"Здравствуйте!"
+                }
+              };
+              s.onload = function() {
+                  if (typeof CreateWhatsappChatWidget === 'function') {
+                    CreateWhatsappChatWidget(options);
+                  }
+              };
+              var x = document.getElementsByTagName('script')[0];
+              x.parentNode && x.parentNode.insertBefore(s, x);
+            })();
+          `}
+        </Script>
+        {/* --- END WhatsApp Widget (edna) --- */}
       </body>
     </html>
   );
