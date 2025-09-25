@@ -107,6 +107,21 @@
   .overflow-hidden { 
     overflow: hidden !important;
   }
+
+  /* Bounce animation for floating WhatsApp button (non-inline) */
+  @keyframes waplus-bounce {
+    0%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-6px); }
+    60% { transform: translateY(0); }
+  }
+  .waplus-bounce {
+    animation: waplus-bounce 1.3s ease-in-out infinite;
+    animation-delay: 1.2s;
+    will-change: transform;
+  }
+  .waplus-bounce:hover {
+    animation-play-state: paused;
+  }
 }
 
 /* --- Стилизация скроллбара для завершенного вида --- */
