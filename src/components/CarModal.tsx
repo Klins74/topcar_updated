@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Car } from '@/types';
 import { X, Clock, Users, Zap, Fuel, Dna, Info, MessageSquare } from 'lucide-react';
+import BookingForm from './BookingForm';
 import FormattedPrice from './FormattedPrice';
 import { useAuth } from '@/context/AuthContext';
 import LoginModal from './LoginModal';
@@ -128,6 +129,10 @@ export default function CarModal({ car, onClose, onBook }: Props) {
                                         <MessageSquare size={18}/>
                                         Перейти в WhatsApp
                                     </a>
+                                </div>
+                                <div className="mt-4">
+                                    <h3 className="text-xl font-semibold mb-3">Быстрая заявка</h3>
+                                    <BookingForm initialCarName={car.name} />
                                 </div>
                             </div>
                         </div>
